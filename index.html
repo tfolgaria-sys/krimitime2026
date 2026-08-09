@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KRIMITIME 2026 - Das Comic-Ermittlerspiel</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts for Comic Vibe -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:ital,wght@0,400;0,700;1,700&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Fredoka', 'Comic Neue', sans-serif;
+            background-color: #fef08a;
+            background-image: radial-gradient(#f59e0b 1.5px, transparent 1.5px);
+            background-size: 16px 16px;
+            color: #0f172a;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .font-comic-title { font-family: 'Bangers', cursive; letter-spacing: 1px; }
+        .font-comic-body { font-family: 'Comic Neue', cursive, sans-serif; font-weight: 700; }
+
+        /* Hard Comic Box Shadows & Borders */
+        .comic-box {
+            background-color: #ffffff;
+            border: 4px solid #000000;
+            border-radius: 20px;
+            box-shadow: 6px 6px 0px #000000;
+            padding: 20px;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .comic-box:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px #000000;
+        }
+
+        .comic-btn {
+            border: 3px solid #000000;
+            box-shadow: 4px 4px 0px #000000;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 1px;
+            font-size: 1.1rem;
+            padding: 8px 16px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+        .comic-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #000000;
+        }
+        
+        .btn-cyan { background-color: #22d3ee; color: #000; }
+        .btn-cyan:hover { background-color: #06b6d4; }
+        .btn-yellow { background-color: #facc15; color: #000; }
+        .btn-yellow:hover { background-color: #eab308; }
+        .btn-pink { background-color: #ec4899; color: #fff; }
+        .btn-pink:hover { background-color: #db2777; }
+        .btn-emerald { background-color: #34d399; color: #000; }
+        .btn-emerald:hover { background-color: #10b981; }
+        .btn-dark { background-color: #1e293b; color: #fff; }
+        .btn-dark:hover { background-color: #334155; }
+        .btn-red { background-color: #ef4444; color: #fff; }
+        .btn-red:hover { background-color: #dc2626; }
+
+        /* Stamps */
+        .comic-stamp {
+            transform: rotate(-6deg);
+            border: 4px dashed #dc2626;
+            color: #dc2626;
+            background: #fef2f2;
+            font-family: 'Bangers', cursive;
+            padding: 4px 12px;
+            display: inline-block;
+            box-shadow: 3px 3px 0px #000;
+            font-size: 0.95rem;
+            border-radius: 6px;
+        }
+        .comic-stamp-solved {
+            transform: rotate(5deg);
+            border: 4px double #16a34a;
+            color: #16a34a;
+            background: #f0fdf4;
+            font-family: 'Bangers', cursive;
+            padding: 4px 12px;
+            display: inline-block;
+            box-shadow: 3px 3px 0px #000;
+            font-size: 0.95rem;
+            border-radius: 6px;
+        }
+
+        /* Header Bar Layout */
+        .header-bar {
+            background-color: #facc15;
+            border-bottom: 4px solid #000;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            padding: 12px 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .time-badge {
+            background: #ffffff;
+            border: 3px solid #000000;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            box-shadow: 2px 2px 0px #000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-box {
+            display: flex;
+            gap: 6px;
+            background: #000000;
+            padding: 6px;
+            border-radius: 16px;
+            border: 2px solid #000;
+        }
+
+        /* Page Layout & Grid */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 16px;
+            width: 100%;
+            flex-grow: 1;
+        }
+
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+        @media (min-width: 1024px) {
+            .grid-2col { grid-template-columns: 2fr 1fr; }
+        }
+
+        .suspects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 16px;
+        }
+
+        /* Player Card Cropping Engine */
+        .card-crop-wrap {
+            position: relative;
+            width: 100%;
+            padding-top: 125%; /* ~3:4 Aspect Ratio */
+            overflow: hidden;
+            border: 3px solid #000;
+            border-radius: 12px;
+            background-color: #fde047;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card-crop-img {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            max-width: none;
+            object-fit: cover;
+        }
+
+        .crop-top-left { left: 0%; top: 0%; }
+        .crop-top-right { left: -100%; top: 0%; }
+        .crop-bottom-left { left: 0%; top: -100%; }
+        .crop-bottom-right { left: -100%; top: -100%; }
+
+        /* Gerd & Jörg 2-card side-by-side cropping */
+        .crop-half-left { position: absolute; width: 200%; height: 100%; left: 0%; top: 0%; max-width: none; object-fit: cover; }
+        .crop-half-right { position: absolute; width: 200%; height: 100%; left: -100%; top: 0%; max-width: none; object-fit: cover; }
+
+        .fallback-card-wrap {
+            background-color: #fde047;
+            border: 3px solid #000;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 180px;
+            margin-bottom: 8px;
+        }
+
+        .hidden { display: none !important; }
+
+        /* Admin Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .modal-card {
+            background-color: #fde047;
+            border: 4px solid #000;
+            border-radius: 24px;
+            padding: 24px;
+            max-width: 680px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 12px 12px 0px #000;
+        }
+
+        /* Printable Area */
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header-bar no-print">
+        <div class="header-container">
+            
+            <!-- Logo & Title -->
+            <div style="display: flex; align-items: center; gap: 12px; cursor: pointer;" onclick="switchTab('case')">
+                <div style="background: #ec4899; color: #fff; padding: 10px; border-radius: 16px; border: 3px solid #000; box-shadow: 3px 3px 0px #000; transform: rotate(-3deg);">
+                    ⚡
+                </div>
+                <div>
+                    <h1 class="font-comic-title" style="font-size: 2.2rem; line-height: 1; display: flex; align-items: center; gap: 8px;">
+                        <span>KRIMITIME 2026</span>
+                        <span style="background: #22d3ee; color: #000; font-family: 'Fredoka', sans-serif; font-size: 0.75rem; padding: 2px 8px; border-radius: 9999px; border: 2px solid #000; transform: rotate(2deg);">DER FALL DER WOCHE</span>
+                    </h1>
+                    <p class="font-comic-body" style="font-size: 0.8rem; margin-top: 2px;">Das bunte Krimi-Gruppenspiel bis KW 52!</p>
+                </div>
+            </div>
+
+            <!-- Global Time Status Indicator -->
+            <div class="time-badge">
+                <span id="sync-status-dot" style="width: 10px; height: 10px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
+                <span id="current-time-display" class="font-comic-body" style="font-size: 0.9rem;">KW 32 • Donnerstag</span>
+            </div>
+
+            <!-- Nav Tabs -->
+            <nav class="nav-box">
+                <button onclick="switchTab('case')" id="tab-case" class="comic-btn btn-cyan" style="font-size: 0.95rem; padding: 6px 12px;">
+                    📖 Fallakte
+                </button>
+                <button onclick="switchTab('submit')" id="tab-submit" class="comic-btn btn-dark" style="font-size: 0.95rem; padding: 6px 12px;">
+                    ✏️ Tippen
+                </button>
+                <button onclick="switchTab('ranking')" id="tab-ranking" class="comic-btn btn-dark" style="font-size: 0.95rem; padding: 6px 12px;">
+                    🏆 Rangliste
+                </button>
+                <button onclick="toggleAdminModal()" class="comic-btn btn-pink" style="font-size: 0.95rem; padding: 6px 10px;" title="Spielleiter & Admin (Passwort: 2121)">
+                    🔒
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-container">
+
+        <!-- Banner Announcement for Christmas Finale on 24.12.2026 -->
+        <div id="christmas-finale-banner" class="comic-box" style="background: linear-gradient(to right, #ef4444, #f59e0b, #10b981); color: white; margin-bottom: 24px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="font-size: 2.5rem;">🎄</div>
+                <div>
+                    <h3 class="font-comic-title" style="font-size: 1.8rem; color: #fef08a; text-shadow: 2px 2px 0px #000;">ZIEL-ETAPPE: KW 52 / HEILIGABEND 2026</h3>
+                    <p class="font-comic-body" style="font-size: 0.85rem; color: #0f172a; background: rgba(255,255,255,0.9); padding: 2px 8px; border-radius: 6px; border: 1px solid #000; font-weight: bold; display: inline-block; margin-top: 4px;">
+                        Am 24.12.2026 wird der Meister-Ermittler der Saison gekürt!
+                    </p>
+                </div>
+            </div>
+            <div style="background: rgba(0,0,0,0.8); padding: 8px 16px; border-radius: 12px; border: 2px solid #fff; text-align: center;">
+                <span style="font-size: 10px; color: #cbd5e1; display: block; text-transform: uppercase;">Verbleibende Wochen</span>
+                <span id="weeks-left-count" class="font-comic-title" style="font-size: 1.8rem; color: #fde047;">--</span>
+            </div>
+        </div>
+
+        <!-- VIEW 1: AKTUELLE FALLAKTE -->
+        <section id="view-case" style="display: flex; flex-direction: column; gap: 24px;">
+            
+            <!-- Case Header Box -->
+            <div class="comic-box" style="background: #ffffff; position: relative; overflow: hidden;">
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; position: relative; z-index: 10;">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                            <span class="font-comic-title" style="background: #ec4899; color: #fff; font-size: 1rem; padding: 2px 10px; border-radius: 8px; border: 2px solid #000;" id="case-week-tag">
+                                KALENDERWOCHE #32
+                            </span>
+                            <span class="font-comic-body" style="background: #fde047; color: #000; font-size: 0.75rem; font-weight: bold; padding: 4px 10px; border-radius: 9999px; border: 2px solid #000;" id="case-season-tag">
+                                ☀️ Sommer-Special
+                            </span>
+                            <span id="case-status-stamp" class="comic-stamp">
+                                ERMITTLUNG LÄUFT!
+                            </span>
+                        </div>
+                        <h2 class="font-comic-title" style="font-size: 2.4rem; color: #000;" id="case-title">
+                            Lade Fallakte...
+                        </h2>
+                    </div>
+
+                    <div class="no-print" style="flex-shrink: 0;">
+                        <button onclick="window.print()" class="comic-btn btn-yellow" style="font-size: 0.85rem; padding: 8px 12px;">
+                            🖨️ Drucken / Aushang
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Case Content Grid -->
+            <div class="grid-2col">
+                
+                <!-- Left Column: Storyline & Suspects -->
+                <div style="display: flex; flex-direction: column; gap: 24px;">
+                    
+                    <!-- Story / Scene -->
+                    <div class="comic-box" style="background: #cffafe;">
+                        <div class="font-comic-title" style="font-size: 1.4rem; color: #000; margin-bottom: 12px; border-bottom: 3px solid #000; padding-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+                            🔍 <span>1. DIE TATORT-AKTE (Freigeschaltet: Montag)</span>
+                        </div>
+                        <p class="font-comic-body" style="color: #0f172a; line-height: 1.6; font-size: 1.05rem; white-space: pre-line; background: #fff; padding: 16px; border-radius: 16px; border: 2px solid #000;" id="case-description">
+                            Lade Fallakte...
+                        </p>
+                    </div>
+
+                    <!-- Suspects Cards Grid -->
+                    <div class="comic-box" style="background: #fde047;">
+                        <div class="font-comic-title" style="font-size: 1.4rem; color: #000; margin-bottom: 16px; border-bottom: 3px solid #000; padding-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+                            👥 <span>2. DIE VERDÄCHTIGEN PERSONEN & SPIELKARTEN</span>
+                        </div>
+                        <div class="suspects-grid" id="suspects-list">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Bonus Question -->
+                    <div class="comic-box" style="background: #f472b6; display: flex; align-items: flex-start; gap: 16px;">
+                        <div style="background: #facc15; padding: 12px; border-radius: 16px; border: 3px solid #000; color: #000; flex-shrink: 0; font-size: 1.5rem;">
+                            ❓
+                        </div>
+                        <div>
+                            <h4 class="font-comic-title" style="font-size: 1.2rem; color: #000; margin-bottom: 4px;">ERMITTLER-ZUSATZFRAGE (+1 PUNKT):</h4>
+                            <p class="font-comic-body" style="font-size: 0.95rem; font-weight: bold; color: #000; background: #fff; padding: 10px; border-radius: 12px; border: 2px solid #000;" id="case-bonus-question">Lade Zusatzfrage...</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Right Column: Clues & Solution -->
+                <div style="display: flex; flex-direction: column; gap: 24px;">
+                    
+                    <!-- Clues Box -->
+                    <div class="comic-box" style="background: #ffffff;">
+                        <div class="font-comic-title" style="font-size: 1.4rem; color: #000; margin-bottom: 16px; border-bottom: 3px solid #000; padding-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+                            🕵️ <span>3. HINWEIS-SPUREN</span>
+                        </div>
+
+                        <div style="display: flex; flex-direction: column; gap: 16px;">
+                            <!-- Clue 1 -->
+                            <div id="clue-1-box" style="padding: 16px; border-radius: 16px; border: 3px solid #000; background: #f1f5f9;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <span class="font-comic-title" style="font-size: 1rem; color: #475569;">HINWEIS 1 (MITTWOCH)</span>
+                                    <span id="clue-1-icon-wrap">🔒</span>
+                                </div>
+                                <p id="clue-1-text" class="font-comic-body" style="font-size: 0.9rem; color: #64748b; font-style: italic;">
+                                    🔒 Wird erst am Mittwoch enthüllt...
+                                </p>
+                            </div>
+
+                            <!-- Clue 2 -->
+                            <div id="clue-2-box" style="padding: 16px; border-radius: 16px; border: 3px solid #000; background: #f1f5f9;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <span class="font-comic-title" style="font-size: 1rem; color: #475569;">HINWEIS 2 (DONNERSTAG)</span>
+                                    <span id="clue-2-icon-wrap">🔒</span>
+                                </div>
+                                <p id="clue-2-text" class="font-comic-body" style="font-size: 0.9rem; color: #64748b; font-style: italic;">
+                                    🔒 Wird erst am Donnerstag enthüllt...
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Solution Box (Revealed Friday) -->
+                    <div id="solution-box" class="comic-box hidden" style="background: #6ee7b7;">
+                        <div class="font-comic-title" style="font-size: 1.4rem; color: #000; margin-bottom: 12px; border-bottom: 3px solid #000; padding-bottom: 6px;">
+                            ✅ <span>4. AUFLÖSUNG (FREITAG / FINALE)</span>
+                        </div>
+                        <div style="background: #fff; padding: 16px; border-radius: 16px; border: 2px solid #000; display: flex; flex-direction: column; gap: 12px;">
+                            <div>
+                                <span style="font-size: 11px; font-weight: bold; color: #64748b; text-transform: uppercase; display: block;">Überführter Täter:</span>
+                                <p class="font-comic-title" style="font-size: 1.8rem; color: #059669;" id="solution-culprit">---</p>
+                            </div>
+                            <div>
+                                <span style="font-size: 11px; font-weight: bold; color: #64748b; text-transform: uppercase; display: block;">Hintergrund & Motiv:</span>
+                                <p class="font-comic-body" style="font-size: 0.9rem; color: #0f172a; margin-top: 4px; line-height: 1.5;" id="solution-text">---</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Call to action card -->
+                    <div class="comic-box no-print" style="background: #c084fc; text-align: center; display: flex; flex-direction: column; gap: 12px;">
+                        <div style="width: 48px; height: 48px; background: #facc15; border-radius: 50%; border: 3px solid #000; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                            ✏️
+                        </div>
+                        <h4 class="font-comic-title" style="font-size: 1.4rem; color: #000;">DEINE VERMUTUNG ABGEBEN?</h4>
+                        <p class="font-comic-body" style="font-size: 0.85rem; font-weight: bold; color: #000;">Gib deinen offiziellen Anklagetipp ab. Jeder Ermittler hat 1 Versuch pro Woche!</p>
+                        <button onclick="switchTab('submit')" class="comic-btn btn-pink" style="font-size: 1.1rem; padding: 10px; width: 100%;">
+                            Jetzt Tipp einreichen
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- VIEW 2: TIPP ABGEBEN -->
+        <section id="view-submit" class="hidden" style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px;">
+            <div class="comic-box" style="background: #fff; display: flex; flex-direction: column; gap: 20px;">
+                <div>
+                    <h2 class="font-comic-title" style="font-size: 2.2rem; color: #000;">Ermittler-Akte einreichen</h2>
+                    <p class="font-comic-body" style="font-size: 0.9rem; font-weight: bold; color: #475569;">Welcher Verdächtige hat die Tat in Kalenderwoche <span id="submit-week-display">#--</span> begangen?</p>
+                </div>
+
+                <form id="direct-guess-form" onsubmit="submitGuessDirectly(event)" style="display: flex; flex-direction: column; gap: 16px;">
+                    <div>
+                        <label class="font-comic-title" style="font-size: 1.2rem; color: #000; display: block; margin-bottom: 4px;">1. Dein Name / Ermittler-Alias</label>
+                        <select id="guess-player-select" required class="font-comic-body" style="width: 100%; background: #f8fafc; border: 3px solid #000; border-radius: 12px; padding: 12px; font-size: 1rem; font-weight: bold;">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="font-comic-title" style="font-size: 1.2rem; color: #000; display: block; margin-bottom: 4px;">2. Dein Hauptverdächtiger</label>
+                        <select id="guess-suspect-select" required class="font-comic-body" style="width: 100%; background: #f8fafc; border: 3px solid #000; border-radius: 12px; padding: 12px; font-size: 1rem; font-weight: bold;">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="font-comic-title" style="font-size: 1.2rem; color: #000; display: block; margin-bottom: 4px;">3. Antwort auf die Zusatzfrage</label>
+                        <p class="font-comic-body" style="font-size: 0.85rem; color: #ec4899; font-weight: bold; margin-bottom: 6px;" id="guess-question-preview">Lade Frage...</p>
+                        <input type="text" id="guess-bonus-input" placeholder="Deine Antwort eingeben..." required class="font-comic-body" style="width: 100%; background: #f8fafc; border: 3px solid #000; border-radius: 12px; padding: 12px; font-size: 1rem; font-weight: bold;">
+                    </div>
+
+                    <div style="background: #fde047; padding: 12px; border-radius: 12px; border: 2px solid #000; font-size: 0.85rem;" class="font-comic-body">
+                        ⚡ <strong>Live-Cloud-Speicherung:</strong> Dein Tipp wird sofort für dein Team gespeichert!
+                    </div>
+
+                    <button type="submit" class="comic-btn btn-emerald" style="font-size: 1.3rem; padding: 14px; margin-top: 8px;">
+                        Anklageschrift Jetzt Einreichen!
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- VIEW 3: RANGLISTE -->
+        <section id="view-ranking" class="hidden" style="display: flex; flex-direction: column; gap: 24px;">
+            <div class="comic-box" style="background: #fff;">
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 3px solid #000;">
+                    <div>
+                        <h2 class="font-comic-title" style="font-size: 2.5rem; color: #000;">Ermittler-Rangliste 2026</h2>
+                        <p class="font-comic-body" style="font-size: 0.85rem; font-weight: bold; color: #475569;">Gesamtwertung von KW 1 bis KW 52 (Finale am 24.12.2026)</p>
+                    </div>
+                    <div class="font-comic-body" style="background: #fde047; color: #000; padding: 8px 16px; border-radius: 16px; border: 2px solid #000; font-size: 0.85rem; font-weight: bold;">
+                        🏅 3 Pkt. Täter | 1 Pkt. Zusatzfrage | +2 Pkt. Frühtipp
+                    </div>
+                </div>
+
+                <!-- Ranking Table -->
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left; font-family: 'Comic Neue', cursive; font-weight: bold;">
+                        <thead class="font-comic-title" style="background: #000; color: #fff; font-size: 1.2rem; text-transform: uppercase;">
+                            <tr>
+                                <th style="padding: 12px 16px;">Rang</th>
+                                <th style="padding: 12px 16px;">Ermittler / Name</th>
+                                <th style="padding: 12px 16px; text-align: center;">Gelöste Fälle</th>
+                                <th style="padding: 12px 16px; text-align: right;">Gesamtpunkte</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ranking-table-body" style="border-top: 2px solid #000;">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="no-print" style="background: #000; border-top: 4px solid #000; padding: 20px; text-align: center; font-size: 0.8rem; color: #fde047; font-family: 'Comic Neue', cursive; font-weight: bold;">
+        <p>„KRIMITIME 2026“ • Asynchrones Comic-Gruppenspiel bis KW 52 (24.12.2026)</p>
+    </footer>
+
+    <!-- Admin Modal -->
+    <div id="admin-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #000; padding-bottom: 12px; margin-bottom: 16px;">
+                <h3 class="font-comic-title" style="font-size: 1.8rem; color: #000; display: flex; align-items: center; gap: 8px;">
+                    🛡️ <span>Spielleiter-Konsole & Admin-Bereich</span>
+                </h3>
+                <button onclick="toggleAdminModal()" style="background: none; border: none; font-size: 1.8rem; cursor: pointer; color: #000;">✕</button>
+            </div>
+
+            <!-- LOGIN FORM (When locked) -->
+            <div id="admin-login-view" style="background: #fff; padding: 20px; border-radius: 16px; border: 3px solid #000; text-align: center; display: flex; flex-direction: column; gap: 16px;">
+                <div style="width: 48px; height: 48px; background: #ec4899; border-radius: 16px; border: 2px solid #000; margin: 0 auto; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.5rem;">
+                    🔑
+                </div>
+                <h4 class="font-comic-title" style="font-size: 1.5rem; color: #000;">Passwortgeschützter Bereich</h4>
+                <p class="font-comic-body" style="font-size: 0.85rem; color: #475569;">Bitte gib das Spielleiter-Passwort ein:</p>
+                <div style="max-width: 280px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; width: 100%;">
+                    <input type="password" id="admin-password-input" placeholder="Passwort eingeben" class="font-comic-title" style="background: #f1f5f9; border: 3px solid #000; border-radius: 12px; padding: 10px; text-align: center; font-size: 1.4rem; letter-spacing: 2px;">
+                    <button onclick="checkAdminPassword()" class="comic-btn btn-emerald" style="font-size: 1.2rem; padding: 10px;">
+                        Freischalten
+                    </button>
+                    <p id="admin-auth-error" class="font-comic-body hidden" style="font-size: 0.8rem; color: #dc2626; font-weight: bold;">⚠️ Falsches Passwort! Bitte versuche es erneut.</p>
+                </div>
+            </div>
+
+            <!-- ADMIN CONTENT (When unlocked) -->
+            <div id="admin-controls-view" class="hidden" style="display: flex; flex-direction: column; gap: 20px;">
+
+                <!-- Week & Simulator selector -->
+                <div style="background: #cffafe; padding: 16px; border-radius: 16px; border: 3px solid #000; display: flex; flex-direction: column; gap: 12px;">
+                    <h4 class="font-comic-title" style="font-size: 1.3rem; color: #000;">📅 KW-Auswahl & Wochentags-Simulator</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div>
+                            <label class="font-comic-body" style="font-size: 0.75rem; font-weight: bold; color: #334155; display: block; margin-bottom: 4px;">Kalenderwoche wählen:</label>
+                            <select id="admin-week-select" onchange="changeWeek(this.value)" class="font-comic-body" style="width: 100%; background: #fff; border: 2px solid #000; border-radius: 10px; padding: 8px; font-size: 0.85rem; font-weight: bold;">
+                                <!-- Options 1 to 52 -->
+                            </select>
+                        </div>
+                        <div>
+                            <label class="font-comic-body" style="font-size: 0.75rem; font-weight: bold; color: #334155; display: block; margin-bottom: 4px;">Wochentag simulieren:</label>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                                <button onclick="simulateDay('Mon')" class="comic-btn btn-cyan" style="font-size: 0.8rem; padding: 6px;">Montag</button>
+                                <button onclick="simulateDay('Wed')" class="comic-btn btn-pink" style="font-size: 0.8rem; padding: 6px;">Mittwoch</button>
+                                <button onclick="simulateDay('Thu')" class="comic-btn btn-dark" style="font-size: 0.8rem; padding: 6px;">Donnerstag</button>
+                                <button onclick="simulateDay('Fri')" class="comic-btn btn-emerald" style="font-size: 0.8rem; padding: 6px;">Freitag</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUBMITTED GUESSES -->
+                <div style="background: #fff; padding: 16px; border-radius: 16px; border: 3px solid #000; display: flex; flex-direction: column; gap: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000; padding-bottom: 8px;">
+                        <h4 class="font-comic-title" style="font-size: 1.3rem; color: #000;">
+                            👁️ <span>Eingegangene Tipps für KW <span id="admin-guesses-week-display">--</span></span>
+                        </h4>
+                        <span id="admin-guesses-count-badge" class="font-comic-body" style="background: #ec4899; color: #fff; font-size: 0.75rem; font-weight: bold; padding: 2px 8px; border-radius: 9999px; border: 1px solid #000;">0 Tipps</span>
+                    </div>
+
+                    <div id="admin-guesses-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 200px; overflow-y: auto;">
+                        <!-- Dynamic list of guesses -->
+                    </div>
+                </div>
+
+                <!-- Manual Player / Score Manager -->
+                <div style="background: #fff; padding: 16px; border-radius: 16px; border: 3px solid #000; display: flex; flex-direction: column; gap: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h4 class="font-comic-title" style="font-size: 1.3rem; color: #000;">
+                            🎯 Ermittler-Roster & Punkte verwalten
+                        </h4>
+                        <span class="font-comic-body" style="font-size: 0.75rem; background: #ec4899; color: #fff; padding: 2px 8px; border-radius: 9999px; font-weight: bold;" id="admin-player-count">19 Mitspieler</span>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                        <input type="text" id="admin-add-name" placeholder="Neuer Name" class="font-comic-body" style="background: #f1f5f9; border: 2px solid #000; border-radius: 10px; padding: 8px; font-size: 0.85rem; font-weight: bold;">
+                        <input type="number" id="admin-add-score" placeholder="Punkte (0)" class="font-comic-body" style="background: #f1f5f9; border: 2px solid #000; border-radius: 10px; padding: 8px; font-size: 0.85rem; font-weight: bold;">
+                        <button onclick="adminAddOrUpdatePlayer()" class="comic-btn btn-emerald" style="font-size: 0.85rem; padding: 8px;">
+                            + Hinzufügen
+                        </button>
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end;">
+                        <button onclick="adminResetPlayersToDefault()" class="comic-btn btn-yellow" style="font-size: 0.75rem; padding: 4px 10px;">
+                            ↺ 19 Standard-Spieler wiederherstellen
+                        </button>
+                    </div>
+
+                    <div id="admin-players-list" style="max-height: 180px; overflow-y: auto; border: 2px solid #000; border-radius: 10px; padding: 8px; background: #f8fafc; display: flex; flex-direction: column; gap: 4px;">
+                        <!-- Dynamic list of players -->
+                    </div>
+                </div>
+
+                <!-- RESET AREA -->
+                <div style="background: #fff; padding: 16px; border-radius: 16px; border: 3px solid #000; display: flex; flex-direction: column; gap: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="font-comic-body" style="font-size: 0.85rem; color: #dc2626; font-weight: bold;">⚠️ Gefahrenbereich:</span>
+                        <button onclick="showResetConfirm(true)" class="comic-btn btn-red" style="font-size: 0.8rem; padding: 6px 12px;">
+                            🗑️ Alles Zurücksetzen
+                        </button>
+                    </div>
+                    <div id="reset-confirm-box" class="hidden" style="background: #fef2f2; padding: 12px; border-radius: 10px; border: 2px solid #ef4444; display: flex; flex-direction: column; gap: 8px;">
+                        <p class="font-comic-body" style="font-size: 0.8rem; color: #b91c1c; font-weight: bold;">Möchtest du wirklich ALLE Tipps und manuellen Spielerdaten auf Firestore löschen?</p>
+                        <div style="display: flex; gap: 8px;">
+                            <button onclick="adminResetAllData()" class="comic-btn btn-red" style="font-size: 0.8rem; padding: 4px 10px;">Ja, wirklich löschen!</button>
+                            <button onclick="showResetConfirm(false)" class="comic-btn btn-dark" style="font-size: 0.8rem; padding: 4px 10px;">Abbrechen</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div style="padding-top: 12px; border-top: 3px solid #000; display: flex; justify-content: space-between; align-items: center;">
+                <button onclick="lockAdminConsole()" id="admin-lock-btn" class="font-comic-body hidden" style="font-size: 0.8rem; color: #dc2626; text-decoration: underline; font-weight: bold; background: none; border: none; cursor: pointer;">
+                    🔒 Konsole wieder sperren
+                </button>
+                <button onclick="toggleAdminModal()" class="comic-btn btn-pink" style="font-size: 1.1rem; padding: 8px 20px; margin-left: auto;">
+                    Schließen
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK Modules -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyD2-iLP73NYcLKVHZcb3n6QPfyW8MbUkgk",
+            authDomain: "krimitime.firebaseapp.com",
+            databaseURL: "https://krimitime-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "krimitime",
+            storageBucket: "krimitime.firebasestorage.app",
+            messagingSenderId: "637991563478",
+            appId: "1:637991563478:web:d032be22b574bfd5ef9977"
+        };
+
+        let app, auth, db;
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+        } catch (e) {
+            console.warn("Firebase App initialization notice:", e);
+        }
+
+        // 19 DEFAULT TEAM MEMBERS
+        const DEFAULT_TEAM_MEMBERS = [
+            "Chef", "Evangelos", "Andreas", "Matthias", "Tatjana", "Mary", 
+            "Marcel", "Uwe", "Klaus", "Thorsten", "Sandy", "Susi K.", 
+            "Susi H.", "Guiseppe", "Nikolaos", "Gerd", "Jörg", "Alexander", "Hendrik"
+        ];
+
+        /* Clean Cards mapping (karten1 - karten5) */
+        const PLAYER_CARDS = {
+            "Guiseppe": { src: "karten1.jpg", cropClass: "crop-top-left", title: "TÄTER" },
+            "Nikolaos": { src: "karten1.jpg", cropClass: "crop-top-right", title: "SPION" },
+            "Sandy": { src: "karten1.jpg", cropClass: "crop-bottom-left", title: "FÄLSCHER" },
+            "Susi K.": { src: "karten1.jpg", cropClass: "crop-bottom-right", title: "INFORMANTIN" },
+
+            "Tatjana": { src: "karten2.png", cropClass: "crop-top-left", title: "INTERROGATOR" },
+            "Thorsten": { src: "karten2.png", cropClass: "crop-top-right", title: "PROFESSOR" },
+            "Uwe": { src: "karten2.png", cropClass: "crop-bottom-left", title: "SPION" },
+            "Susi H.": { src: "karten2.png", cropClass: "crop-bottom-right", title: "AGENTE" },
+
+            "Mary": { src: "karten3.png", cropClass: "crop-top-left", title: "DRAHTZIEHERIN" },
+            "Matthias": { src: "karten3.png", cropClass: "crop-top-right", title: "VERRÄTER" },
+            "Hendrik": { src: "karten3.png", cropClass: "crop-bottom-left", title: "HEHLER" },
+            "Marcel": { src: "karten3.png", cropClass: "crop-bottom-right", title: "ÜBERWACHUNGSCHEF" },
+
+            "Chef": { src: "karten4.png", cropClass: "crop-top-left", title: "VERDÄCHTIGER" },
+            "Alexander": { src: "karten4.png", cropClass: "crop-top-right", title: "ZEUGE" },
+            "Andreas": { src: "karten4.png", cropClass: "crop-bottom-left", title: "LÜGNER" },
+            "Evangelos": { src: "karten4.png", cropClass: "crop-bottom-right", title: "DETEKTIV" },
+
+            "Gerd": { src: "karten5.jpg", cropClass: "crop-half-left", title: "DHL LOGISTIKER" },
+            "Jörg": { src: "karten5.jpg", cropClass: "crop-half-right", title: "PAKETZUSTELLER" }
+        };
+
+        const CASES_2026 = [
+            { id: 1, tag: "❄️ Winter-Start", title: "Der Raub der Neujahrs-Glocke", desc: "In der Silvesternacht wurde die goldene Neujahrsglocke aus der Empfangshalle gestohlen!", suspects: [{name:"Evangelos", role:"Espresso-Fan", desc:"War bis spät an der Kaffeemaschine"}, {name:"Susi K.", role:"Gästeführerin", desc:"Machte Fotos im Saal"}, {name:"Klaus", role:"Barkeeper", desc:"Schenkte Sekt ein"}], bonusQuestion:"Welches Konfetti klebte am Safe?", clue1:"Susi K. trug braune Lederhandschuhe ohne Glitzer.", clue2:"Klaus war bis 02:00 Uhr nachweislich hinter der Bar.", culprit:"Evangelos", solutionText:"Evangelos wollte die Glocke für seine private Neujahrs-Show nutzen.", bonusAnswer:"Silbernes Sternenkonfetti" },
+            { id: 32, tag: "☀️ Sommer-Special", title: "Der Anschlag auf die Hängematte", desc: "Die Seile der Hängematte wurden angeritzt – Sturz ins Gras für den Chef!", suspects: [{name:"Nikolaos", role:"Mitarbeiter", desc:"Wollte den Platz"}, {name:"Susi K.", role:"Prüferin", desc:"Warnte vor Seilen"}, {name:"Evangelos", role:"Beobachter", desc:"Sah alles"}], bonusQuestion:"Welcher Schnitt wurde nachgewiesen?", clue1:"Susi K. nutzte nur ein Klemmbrett.", clue2:"Nikolaos hatte ein Taschenmesser mit Seilfasern in der Hülle.", culprit:"Nikolaos", solutionText:"Nikolaos war sauer, weil er nie in die Hängematte durfte.", bonusAnswer:"Gezahnte Messer-Klinge" },
+            { id: 52, tag: "🎄 WEIHNACHTS-FINALE 2026 (24.12.)", title: "Der Diebstahl der Goldenen Christbaum-Spitze & Krönung des Jahressiegers", desc: "HEILIGABEND 2026! Der goldene Engel von der Tannenbaumspitze im Festsaal ist verschwunden! Wer war es kurz vor der großen Jahressiegerehrung?", suspects: [{name:"Gerd", role:"Grinch", desc:"Hasst Glanz"}, {name:"Susi H.", role:"Festleitung", desc:"Im Stress"}, {name:"Die Spielleitung selbst!", role:"Spielemacher", desc:"Wollte den finalen Showdown!"}], bonusQuestion:"Wo war die Engelspitze versteckt?", clue1:"Gerd feierte dieses Jahr fröhlich mit.", clue2:"Susi H. schmückte friedlich den Baum.", culprit:"Die Spielleitung selbst!", solutionText:"Die Spielleitung hat den Engel im Geschenkkorb des JAHRESSIEGERS 2026 versteckt! Frohe Weihnachten und Glückwunsch an den Champion!", bonusAnswer:"Im Sieger-Geschenkkorb" }
+        ];
+
+        // Fill remaining 52 weeks
+        for (let i = 1; i <= 52; i++) {
+            if (!CASES_2026.find(c => c.id === i)) {
+                CASES_2026.push({
+                    id: i,
+                    tag: `📅 KW ${i}`,
+                    title: `Der mysteriöse Fall von Kalenderwoche ${i}`,
+                    desc: `Ein neuer rätselhafter Kriminalfall beschäftigt das Team in Kalenderwoche ${i}!`,
+                    suspects: [{name:"Alexander", role:"Zeuge", desc:"War vor Ort"}, {name:"Hendrik", role:"Verdächtiger", desc:"Hat kein Alibi"}, {name:"Mary", role:"Beobachterin", desc:"Sah Verdächtiges"}],
+                    bonusQuestion: `Was war die auffälligste Spur in KW ${i}?`,
+                    clue1: `Erster geheimer Hinweis für KW ${i}.`,
+                    clue2: `Zweiter entscheidender Hinweis für KW ${i}.`,
+                    culprit: "Hendrik",
+                    solutionText: `Hendrik war der Täter in Kalenderwoche ${i}!`,
+                    bonusAnswer: "Spur"
+                });
+            }
+        }
+        CASES_2026.sort((a, b) => a.id - b.id);
+
+        // SMART MERGER: Guarantees 19 DEFAULT MEMBERS ARE ALWAYS INCLUDED
+        function getMergedPlayersList(rawList) {
+            const map = new Map();
+            
+            // 1. Put all 19 default members into the map
+            DEFAULT_TEAM_MEMBERS.forEach(name => {
+                map.set(name.toLowerCase(), { name, points: 0, solvedCases: 0, deleted: false });
+            });
+
+            // 2. Overlay any saved / passed player data
+            if (Array.isArray(rawList)) {
+                rawList.forEach(p => {
+                    if (p && p.name) {
+                        const key = p.name.toLowerCase();
+                        if (p.deleted) {
+                            map.delete(key);
+                        } else {
+                            const existing = map.get(key) || { name: p.name, points: 0, solvedCases: 0 };
+                            map.set(key, {
+                                ...existing,
+                                ...p,
+                                points: (p.points !== undefined) ? p.points : existing.points
+                            });
+                        }
+                    }
+                });
+            }
+
+            return Array.from(map.values());
+        }
+
+        let rawStoredPlayers = null;
+        try {
+            rawStoredPlayers = JSON.parse(localStorage.getItem('krimi2026_manual_players'));
+        } catch(e) {}
+
+        let state = {
+            currentWeek: 32,
+            simulatedDay: null,
+            isAdminUnlocked: false,
+            guesses: JSON.parse(localStorage.getItem('krimi2026_guesses') || '{}'),
+            manualPlayers: getMergedPlayersList(rawStoredPlayers)
+        };
+
+        // Always store clean merged players array
+        localStorage.setItem('krimi2026_manual_players', JSON.stringify(state.manualPlayers));
+
+        window.handleCardImgError = function(img, name) {
+            if (!img.dataset.retryCount) {
+                img.dataset.retryCount = "1";
+                const currentSrc = img.src;
+                if (currentSrc.toLowerCase().endsWith('.jpg')) {
+                    img.src = currentSrc.slice(0, -4) + '.png';
+                    return;
+                } else if (currentSrc.toLowerCase().endsWith('.png')) {
+                    img.src = currentSrc.slice(0, -4) + '.jpg';
+                    return;
+                }
+            } else if (img.dataset.retryCount === "1") {
+                img.dataset.retryCount = "2";
+                const currentSrc = img.src;
+                if (currentSrc.toLowerCase().endsWith('.png')) {
+                    img.src = currentSrc.slice(0, -4) + '.PNG';
+                    return;
+                } else if (currentSrc.toLowerCase().endsWith('.jpg')) {
+                    img.src = currentSrc.slice(0, -4) + '.JPG';
+                    return;
+                }
+            }
+            
+            const wrap = img.closest('.card-crop-wrap');
+            if (wrap) {
+                wrap.style.paddingTop = "0";
+                wrap.style.minHeight = "180px";
+                wrap.style.backgroundColor = "#fde047";
+                wrap.innerHTML = `
+                    <div style="text-align: center; padding: 12px; width: 100%;">
+                        <div style="font-size: 2.5rem; margin-bottom: 4px;">🕵️</div>
+                        <span class="font-comic-title" style="font-size: 1.1rem; color: #000; text-transform: uppercase; display: block;">${name}</span>
+                        <span class="font-comic-body" style="font-size: 10px; font-weight: bold; border: 2px solid #000; padding: 2px 6px; border-radius: 6px; background: #fff; margin-top: 4px; display: inline-block;">VERDÄCHTIGER</span>
+                    </div>
+                `;
+            }
+        };
+
+        async function initFirebase() {
+            if (!auth || !db) return;
+            try {
+                await signInAnonymously(auth);
+                const dot = document.getElementById('sync-status-dot');
+                if (dot) dot.style.background = '#10b981';
+                setupFirestoreListeners();
+            } catch (err) {
+                console.warn("Firebase Auth Notice:", err);
+                const dot = document.getElementById('sync-status-dot');
+                if (dot) dot.style.background = '#f59e0b';
+            }
+        }
+
+        function setupFirestoreListeners() {
+            if (!db) return;
+
+            try {
+                const guessesRef = collection(db, 'guesses');
+                const playersRef = collection(db, 'players');
+
+                onSnapshot(guessesRef, (snapshot) => {
+                    snapshot.forEach((docSnap) => {
+                        const data = docSnap.data();
+                        if (data && data.week) {
+                            if (!state.guesses[data.week]) state.guesses[data.week] = [];
+                            state.guesses[data.week] = state.guesses[data.week].filter(g => g.playerName !== data.playerName);
+                            state.guesses[data.week].push(data);
+                        }
+                    });
+                    localStorage.setItem('krimi2026_guesses', JSON.stringify(state.guesses));
+                    renderCurrentState();
+                }, (err) => console.warn("Guesses listener warning:", err));
+
+                onSnapshot(playersRef, (snapshot) => {
+                    const firestorePlayers = [];
+                    if (!snapshot.empty) {
+                        snapshot.forEach((docSnap) => {
+                            const data = docSnap.data();
+                            if (data && data.name) {
+                                firestorePlayers.push(data);
+                            }
+                        });
+                    }
+
+                    // Smart Merge 19 defaults + local storage + firestore
+                    state.manualPlayers = getMergedPlayersList([
+                        ...state.manualPlayers,
+                        ...firestorePlayers
+                    ]);
+                    localStorage.setItem('krimi2026_manual_players', JSON.stringify(state.manualPlayers));
+                    renderCurrentState();
+                }, (err) => console.warn("Players listener warning:", err));
+            } catch (err) {
+                console.warn("Setup listeners caught notice:", err);
+            }
+        }
+
+        window.switchTab = function(tabName) {
+            ['case', 'submit', 'ranking'].forEach(tab => {
+                const view = document.getElementById(`view-${tab}`);
+                const btn = document.getElementById(`tab-${tab}`);
+                if (view) view.classList.add('hidden');
+                if (btn) btn.className = "comic-btn btn-dark";
+            });
+
+            const targetView = document.getElementById(`view-${tabName}`);
+            const targetBtn = document.getElementById(`tab-${tabName}`);
+            if (targetView) targetView.classList.remove('hidden');
+            if (targetBtn) targetBtn.className = "comic-btn btn-cyan";
+        };
+
+        window.toggleAdminModal = function() {
+            const modal = document.getElementById('admin-modal');
+            if (modal) modal.classList.toggle('hidden');
+        };
+
+        window.checkAdminPassword = function() {
+            const input = document.getElementById('admin-password-input');
+            const errorMsg = document.getElementById('admin-auth-error');
+            if (input && input.value === '2121') {
+                state.isAdminUnlocked = true;
+                if (errorMsg) errorMsg.classList.add('hidden');
+                document.getElementById('admin-login-view').classList.add('hidden');
+                document.getElementById('admin-controls-view').classList.remove('hidden');
+                document.getElementById('admin-lock-btn').classList.remove('hidden');
+                input.value = '';
+                renderAdminGuesses();
+                renderAdminPlayersList();
+            } else if (errorMsg) {
+                errorMsg.classList.remove('hidden');
+            }
+        };
+
+        window.lockAdminConsole = function() {
+            state.isAdminUnlocked = false;
+            document.getElementById('admin-login-view').classList.remove('hidden');
+            document.getElementById('admin-controls-view').classList.add('hidden');
+            document.getElementById('admin-lock-btn').classList.add('hidden');
+        };
+
+        function getSimulatedOrRealDay() {
+            if (state.simulatedDay) return state.simulatedDay;
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            return days[new Date().getDay()];
+        }
+
+        function getDayNameGerman(day) {
+            const map = { Mon: 'Montag', Tue: 'Dienstag', Wed: 'Mittwoch', Thu: 'Donnerstag', Fri: 'Freitag', Sat: 'Samstag', Sun: 'Sonntag' };
+            return map[day] || day;
+        }
+
+        function renderCurrentState() {
+            const currentCase = CASES_2026.find(c => c.id === parseInt(state.currentWeek)) || CASES_2026[0];
+            const currentDay = getSimulatedOrRealDay();
+
+            document.getElementById('current-time-display').innerText = `KW ${currentCase.id} • ${getDayNameGerman(currentDay)}`;
+            document.getElementById('case-week-tag').innerText = `KALENDERWOCHE #${String(currentCase.id).padStart(2, '0')}`;
+            document.getElementById('case-season-tag').innerText = currentCase.tag;
+            document.getElementById('case-title').innerText = currentCase.title;
+            document.getElementById('case-description').innerText = currentCase.desc;
+            document.getElementById('case-bonus-question').innerText = currentCase.bonusQuestion;
+
+            document.getElementById('submit-week-display').innerText = `#${currentCase.id}`;
+            document.getElementById('guess-question-preview').innerText = currentCase.bonusQuestion;
+
+            const playerSelect = document.getElementById('guess-player-select');
+            if (playerSelect) {
+                playerSelect.innerHTML = '<option value="">-- Name wählen --</option>';
+                state.manualPlayers.forEach(p => {
+                    playerSelect.innerHTML += `<option value="${p.name}">${p.name}</option>`;
+                });
+            }
+
+            const suspectSelect = document.getElementById('guess-suspect-select');
+            if (suspectSelect) suspectSelect.innerHTML = '<option value="">-- Verdächtigen wählen --</option>';
+
+            const suspectsContainer = document.getElementById('suspects-list');
+            if (suspectsContainer) {
+                suspectsContainer.innerHTML = '';
+
+                currentCase.suspects.forEach(s => {
+                    if (suspectSelect) suspectSelect.innerHTML += `<option value="${s.name}">${s.name} (${s.role})</option>`;
+
+                    const cardData = PLAYER_CARDS[s.name];
+                    let cardHtml = '';
+
+                    if (cardData) {
+                        cardHtml = `
+                            <div class="card-crop-wrap" style="margin-bottom: 8px;">
+                                <img src="${encodeURI(cardData.src)}" class="card-crop-img ${cardData.cropClass}" alt="${s.name}" onerror="handleCardImgError(this, '${s.name}')">
+                            </div>
+                        `;
+                    } else {
+                        cardHtml = `
+                            <div class="fallback-card-wrap">
+                                <div style="font-size: 2.5rem; margin-bottom: 4px;">🕵️</div>
+                                <span class="font-comic-title" style="font-size: 1.2rem; color: #000; text-transform: uppercase;">${s.name}</span>
+                            </div>
+                        `;
+                    }
+
+                    suspectsContainer.innerHTML += `
+                        <div style="background: #fff; padding: 12px; border-radius: 16px; border: 3px solid #000; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 3px 3px 0px #000;">
+                            ${cardHtml}
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 4px;">
+                                    <span class="font-comic-title" style="font-size: 1.3rem; color: #000;">${s.name}</span>
+                                    <span class="font-comic-body" style="font-size: 10px; background: #fde047; color: #000; padding: 2px 6px; border-radius: 6px; border: 1px solid #000; font-weight: bold;">${s.role}</span>
+                                </div>
+                                <p class="font-comic-body" style="font-size: 0.8rem; color: #334155; margin-top: 4px; line-height: 1.3;">${s.desc}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            const showWed = ['Wed', 'Thu', 'Fri'].includes(currentDay);
+            const showThu = ['Thu', 'Fri'].includes(currentDay);
+            const showFri = ['Fri'].includes(currentDay) || currentCase.id === 52;
+
+            const clue1Box = document.getElementById('clue-1-box');
+            const clue1Text = document.getElementById('clue-1-text');
+            const clue2Box = document.getElementById('clue-2-box');
+            const clue2Text = document.getElementById('clue-2-text');
+            const solutionBox = document.getElementById('solution-box');
+            const stamp = document.getElementById('case-status-stamp');
+
+            if (showWed && clue1Box && clue1Text) {
+                clue1Box.style.background = "#fbcfe8";
+                clue1Text.innerText = currentCase.clue1;
+                clue1Text.style.color = "#000";
+            } else if (clue1Box && clue1Text) {
+                clue1Box.style.background = "#f1f5f9";
+                clue1Text.innerText = "🔒 Wird erst am Mittwoch enthüllt...";
+                clue1Text.style.color = "#64748b";
+            }
+
+            if (showThu && clue2Box && clue2Text) {
+                clue2Box.style.background = "#e9d5ff";
+                clue2Text.innerText = currentCase.clue2;
+                clue2Text.style.color = "#000";
+            } else if (clue2Box && clue2Text) {
+                clue2Box.style.background = "#f1f5f9";
+                clue2Text.innerText = "🔒 Wird erst am Donnerstag enthüllt...";
+                clue2Text.style.color = "#64748b";
+            }
+
+            if (showFri && solutionBox && stamp) {
+                solutionBox.classList.remove('hidden');
+                document.getElementById('solution-culprit').innerText = currentCase.culprit;
+                document.getElementById('solution-text').innerText = currentCase.solutionText;
+                stamp.className = "comic-stamp-solved";
+                stamp.innerText = "FALL GELÖST!";
+            } else if (stamp) {
+                if (solutionBox) solutionBox.classList.add('hidden');
+                stamp.className = "comic-stamp";
+                stamp.innerText = "ERMITTLUNG LÄUFT!";
+            }
+
+            const left = 52 - currentCase.id;
+            const weekLeftEl = document.getElementById('weeks-left-count');
+            if (weekLeftEl) weekLeftEl.innerText = left > 0 ? `${left} Woche${left === 1 ? '' : 'n'}` : 'FINALE!';
+
+            renderRankingTable();
+            if (state.isAdminUnlocked) {
+                renderAdminGuesses();
+                renderAdminPlayersList();
+            }
+        }
+
+        window.submitGuessDirectly = async function(e) {
+            e.preventDefault();
+            const playerName = document.getElementById('guess-player-select').value;
+            const suspect = document.getElementById('guess-suspect-select').value;
+            const bonusAnswer = document.getElementById('guess-bonus-input').value.trim();
+
+            if (!playerName || !suspect) return;
+
+            const week = state.currentWeek;
+            const docId = `week_${week}_user_${playerName.replace(/\s+/g, '_')}`;
+
+            const guessObj = {
+                playerName,
+                suspect,
+                bonusAnswer,
+                week,
+                daySubmitted: getSimulatedOrRealDay(),
+                timestamp: new Date().toISOString()
+            };
+
+            if (!state.guesses[week]) state.guesses[week] = [];
+            state.guesses[week] = state.guesses[week].filter(g => g.playerName !== playerName);
+            state.guesses[week].push(guessObj);
+            localStorage.setItem('krimi2026_guesses', JSON.stringify(state.guesses));
+
+            try {
+                if (db) {
+                    const docRef = doc(db, 'guesses', docId);
+                    await setDoc(docRef, guessObj);
+                }
+            } catch (err) {
+                console.warn("Firestore save notice:", err);
+            }
+
+            alert(`Klasse Detektiv ${playerName}! Deine Verdächtigung für KW ${week} wurde übermittelt!`);
+            document.getElementById('direct-guess-form').reset();
+            switchTab('ranking');
+        };
+
+        function calculateRankings() {
+            const scores = {};
+            state.manualPlayers.forEach(p => {
+                scores[p.name] = { totalScore: p.points || 0, solvedCases: p.solvedCases || 0 };
+            });
+
+            Object.keys(state.guesses).forEach(weekStr => {
+                const weekNum = parseInt(weekStr);
+                const currentCase = CASES_2026.find(c => c.id === weekNum);
+                if (!currentCase) return;
+
+                const guesses = state.guesses[weekStr];
+                guesses.forEach(g => {
+                    if (!scores[g.playerName]) scores[g.playerName] = { totalScore: 0, solvedCases: 0 };
+
+                    let points = 0;
+                    if (g.suspect.toLowerCase() === currentCase.culprit.toLowerCase()) {
+                        points += 3;
+                        scores[g.playerName].solvedCases += 1;
+                        if (['Mon', 'Tue'].includes(g.daySubmitted)) points += 2;
+                    }
+
+                    if (g.bonusAnswer && currentCase.bonusAnswer && 
+                        g.bonusAnswer.toLowerCase().includes(currentCase.bonusAnswer.toLowerCase())) {
+                        points += 1;
+                    }
+
+                    scores[g.playerName].totalScore += points;
+                });
+            });
+
+            return scores;
+        }
+
+        function renderRankingTable() {
+            const tbody = document.getElementById('ranking-table-body');
+            if (!tbody) return;
+
+            tbody.innerHTML = '';
+            const scores = calculateRankings();
+            const sortedPlayers = Object.keys(scores).map(name => ({
+                name,
+                ...scores[name]
+            })).sort((a, b) => b.totalScore - a.totalScore);
+
+            sortedPlayers.forEach((player, index) => {
+                const rankBadge = index === 0 ? '🥇 CHAMPION' : index === 1 ? '🥈 2. PLATZ' : index === 2 ? '🥉 3. PLATZ' : `#${index + 1}`;
+                const rowBg = index === 0 ? '#fef9c3' : index % 2 === 0 ? '#f8fafc' : '#ffffff';
+
+                tbody.innerHTML += `
+                    <tr style="background: ${rowBg}; border-bottom: 2px solid #000;">
+                        <td class="font-comic-title" style="padding: 14px; font-size: 1.2rem; color: #000;">${rankBadge}</td>
+                        <td style="padding: 14px; font-size: 1.1rem; color: #0f172a;">${player.name}</td>
+                        <td style="padding: 14px; text-align: center; color: #334155;">${player.solvedCases}</td>
+                        <td class="font-comic-title" style="padding: 14px; text-align: right; font-size: 1.4rem; color: #ec4899;">${player.totalScore} PTS</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderAdminGuesses() {
+            const container = document.getElementById('admin-guesses-list');
+            const weekGuesses = state.guesses[state.currentWeek] || [];
+            document.getElementById('admin-guesses-week-display').innerText = state.currentWeek;
+            document.getElementById('admin-guesses-count-badge').innerText = `${weekGuesses.length} Tipps`;
+
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (weekGuesses.length === 0) {
+                container.innerHTML = '<p class="font-comic-body" style="font-size: 0.8rem; color: #64748b;">Keine Tipps vorhanden.</p>';
+                return;
+            }
+
+            weekGuesses.forEach((g) => {
+                container.innerHTML += `
+                    <div style="background: #fef9c3; border: 2px solid #000; padding: 10px; border-radius: 12px; display: flex; justify-between; align-items: center;">
+                        <div>
+                            <strong>${g.playerName}</strong> (${getDayNameGerman(g.daySubmitted)})
+                            <p style="color: #ec4899; margin-top: 2px;">Tipp: ${g.suspect}</p>
+                            <p style="font-size: 0.8rem; color: #475569;">Zusatz: ${g.bonusAnswer || '-'}</p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        window.adminAddOrUpdatePlayer = async function() {
+            const nameInput = document.getElementById('admin-add-name');
+            const scoreInput = document.getElementById('admin-add-score');
+            const name = nameInput ? nameInput.value.trim() : '';
+            const points = scoreInput ? (parseInt(scoreInput.value) || 0) : 0;
+            if (!name) return;
+
+            const existingIdx = state.manualPlayers.findIndex(p => p.name.toLowerCase() === name.toLowerCase());
+            if (existingIdx >= 0) {
+                state.manualPlayers[existingIdx].points = points;
+                state.manualPlayers[existingIdx].deleted = false;
+            } else {
+                state.manualPlayers.push({ name, points, solvedCases: 0, deleted: false });
+            }
+
+            // Clean merge
+            state.manualPlayers = getMergedPlayersList(state.manualPlayers);
+            localStorage.setItem('krimi2026_manual_players', JSON.stringify(state.manualPlayers));
+
+            try {
+                if (db) {
+                    const docRef = doc(db, 'players', name.replace(/\s+/g, '_'));
+                    await setDoc(docRef, { name, points, solvedCases: 0, deleted: false });
+                }
+            } catch (err) { console.warn("Firestore player save notice:", err); }
+
+            if (nameInput) nameInput.value = '';
+            if (scoreInput) scoreInput.value = '';
+            renderCurrentState();
+        };
+
+        window.adminDeletePlayer = async function(name) {
+            state.manualPlayers = state.manualPlayers.filter(p => p.name.toLowerCase() !== name.toLowerCase());
+            localStorage.setItem('krimi2026_manual_players', JSON.stringify(state.manualPlayers));
+            
+            try {
+                if (db) {
+                    const docRef = doc(db, 'players', name.replace(/\s+/g, '_'));
+                    await setDoc(docRef, { name, deleted: true });
+                }
+            } catch (err) { console.warn(err); }
+
+            renderCurrentState();
+        };
+
+        window.adminResetPlayersToDefault = function() {
+            localStorage.removeItem('krimi2026_manual_players');
+            state.manualPlayers = getMergedPlayersList([]);
+            localStorage.setItem('krimi2026_manual_players', JSON.stringify(state.manualPlayers));
+            renderCurrentState();
+        };
+
+        function renderAdminPlayersList() {
+            const container = document.getElementById('admin-players-list');
+            const countBadge = document.getElementById('admin-player-count');
+            if (countBadge) countBadge.innerText = `${state.manualPlayers.length} Mitspieler`;
+            if (!container) return;
+
+            container.innerHTML = '';
+
+            state.manualPlayers.forEach(p => {
+                container.innerHTML += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; font-size: 0.85rem; border-bottom: 1px solid #e2e8f0;">
+                        <span style="font-weight: bold; color: #0f172a;">${p.name}</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="background: #fde047; padding: 2px 8px; border-radius: 6px; font-weight: bold; border: 1px solid #000;">${p.points} PTS</span>
+                            <button onclick="adminDeletePlayer('${p.name}')" class="comic-btn btn-red" style="font-size: 0.7rem; padding: 2px 6px;">Löschen</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        window.changeWeek = function(w) {
+            state.currentWeek = parseInt(w);
+            renderCurrentState();
+        };
+
+        window.simulateDay = function(d) {
+            state.simulatedDay = d;
+            renderCurrentState();
+        };
+
+        window.showResetConfirm = function(show) {
+            document.getElementById('reset-confirm-box').classList.toggle('hidden', !show);
+        };
+
+        window.adminResetAllData = function() {
+            state.guesses = {};
+            showResetConfirm(false);
+            renderCurrentState();
+        };
+
+        const weekSelect = document.getElementById('admin-week-select');
+        if (weekSelect) {
+            for (let i = 1; i <= 52; i++) {
+                weekSelect.innerHTML += `<option value="${i}">KW ${i}: ${CASES_2026[i-1].title}</option>`;
+            }
+            weekSelect.value = state.currentWeek;
+        }
+
+        // INSTANT INITIAL RENDER
+        renderCurrentState();
+
+        // Initialize Firebase in background
+        initFirebase();
+    </script>
+</body>
+</html>
