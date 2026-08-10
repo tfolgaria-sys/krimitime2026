@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Anti-Caching Header für MS Teams & Browser -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
     <title>KRIMITIME 2026 - Das Comic-Ermittlerspiel</title>
     
     <!-- Tailwind CSS CDN -->
@@ -807,13 +813,14 @@
 
         // Automatische Errechnung der aktuellen ISO-Kalenderwoche
         function getAutoKW() {
-            const now = new Date();
-            const date = new Date(now.getTime());
-            date.setHours(0, 0, 0, 0);
-            date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
-            const week1 = new Date(date.getFullYear(), 0, 4);
-            const kw = 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
-            return Math.min(Math.max(kw, 1), 52);
+            const target = new Date();
+            const dayNr = (target.getDay() + 6) % 7;
+            target.setDate(target.getDate() - dayNr + 3);
+            const firstThursday = new Date(target.getFullYear(), 0, 4);
+            const dayNrFirst = (firstThursday.getDay() + 6) % 7;
+            firstThursday.setDate(firstThursday.getDate() - dayNrFirst + 3);
+            const weekDiff = (target - firstThursday) / (86400000 * 7);
+            return Math.min(Math.max(1 + Math.round(weekDiff), 1), 52);
         }
 
         let state = {
