@@ -566,7 +566,12 @@
 
                 <!-- Week & Simulator selector -->
                 <div style="background: #cffafe; padding: 16px; border-radius: 16px; border: 3px solid #000; display: flex; flex-direction: column; gap: 12px;">
-                    <h4 class="font-comic-title" style="font-size: 1.3rem; color: #000;">📅 KW-Auswahl & Wochentags-Simulator</h4>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h4 class="font-comic-title" style="font-size: 1.3rem; color: #000;">📅 KW-Auswahl & Wochentags-Simulator</h4>
+                        <button onclick="resetToCurrentRealWeek()" class="comic-btn btn-yellow" style="font-size: 0.75rem; padding: 4px 8px;">
+                            ➔ Aktuelle KW laden
+                        </button>
+                    </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                         <div>
                             <label class="font-comic-body" style="font-size: 0.75rem; font-weight: bold; color: #334155; display: block; margin-bottom: 4px;">Kalenderwoche wählen:</label>
@@ -658,7 +663,7 @@
         </div>
     </div>
 
-    <!-- Firebase SDK Modules -->
+    <!-- Firebase SDK Modules & Main Application Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -691,30 +696,30 @@
             "Susi H.", "Guiseppe", "Nikolaos", "Gerd", "Jörg", "Alexander", "Hendrik"
         ];
 
-        /* Clean Cards mapping (karten1.jpg - karten5.jpg) */
+        /* Clean Cards mapping (karten1.jpg / .png - karten5.jpg / .png) */
         const PLAYER_CARDS = {
-            "Guiseppe": { src: "karten1.jpg", cropClass: "crop-top-left", title: "TÄTER" },
-            "Nikolaos": { src: "karten1.jpg", cropClass: "crop-top-right", title: "SPION" },
-            "Sandy": { src: "karten1.jpg", cropClass: "crop-bottom-left", title: "FÄLSCHER" },
-            "Susi K.": { src: "karten1.jpg", cropClass: "crop-bottom-right", title: "INFORMANTIN" },
+            "Guiseppe": { src: "karten1.png", cropClass: "crop-top-left", title: "TÄTER" },
+            "Nikolaos": { src: "karten1.png", cropClass: "crop-top-right", title: "SPION" },
+            "Sandy": { src: "karten1.png", cropClass: "crop-bottom-left", title: "FÄLSCHER" },
+            "Susi K.": { src: "karten1.png", cropClass: "crop-bottom-right", title: "INFORMANTIN" },
 
-            "Tatjana": { src: "karten2.jpg", cropClass: "crop-top-left", title: "INTERROGATOR" },
-            "Thorsten": { src: "karten2.jpg", cropClass: "crop-top-right", title: "PROFESSOR" },
-            "Uwe": { src: "karten2.jpg", cropClass: "crop-bottom-left", title: "SPION" },
-            "Susi H.": { src: "karten2.jpg", cropClass: "crop-bottom-right", title: "AGENTE" },
+            "Tatjana": { src: "karten2.png", cropClass: "crop-top-left", title: "INTERROGATOR" },
+            "Thorsten": { src: "karten2.png", cropClass: "crop-top-right", title: "PROFESSOR" },
+            "Uwe": { src: "karten2.png", cropClass: "crop-bottom-left", title: "SPION" },
+            "Susi H.": { src: "karten2.png", cropClass: "crop-bottom-right", title: "AGENTE" },
 
-            "Mary": { src: "karten3.jpg", cropClass: "crop-top-left", title: "DRAHTZIEHERIN" },
-            "Matthias": { src: "karten3.jpg", cropClass: "crop-top-right", title: "VERRÄTER" },
-            "Hendrik": { src: "karten3.jpg", cropClass: "crop-bottom-left", title: "HEHLER" },
-            "Marcel": { src: "karten3.jpg", cropClass: "crop-bottom-right", title: "ÜBERWACHUNGSCHEF" },
+            "Mary": { src: "karten3.png", cropClass: "crop-top-left", title: "DRAHTZIEHERIN" },
+            "Matthias": { src: "karten3.png", cropClass: "crop-top-right", title: "VERRÄTER" },
+            "Hendrik": { src: "karten3.png", cropClass: "crop-bottom-left", title: "HEHLER" },
+            "Marcel": { src: "karten3.png", cropClass: "crop-bottom-right", title: "ÜBERWACHUNGSCHEF" },
 
-            "Chef": { src: "karten4.jpg", cropClass: "crop-top-left", title: "VERDÄCHTIGER" },
-            "Alexander": { src: "karten4.jpg", cropClass: "crop-top-right", title: "ZEUGE" },
-            "Andreas": { src: "karten4.jpg", cropClass: "crop-bottom-left", title: "LÜGNER" },
-            "Evangelos": { src: "karten4.jpg", cropClass: "crop-bottom-right", title: "DETEKTIV" },
+            "Chef": { src: "karten4.png", cropClass: "crop-top-left", title: "VERDÄCHTIGER" },
+            "Alexander": { src: "karten4.png", cropClass: "crop-top-right", title: "ZEUGE" },
+            "Andreas": { src: "karten4.png", cropClass: "crop-bottom-left", title: "LÜGNER" },
+            "Evangelos": { src: "karten4.png", cropClass: "crop-bottom-right", title: "DETEKTIV" },
 
-            "Gerd": { src: "karten5.jpg", cropClass: "crop-half-left", title: "DHL LOGISTIKER" },
-            "Jörg": { src: "karten5.jpg", cropClass: "crop-half-right", title: "PAKETZUSTELLER" }
+            "Gerd": { src: "karten5.png", cropClass: "crop-half-left", title: "DHL LOGISTIKER" },
+            "Jörg": { src: "karten5.png", cropClass: "crop-half-right", title: "PAKETZUSTELLER" }
         };
 
         // FULL 52 HANDCRAFTED CASES FOR 2026
@@ -806,22 +811,19 @@
             return Array.from(map.values());
         }
 
+        // Automatic precise ISO Calendar Week calculator
+        function getAutoKW() {
+            const d = new Date();
+            d.setHours(0, 0, 0, 0);
+            d.setDate(d.getDate() + 3 - (d.getDay() + 6) % 7);
+            const week1 = new Date(d.getFullYear(), 0, 4);
+            return 1 + Math.round(((d.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+        }
+
         let rawStoredPlayers = null;
         try {
             rawStoredPlayers = JSON.parse(localStorage.getItem('krimi2026_manual_players'));
         } catch(e) {}
-
-        // Automatische Errechnung der aktuellen ISO-Kalenderwoche
-        function getAutoKW() {
-            const target = new Date();
-            const dayNr = (target.getDay() + 6) % 7;
-            target.setDate(target.getDate() - dayNr + 3);
-            const firstThursday = new Date(target.getFullYear(), 0, 4);
-            const dayNrFirst = (firstThursday.getDay() + 6) % 7;
-            firstThursday.setDate(firstThursday.getDate() - dayNrFirst + 3);
-            const weekDiff = (target - firstThursday) / (86400000 * 7);
-            return Math.min(Math.max(1 + Math.round(weekDiff), 1), 52);
-        }
 
         let state = {
             currentWeek: getAutoKW(),
@@ -834,6 +836,7 @@
         // Always store clean merged players array
         localStorage.setItem('krimi2026_manual_players', JSON.stringify(state.manualPlayers));
 
+        // Image retry engine for JPG/PNG case mismatches
         window.handleCardImgError = function(img, name) {
             if (!img.dataset.retryCount) {
                 img.dataset.retryCount = "1";
@@ -1022,7 +1025,7 @@
                     if (cardData) {
                         cardHtml = `
                             <div class="card-crop-wrap" style="margin-bottom: 8px;">
-                                <img src="${encodeURI(cardData.src)}" class="card-crop-img ${cardData.cropClass}" alt="${s.name}" onerror="handleCardImgError(this, '${s.name}')">
+                                <img src="${encodeURI(cardData.src)}" class="card-crop-img ${cardData.cropClass}" alt="${s.name}" onerror="window.handleCardImgError(this, '${s.name}')">
                             </div>
                         `;
                     } else {
@@ -1307,6 +1310,14 @@
             renderCurrentState();
         };
 
+        window.resetToCurrentRealWeek = function() {
+            state.currentWeek = getAutoKW();
+            state.simulatedDay = null;
+            const weekSelect = document.getElementById('admin-week-select');
+            if (weekSelect) weekSelect.value = state.currentWeek;
+            renderCurrentState();
+        };
+
         window.simulateDay = function(d) {
             state.simulatedDay = d;
             renderCurrentState();
@@ -1322,15 +1333,19 @@
             renderCurrentState();
         };
 
+        // Populate Week Selector in Admin Modal
         const weekSelect = document.getElementById('admin-week-select');
         if (weekSelect) {
+            weekSelect.innerHTML = '';
             for (let i = 1; i <= 52; i++) {
-                weekSelect.innerHTML += `<option value="${i}">KW ${i}: ${CASES_2026[i-1].title}</option>`;
+                const caseObj = CASES_2026.find(c => c.id === i);
+                const titleStr = caseObj ? caseObj.title : `Fall KW ${i}`;
+                weekSelect.innerHTML += `<option value="${i}">KW ${i}: ${titleStr}</option>`;
             }
             weekSelect.value = state.currentWeek;
         }
 
-        // INSTANT INITIAL RENDER
+        // INSTANT INITIAL RENDER (NO DELAY, RUNS IMMEDIATELY)
         renderCurrentState();
 
         // Initialize Firebase in background
