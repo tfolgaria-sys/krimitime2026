@@ -1,1355 +1,2005 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Anti-Caching Header for MS Teams & Browser -->
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>KRIMITIME 2026 – Der Fall der Woche</title>
 
-    <title>KRIMITIME 2026 - Das Comic-Ermittlerspiel</title>
-    
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Google Fonts for Comic Vibe -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:ital,wght@0,400;0,700;1,700&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
-    
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        body {
-            font-family: 'Fredoka', 'Comic Neue', sans-serif;
-            background-color: #fef08a;
-            background-image: radial-gradient(#f59e0b 1.5px, transparent 1.5px);
-            background-size: 16px 16px;
-            color: #0f172a;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-        .font-comic-title { font-family: 'Bangers', cursive; letter-spacing: 1px; }
-        .font-comic-body { font-family: 'Comic Neue', cursive, sans-serif; font-weight: 700; }
+  <!-- Google Fonts: Comic / Bold style -->
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
 
-        /* Hard Comic Box Shadows & Borders */
-        .comic-box {
-            background-color: #ffffff;
-            border: 4px solid #000000;
-            border-radius: 20px;
-            box-shadow: 6px 6px 0px #000000;
-            padding: 20px;
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-        }
-        .comic-box:hover {
-            transform: translate(-2px, -2px);
-            box-shadow: 8px 8px 0px #000000;
-        }
+  <style>
+    body {
+      font-family: 'Fredoka', sans-serif;
+      background-color: #fef08a;
+      background-image: radial-gradient(#facc15 1.5px, transparent 1.5px);
+      background-size: 18px 18px;
+    }
 
-        .comic-btn {
-            border: 3px solid #000000;
-            box-shadow: 4px 4px 0px #000000;
-            font-family: 'Bangers', cursive;
-            letter-spacing: 1px;
-            font-size: 1.1rem;
-            padding: 8px 16px;
-            border-radius: 14px;
-            cursor: pointer;
-            transition: all 0.1s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            text-decoration: none;
-        }
-        .comic-btn:active {
-            transform: translate(2px, 2px);
-            box-shadow: 2px 2px 0px #000000;
-        }
-        
-        .btn-cyan { background-color: #22d3ee; color: #000; }
-        .btn-cyan:hover { background-color: #06b6d4; }
-        .btn-yellow { background-color: #facc15; color: #000; }
-        .btn-yellow:hover { background-color: #eab308; }
-        .btn-pink { background-color: #ec4899; color: #fff; }
-        .btn-pink:hover { background-color: #db2777; }
-        .btn-emerald { background-color: #34d399; color: #000; }
-        .btn-emerald:hover { background-color: #10b981; }
-        .btn-dark { background-color: #1e293b; color: #fff; }
-        .btn-dark:hover { background-color: #334155; }
-        .btn-red { background-color: #ef4444; color: #fff; }
-        .btn-red:hover { background-color: #dc2626; }
+    .font-comic {
+      font-family: 'Bangers', cursive;
+      letter-spacing: 1px;
+    }
 
-        /* Stamps */
-        .comic-stamp {
-            transform: rotate(-6deg);
-            border: 4px dashed #dc2626;
-            color: #dc2626;
-            background: #fef2f2;
-            font-family: 'Bangers', cursive;
-            padding: 4px 12px;
-            display: inline-block;
-            box-shadow: 3px 3px 0px #000;
-            font-size: 0.95rem;
-            border-radius: 6px;
-        }
-        .comic-stamp-solved {
-            transform: rotate(5deg);
-            border: 4px double #16a34a;
-            color: #16a34a;
-            background: #f0fdf4;
-            font-family: 'Bangers', cursive;
-            padding: 4px 12px;
-            display: inline-block;
-            box-shadow: 3px 3px 0px #000;
-            font-size: 0.95rem;
-            border-radius: 6px;
-        }
+    .comic-box {
+      background: #ffffff;
+      border: 3.5px solid #000000;
+      box-shadow: 5px 5px 0px #000000;
+      border-radius: 16px;
+    }
 
-        /* Header Bar Layout */
-        .header-bar {
-            background-color: #facc15;
-            border-bottom: 4px solid #000;
-            position: sticky;
-            top: 0;
-            z-index: 40;
-            padding: 12px 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-        .header-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-        }
+    .comic-btn {
+      border: 3px solid #000000;
+      box-shadow: 3.5px 3.5px 0px #000000;
+      transition: all 0.1s ease-in-out;
+      cursor: pointer;
+    }
 
-        .time-badge {
-            background: #ffffff;
-            border: 3px solid #000000;
-            padding: 6px 14px;
-            border-radius: 9999px;
-            font-size: 0.85rem;
-            font-weight: bold;
-            box-shadow: 2px 2px 0px #000;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+    .comic-btn:hover {
+      transform: translate(-1.5px, -1.5px);
+      box-shadow: 5px 5px 0px #000000;
+    }
 
-        .nav-box {
-            display: flex;
-            gap: 6px;
-            background: #000000;
-            padding: 6px;
-            border-radius: 16px;
-            border: 2px solid #000;
-        }
+    .comic-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px #000000;
+    }
 
-        /* Page Layout & Grid */
-        .main-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 24px 16px;
-            width: 100%;
-            flex-grow: 1;
-        }
+    .card-zoom {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card-zoom:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 7px 7px 0px #000000;
+    }
 
-        .grid-2col {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 24px;
-        }
-        @media (min-width: 1024px) {
-            .grid-2col { grid-template-columns: 2fr 1fr; }
-        }
+    /* CARD CROPPING ENGINE FOR INDIVIDUAL SUSPECTS */
+    .card-crop-wrap {
+      position: relative;
+      width: 100%;
+      padding-top: 120%; /* ~3:4 Aspect Ratio */
+      overflow: hidden;
+      border: 2.5px solid #000;
+      border-radius: 12px;
+      background-color: #1e293b;
+    }
+    .card-crop-img {
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      max-width: none;
+      object-fit: cover;
+    }
 
-        .suspects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-            gap: 16px;
-        }
+    .crop-top-left { left: 0%; top: 0%; }
+    .crop-top-right { left: -100%; top: 0%; }
+    .crop-bottom-left { left: 0%; top: -100%; }
+    .crop-bottom-right { left: -100%; top: -100%; }
 
-        /* Player Card Cropping Engine */
-        .card-crop-wrap {
-            position: relative;
-            width: 100%;
-            padding-top: 125%; /* ~3:4 Aspect Ratio */
-            overflow: hidden;
-            border: 3px solid #000;
-            border-radius: 12px;
-            background-color: #fde047;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .card-crop-img {
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            max-width: none;
-            object-fit: cover;
-        }
-
-        .crop-top-left { left: 0%; top: 0%; }
-        .crop-top-right { left: -100%; top: 0%; }
-        .crop-bottom-left { left: 0%; top: -100%; }
-        .crop-bottom-right { left: -100%; top: -100%; }
-
-        /* Gerd & Jörg 2-card side-by-side cropping */
-        .crop-half-left { position: absolute; width: 200%; height: 100%; left: 0%; top: 0%; max-width: none; object-fit: cover; }
-        .crop-half-right { position: absolute; width: 200%; height: 100%; left: -100%; top: 0%; max-width: none; object-fit: cover; }
-
-        .fallback-card-wrap {
-            background-color: #fde047;
-            border: 3px solid #000;
-            border-radius: 12px;
-            padding: 16px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 180px;
-            margin-bottom: 8px;
-        }
-
-        .hidden { display: none !important; }
-
-        /* Admin Modal Overlay */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background-color: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(4px);
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
-        }
-        .modal-card {
-            background-color: #fde047;
-            border: 4px solid #000;
-            border-radius: 24px;
-            padding: 24px;
-            max-width: 680px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 12px 12px 0px #000;
-        }
-
-        /* Printable Area */
-        @media print {
-            .no-print { display: none !important; }
-            body { background: white !important; }
-        }
-    </style>
+    /* Gerd & Jörg 2-card side-by-side cropping */
+    .crop-half-left { position: absolute; width: 200%; height: 100%; left: 0%; top: 0%; max-width: none; object-fit: cover; }
+    .crop-half-right { position: absolute; width: 200%; height: 100%; left: -100%; top: 0%; max-width: none; object-fit: cover; }
+  </style>
 </head>
-<body>
+<body class="min-h-screen text-slate-900 pb-12 select-none">
 
-    <!-- Header -->
-    <header class="header-bar no-print">
-        <div class="header-container">
-            
-            <!-- Logo & Title -->
-            <div style="display: flex; align-items: center; gap: 12px; cursor: pointer;" onclick="switchTab('case')">
-                <div style="background: #ec4899; color: #fff; padding: 10px; border-radius: 16px; border: 3px solid #000; box-shadow: 3px 3px 0px #000; transform: rotate(-3deg);">
-                    ⚡
-                </div>
-                <div>
-                    <h1 class="font-comic-title" style="font-size: 2.2rem; line-height: 1; display: flex; align-items: center; gap: 8px;">
-                        <span>KRIMITIME 2026</span>
-                        <span style="background: #22d3ee; color: #000; font-family: 'Fredoka', sans-serif; font-size: 0.75rem; padding: 2px 8px; border-radius: 9999px; border: 2px solid #000; transform: rotate(2deg);">DER FALL DER WOCHE</span>
-                    </h1>
-                    <p class="font-comic-body" style="font-size: 0.8rem; margin-top: 2px;">Das bunte Krimi-Gruppenspiel bis KW 52!</p>
-                </div>
-            </div>
-
-            <!-- Global Time Status Indicator -->
-            <div class="time-badge">
-                <span id="sync-status-dot" style="width: 10px; height: 10px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
-                <span id="current-time-display" class="font-comic-body" style="font-size: 0.9rem;">Lade Datum...</span>
-            </div>
-
-            <!-- Nav Tabs -->
-            <nav class="nav-box">
-                <button onclick="switchTab('case')" id="tab-case" class="comic-btn btn-cyan" style="font-size: 0.95rem; padding: 6px 12px;">
-                    📖 Fallakte
-                </button>
-                <button onclick="switchTab('submit')" id="tab-submit" class="comic-btn btn-dark" style="font-size: 0.95rem; padding: 6px 12px;">
-                    ✏️ Tippen
-                </button>
-                <button onclick="switchTab('ranking')" id="tab-ranking" class="comic-btn btn-dark" style="font-size: 0.95rem; padding: 6px 12px;">
-                    🏆 Rangliste
-                </button>
-                <button onclick="toggleAdminModal()" class="comic-btn btn-pink" style="font-size: 0.95rem; padding: 6px 10px;" title="Spielleiter & Admin (Passwort: 2121)">
-                    🔒
-                </button>
-            </nav>
+  <!-- HEADER BAR -->
+  <header class="bg-amber-400 border-b-4 border-black px-4 py-3 sticky top-0 z-40 shadow-md">
+    <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- LOGO & SUBTITLE -->
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('fallakte')">
+        <div class="w-12 h-12 bg-pink-500 rounded-2xl border-3 border-black flex items-center justify-center text-white text-2xl font-black shadow-[3px_3px_0px_#000]">
+          ⚡
         </div>
-    </header>
-
-    <!-- Main Content Area -->
-    <main class="main-container">
-
-        <!-- Banner Announcement for Christmas Finale on 24.12.2026 -->
-        <div id="christmas-finale-banner" class="comic-box" style="background: linear-gradient(to right, #ef4444, #f59e0b, #10b981); color: white; margin-bottom: 24px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px;">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <div style="font-size: 2.5rem;">🎄</div>
-                <div>
-                    <h3 class="font-comic-title" style="font-size: 1.8rem; color: #fef08a; text-shadow: 2px 2px 0px #000;">ZIEL-ETAPPE: KW 52 / HEILIGABEND 2026</h3>
-                    <p class="font-comic-body" style="font-size: 0.85rem; color: #0f172a; background: rgba(255,255,255,0.9); padding: 2px 8px; border-radius: 6px; border: 1px solid #000; font-weight: bold; display: inline-block; margin-top: 4px;">
-                        Am 24.12.2026 wird der Meister-Ermittler der Saison gekürt!
-                    </p>
-                </div>
-            </div>
-            <div style="background: rgba(0,0,0,0.8); padding: 8px 16px; border-radius: 12px; border: 2px solid #fff; text-align: center;">
-                <span style="font-size: 10px; color: #cbd5e1; display: block; text-transform: uppercase;">Verbleibende Wochen</span>
-                <span id="weeks-left-count" class="font-comic-title" style="font-size: 1.8rem; color: #fde047;">--</span>
-            </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="text-3xl font-black font-comic tracking-wide text-black uppercase drop-shadow-sm">KRIMITIME 2026</h1>
+            <span class="bg-cyan-300 text-black text-xs font-bold px-2 py-0.5 rounded-full border-2 border-black uppercase shadow-[2px_2px_0px_#000]">
+              Der Fall der Woche
+            </span>
+          </div>
+          <p class="text-xs font-bold text-slate-800">Das bunte Krimi-Gruppenspiel bis KW 52!</p>
         </div>
+      </div>
 
-        <!-- VIEW 1: AKTUELLE FALLAKTE -->
-        <section id="view-case" style="display: flex; flex-direction: column; gap: 24px;">
-            
-            <!-- Case Header Box -->
-            <div class="comic-box" style="background: #ffffff; position: relative; overflow: hidden;">
-                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; position: relative; z-index: 10;">
-                    <div>
-                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                            <span class="font-comic-title" style="background: #ec4899; color: #fff; font-size: 1rem; padding: 2px 10px; border-radius: 8px; border: 2px solid #000;" id="case-week-tag">
-                                KALENDERWOCHE #--
-                            </span>
-                            <span class="font-comic-body" style="background: #fde047; color: #000; font-size: 0.75rem; font-weight: bold; padding: 4px 10px; border-radius: 9999px; border: 2px solid #000;" id="case-season-tag">
-                                ☀️ Sommer-Special
-                            </span>
-                            <span id="case-status-stamp" class="comic-stamp">
-                                ERMITTLUNG LÄUFT!
-                            </span>
-                        </div>
-                        <h2 class="font-comic-title" style="font-size: 2.4rem; color: #000;" id="case-title">
-                            Lade Fallakte...
-                        </h2>
-                    </div>
+      <!-- CURRENT WEEK BADGE -->
+      <div class="bg-white border-2 border-black rounded-full px-4 py-1.5 shadow-[3px_3px_0px_#000] flex items-center space-x-2">
+        <span class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse border border-black"></span>
+        <span id="header-date-badge" class="font-bold text-sm text-slate-900">Lade Datum...</span>
+      </div>
 
-                    <div class="no-print" style="flex-shrink: 0;">
-                        <button onclick="window.print()" class="comic-btn btn-yellow" style="font-size: 0.85rem; padding: 8px 12px;">
-                            🖨️ Drucken / Aushang
-                        </button>
-                    </div>
-                </div>
-            </div>
+      <!-- NAVIGATION TABS -->
+      <nav class="flex items-center space-x-2">
+        <button onclick="switchTab('fallakte')" id="tab-btn-fallakte" class="comic-btn bg-cyan-400 text-black font-bold px-3 py-1.5 rounded-xl text-sm flex items-center space-x-1.5">
+          <i class="fa-solid fa-book-open"></i>
+          <span>FALLAKTE</span>
+        </button>
+        <button onclick="switchTab('tippen')" id="tab-btn-tippen" class="comic-btn bg-amber-200 text-black font-bold px-3 py-1.5 rounded-xl text-sm flex items-center space-x-1.5">
+          <i class="fa-solid fa-pen-to-square"></i>
+          <span>TIPPEN</span>
+        </button>
+        <button onclick="switchTab('rangliste')" id="tab-btn-rangliste" class="comic-btn bg-amber-200 text-black font-bold px-3 py-1.5 rounded-xl text-sm flex items-center space-x-1.5">
+          <i class="fa-solid fa-trophy"></i>
+          <span>RANGLISTE</span>
+        </button>
+        <button onclick="openAdminModal()" class="comic-btn bg-pink-400 text-black font-bold px-2.5 py-1.5 rounded-xl text-sm" title="Admin-Bereich">
+          <i class="fa-solid fa-lock"></i>
+        </button>
+      </nav>
 
-            <!-- Case Content Grid -->
-            <div class="grid-2col">
-                
-                <!-- Left Column: Storyline & Suspects -->
-                <div style="display: flex; flex-direction: column; gap: 24px;">
-                    
-                    <!-- Story / Scene -->
-                    <div class="comic-box" style="background: #cffafe;">
-                        <div class="font-comic-title" style="font-size: 1.4rem; color: #000; margin-bottom: 12px; border-bottom: 3px solid #000; padding-bottom: 6px; display: flex; align-items: center; gap: 8px;">
-                            🔍 <span>1. DIE TATORT-AKTE (Freigeschaltet: Montag)</span>
-                        </div>
-                        <p class="font-comic-body" style="color: #0f172a; line-height: 1.6; font-size: 1.05rem; white-space: pre-line; background: #fff; padding: 16px; border-radius: 16px; border: 2px solid #000;" id="case-description">
-                            Lade Fallakte...
-                        </p>
-                    </div>
+    </div>
+  </header>
 
-                    <!-- Suspects Cards Grid -->
-                    <div class="comic-box" style="background: #fde047;">
-                        <div class="font-comic-title" style="font-size: 1.4rem; color: #000; margin-bottom: 16px; border-bottom: 3px solid #000; padding-bottom: 6px; display: flex; align-items: center; gap: 8px;">
-                            👥 <span>2. DIE VERDÄCHTIGEN PERSONEN & SPIELKARTEN</span>
-                        </div>
-                        <div class="suspects-grid" id="suspects-list">
-                            <!-- Populated dynamically -->
-                        </div>
-                    </div>
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-6xl mx-auto px-4 mt-6">
 
-                    <!-- Bonus Question -->
-                    <div class="comic-box" style="background: #f472b6; display: flex; align-items: flex-start; gap: 16px;">
-                        <div style="background: #facc15; padding: 12px; border-radius: 16px; border: 3px solid #000; color: #000; flex-shrink: 0; font-size: 1.5rem;">
-                            ❓
-                        </div>
-                        <div>
-                            <h4 class="font-comic-title" style="font-size: 1.2rem; color: #000; margin-bottom: 4px;">ERMITTLER-ZUSATZFRAGE (+1 PUNKT):</h4>
-                            <p class="font-comic-body" style="font-size: 0.95rem; font-weight: bold; color: #000; background: #fff; padding: 10px; border-radius: 12px; border: 2px solid #000;" id="case-bonus-question">Lade Zusatzfrage...</p>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- Right Column: Clues & Solution -->
-                <div style="display: flex; flex-direction: column; gap: 24px;">
-                    
-                    <!-- Clues Box -->
-                    <div class="comic-box" style="background: #ffffff;">
-                        <div class="font-comic-title" style="font-size: 1.4rem; color: #000; margin-bottom: 16px; border-bottom: 3px solid #000; padding-bottom: 6px; display: flex; align-items: center; gap: 8px;">
-                            🕵️ <span>3. HINWEIS-SPUREN</span>
-                        </div>
-
-                        <div style="display: flex; flex-direction: column; gap: 16px;">
-                            <!-- Clue 1 -->
-                            <div id="clue-1-box" style="padding: 16px; border-radius: 16px; border: 3px solid #000; background: #f1f5f9;">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                                    <span class="font-comic-title" style="font-size: 1rem; color: #475569;">HINWEIS 1 (MITTWOCH)</span>
-                                    <span id="clue-1-icon-wrap">🔒</span>
-                                </div>
-                                <p id="clue-1-text" class="font-comic-body" style="font-size: 0.9rem; color: #64748b; font-style: italic;">
-                                    🔒 Wird erst am Mittwoch enthüllt...
-                                </p>
-                            </div>
-
-                            <!-- Clue 2 -->
-                            <div id="clue-2-box" style="padding: 16px; border-radius: 16px; border: 3px solid #000; background: #f1f5f9;">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                                    <span class="font-comic-title" style="font-size: 1rem; color: #475569;">HINWEIS 2 (DONNERSTAG)</span>
-                                    <span id="clue-2-icon-wrap">🔒</span>
-                                </div>
-                                <p id="clue-2-text" class="font-comic-body" style="font-size: 0.9rem; color: #64748b; font-style: italic;">
-                                    🔒 Wird erst am Donnerstag enthüllt...
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Solution Box (Revealed Friday) -->
-                    <div id="solution-box" class="comic-box hidden" style="background: #6ee7b7;">
-                        <div class="font-comic-title" style="font-size: 1.4rem; color: #000; margin-bottom: 12px; border-bottom: 3px solid #000; padding-bottom: 6px;">
-                            ✅ <span>4. AUFLÖSUNG (FREITAG / FINALE)</span>
-                        </div>
-                        <div style="background: #fff; padding: 16px; border-radius: 16px; border: 2px solid #000; display: flex; flex-direction: column; gap: 12px;">
-                            <div>
-                                <span style="font-size: 11px; font-weight: bold; color: #64748b; text-transform: uppercase; display: block;">Überführter Täter:</span>
-                                <p class="font-comic-title" style="font-size: 1.8rem; color: #059669;" id="solution-culprit">---</p>
-                            </div>
-                            <div>
-                                <span style="font-size: 11px; font-weight: bold; color: #64748b; text-transform: uppercase; display: block;">Hintergrund & Motiv:</span>
-                                <p class="font-comic-body" style="font-size: 0.9rem; color: #0f172a; margin-top: 4px; line-height: 1.5;" id="solution-text">---</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Call to action card -->
-                    <div class="comic-box no-print" style="background: #c084fc; text-align: center; display: flex; flex-direction: column; gap: 12px;">
-                        <div style="width: 48px; height: 48px; background: #facc15; border-radius: 50%; border: 3px solid #000; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
-                            ✏️
-                        </div>
-                        <h4 class="font-comic-title" style="font-size: 1.4rem; color: #000;">DEINE VERMUTUNG ABGEBEN?</h4>
-                        <p class="font-comic-body" style="font-size: 0.85rem; font-weight: bold; color: #000;">Gib deinen offiziellen Anklagetipp ab. Jeder Ermittler hat 1 Versuch pro Woche!</p>
-                        <button onclick="switchTab('submit')" class="comic-btn btn-pink" style="font-size: 1.1rem; padding: 10px; width: 100%;">
-                            Jetzt Tipp einreichen
-                        </button>
-                    </div>
-
-                </div>
-
-            </div>
-        </section>
-
-        <!-- VIEW 2: TIPP ABGEBEN -->
-        <section id="view-submit" class="hidden" style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px;">
-            <div class="comic-box" style="background: #fff; display: flex; flex-direction: column; gap: 20px;">
-                <div>
-                    <h2 class="font-comic-title" style="font-size: 2.2rem; color: #000;">Ermittler-Akte einreichen</h2>
-                    <p class="font-comic-body" style="font-size: 0.9rem; font-weight: bold; color: #475569;">Welcher Verdächtige hat die Tat in Kalenderwoche <span id="submit-week-display">#--</span> begangen?</p>
-                </div>
-
-                <form id="direct-guess-form" onsubmit="submitGuessDirectly(event)" style="display: flex; flex-direction: column; gap: 16px;">
-                    <div>
-                        <label class="font-comic-title" style="font-size: 1.2rem; color: #000; display: block; margin-bottom: 4px;">1. Dein Name / Ermittler-Alias</label>
-                        <select id="guess-player-select" required class="font-comic-body" style="width: 100%; background: #f8fafc; border: 3px solid #000; border-radius: 12px; padding: 12px; font-size: 1rem; font-weight: bold;">
-                            <!-- Populated dynamically -->
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="font-comic-title" style="font-size: 1.2rem; color: #000; display: block; margin-bottom: 4px;">2. Dein Hauptverdächtiger</label>
-                        <select id="guess-suspect-select" required class="font-comic-body" style="width: 100%; background: #f8fafc; border: 3px solid #000; border-radius: 12px; padding: 12px; font-size: 1rem; font-weight: bold;">
-                            <!-- Populated dynamically -->
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="font-comic-title" style="font-size: 1.2rem; color: #000; display: block; margin-bottom: 4px;">3. Antwort auf die Zusatzfrage</label>
-                        <p class="font-comic-body" style="font-size: 0.85rem; color: #ec4899; font-weight: bold; margin-bottom: 6px;" id="guess-question-preview">Lade Frage...</p>
-                        <input type="text" id="guess-bonus-input" placeholder="Deine Antwort eingeben..." required class="font-comic-body" style="width: 100%; background: #f8fafc; border: 3px solid #000; border-radius: 12px; padding: 12px; font-size: 1rem; font-weight: bold;">
-                    </div>
-
-                    <div style="background: #fde047; padding: 12px; border-radius: 12px; border: 2px solid #000; font-size: 0.85rem;" class="font-comic-body">
-                        ⚡ <strong>Live-Cloud-Speicherung:</strong> Dein Tipp wird sofort für dein Team gespeichert!
-                    </div>
-
-                    <button type="submit" class="comic-btn btn-emerald" style="font-size: 1.3rem; padding: 14px; margin-top: 8px;">
-                        Anklageschrift Jetzt Einreichen!
-                    </button>
-                </form>
-            </div>
-        </section>
-
-        <!-- VIEW 3: RANGLISTE -->
-        <section id="view-ranking" class="hidden" style="display: flex; flex-direction: column; gap: 24px;">
-            <div class="comic-box" style="background: #fff;">
-                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 3px solid #000;">
-                    <div>
-                        <h2 class="font-comic-title" style="font-size: 2.5rem; color: #000;">Ermittler-Rangliste 2026</h2>
-                        <p class="font-comic-body" style="font-size: 0.85rem; font-weight: bold; color: #475569;">Gesamtwertung von KW 1 bis KW 52 (Finale am 24.12.2026)</p>
-                    </div>
-                    <div class="font-comic-body" style="background: #fde047; color: #000; padding: 8px 16px; border-radius: 16px; border: 2px solid #000; font-size: 0.85rem; font-weight: bold;">
-                        🏅 3 Pkt. Täter | 1 Pkt. Zusatzfrage | +2 Pkt. Frühtipp
-                    </div>
-                </div>
-
-                <!-- Ranking Table -->
-                <div style="overflow-x: auto;">
-                    <table style="width: 100%; border-collapse: collapse; text-align: left; font-family: 'Comic Neue', cursive; font-weight: bold;">
-                        <thead class="font-comic-title" style="background: #000; color: #fff; font-size: 1.2rem; text-transform: uppercase;">
-                            <tr>
-                                <th style="padding: 12px 16px;">Rang</th>
-                                <th style="padding: 12px 16px;">Ermittler / Name</th>
-                                <th style="padding: 12px 16px; text-align: center;">Gelöste Fälle</th>
-                                <th style="padding: 12px 16px; text-align: right;">Gesamtpunkte</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ranking-table-body" style="border-top: 2px solid #000;">
-                            <!-- Populated dynamically -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="no-print" style="background: #000; border-top: 4px solid #000; padding: 20px; text-align: center; font-size: 0.8rem; color: #fde047; font-family: 'Comic Neue', cursive; font-weight: bold;">
-        <p>„KRIMITIME 2026“ • Asynchrones Comic-Gruppenspiel bis KW 52 (24.12.2026)</p>
-    </footer>
-
-    <!-- Admin Modal -->
-    <div id="admin-modal" class="modal-overlay hidden">
-        <div class="modal-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #000; padding-bottom: 12px; margin-bottom: 16px;">
-                <h3 class="font-comic-title" style="font-size: 1.8rem; color: #000; display: flex; align-items: center; gap: 8px;">
-                    🛡️ <span>Spielleiter-Konsole & Admin-Bereich</span>
-                </h3>
-                <button onclick="toggleAdminModal()" style="background: none; border: none; font-size: 1.8rem; cursor: pointer; color: #000;">✕</button>
-            </div>
-
-            <!-- LOGIN FORM (When locked) -->
-            <div id="admin-login-view" style="background: #fff; padding: 20px; border-radius: 16px; border: 3px solid #000; text-align: center; display: flex; flex-direction: column; gap: 16px;">
-                <div style="width: 48px; height: 48px; background: #ec4899; border-radius: 16px; border: 2px solid #000; margin: 0 auto; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.5rem;">
-                    🔑
-                </div>
-                <h4 class="font-comic-title" style="font-size: 1.5rem; color: #000;">Passwortgeschützter Bereich</h4>
-                <p class="font-comic-body" style="font-size: 0.85rem; color: #475569;">Bitte gib das Spielleiter-Passwort ein:</p>
-                <div style="max-width: 280px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; width: 100%;">
-                    <input type="password" id="admin-password-input" placeholder="Passwort eingeben" class="font-comic-title" style="background: #f1f5f9; border: 3px solid #000; border-radius: 12px; padding: 10px; text-align: center; font-size: 1.4rem; letter-spacing: 2px;">
-                    <button onclick="checkAdminPassword()" class="comic-btn btn-emerald" style="font-size: 1.2rem; padding: 10px;">
-                        Freischalten
-                    </button>
-                    <p id="admin-auth-error" class="font-comic-body hidden" style="font-size: 0.8rem; color: #dc2626; font-weight: bold;">⚠️ Falsches Passwort! Bitte versuche es erneut.</p>
-                </div>
-            </div>
-
-            <!-- ADMIN CONTENT (When unlocked) -->
-            <div id="admin-controls-view" class="hidden" style="display: flex; flex-direction: column; gap: 20px;">
-
-                <!-- Week & Simulator selector -->
-                <div style="background: #cffafe; padding: 16px; border-radius: 16px; border: 3px solid #000; display: flex; flex-direction: column; gap: 12px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <h4 class="font-comic-title" style="font-size: 1.3rem; color: #000;">📅 KW-Auswahl & Wochentags-Simulator</h4>
-                        <button onclick="resetToCurrentRealWeek()" class="comic-btn btn-yellow" style="font-size: 0.75rem; padding: 4px 8px;">
-                            ➔ Aktuelle KW laden
-                        </button>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                        <div>
-                            <label class="font-comic-body" style="font-size: 0.75rem; font-weight: bold; color: #334155; display: block; margin-bottom: 4px;">Kalenderwoche wählen:</label>
-                            <select id="admin-week-select" onchange="changeWeek(this.value)" class="font-comic-body" style="width: 100%; background: #fff; border: 2px solid #000; border-radius: 10px; padding: 8px; font-size: 0.85rem; font-weight: bold;">
-                                <!-- Options 1 to 52 -->
-                            </select>
-                        </div>
-                        <div>
-                            <label class="font-comic-body" style="font-size: 0.75rem; font-weight: bold; color: #334155; display: block; margin-bottom: 4px;">Wochentag simulieren:</label>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-                                <button onclick="simulateDay('Mon')" class="comic-btn btn-cyan" style="font-size: 0.8rem; padding: 6px;">Montag</button>
-                                <button onclick="simulateDay('Wed')" class="comic-btn btn-pink" style="font-size: 0.8rem; padding: 6px;">Mittwoch</button>
-                                <button onclick="simulateDay('Thu')" class="comic-btn btn-dark" style="font-size: 0.8rem; padding: 6px;">Donnerstag</button>
-                                <button onclick="simulateDay('Fri')" class="comic-btn btn-emerald" style="font-size: 0.8rem; padding: 6px;">Freitag</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- SUBMITTED GUESSES -->
-                <div style="background: #fff; padding: 16px; border-radius: 16px; border: 3px solid #000; display: flex; flex-direction: column; gap: 12px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000; padding-bottom: 8px;">
-                        <h4 class="font-comic-title" style="font-size: 1.3rem; color: #000;">
-                            👁️ <span>Eingegangene Tipps für KW <span id="admin-guesses-week-display">--</span></span>
-                        </h4>
-                        <span id="admin-guesses-count-badge" class="font-comic-body" style="background: #ec4899; color: #fff; font-size: 0.75rem; font-weight: bold; padding: 2px 8px; border-radius: 9999px; border: 1px solid #000;">0 Tipps</span>
-                    </div>
-
-                    <div id="admin-guesses-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 200px; overflow-y: auto;">
-                        <!-- Dynamic list of guesses -->
-                    </div>
-                </div>
-
-                <!-- Manual Player / Score Manager -->
-                <div style="background: #fff; padding: 16px; border-radius: 16px; border: 3px solid #000; display: flex; flex-direction: column; gap: 12px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <h4 class="font-comic-title" style="font-size: 1.3rem; color: #000;">
-                            🎯 Ermittler-Roster & Punkte verwalten
-                        </h4>
-                        <span class="font-comic-body" style="font-size: 0.75rem; background: #ec4899; color: #fff; padding: 2px 8px; border-radius: 9999px; font-weight: bold;" id="admin-player-count">19 Mitspieler</span>
-                    </div>
-                    
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
-                        <input type="text" id="admin-add-name" placeholder="Neuer Name" class="font-comic-body" style="background: #f1f5f9; border: 2px solid #000; border-radius: 10px; padding: 8px; font-size: 0.85rem; font-weight: bold;">
-                        <input type="number" id="admin-add-score" placeholder="Punkte (0)" class="font-comic-body" style="background: #f1f5f9; border: 2px solid #000; border-radius: 10px; padding: 8px; font-size: 0.85rem; font-weight: bold;">
-                        <button onclick="adminAddOrUpdatePlayer()" class="comic-btn btn-emerald" style="font-size: 0.85rem; padding: 8px;">
-                            + Hinzufügen
-                        </button>
-                    </div>
-
-                    <div style="display: flex; justify-content: flex-end;">
-                        <button onclick="adminResetPlayersToDefault()" class="comic-btn btn-yellow" style="font-size: 0.75rem; padding: 4px 10px;">
-                            ↺ 19 Standard-Spieler wiederherstellen
-                        </button>
-                    </div>
-
-                    <div id="admin-players-list" style="max-height: 180px; overflow-y: auto; border: 2px solid #000; border-radius: 10px; padding: 8px; background: #f8fafc; display: flex; flex-direction: column; gap: 4px;">
-                        <!-- Dynamic list of players -->
-                    </div>
-                </div>
-
-                <!-- RESET AREA -->
-                <div style="background: #fff; padding: 16px; border-radius: 16px; border: 3px solid #000; display: flex; flex-direction: column; gap: 8px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span class="font-comic-body" style="font-size: 0.85rem; color: #dc2626; font-weight: bold;">⚠️ Gefahrenbereich:</span>
-                        <button onclick="showResetConfirm(true)" class="comic-btn btn-red" style="font-size: 0.8rem; padding: 6px 12px;">
-                            🗑️ Alles Zurücksetzen
-                        </button>
-                    </div>
-                    <div id="reset-confirm-box" class="hidden" style="background: #fef2f2; padding: 12px; border-radius: 10px; border: 2px solid #ef4444; display: flex; flex-direction: column; gap: 8px;">
-                        <p class="font-comic-body" style="font-size: 0.8rem; color: #b91c1c; font-weight: bold;">Möchtest du wirklich ALLE Tipps und manuellen Spielerdaten auf Firestore löschen?</p>
-                        <div style="display: flex; gap: 8px;">
-                            <button onclick="adminResetAllData()" class="comic-btn btn-red" style="font-size: 0.8rem; padding: 4px 10px;">Ja, wirklich löschen!</button>
-                            <button onclick="showResetConfirm(false)" class="comic-btn btn-dark" style="font-size: 0.8rem; padding: 4px 10px;">Abbrechen</button>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <div style="padding-top: 12px; border-top: 3px solid #000; display: flex; justify-content: space-between; align-items: center;">
-                <button onclick="lockAdminConsole()" id="admin-lock-btn" class="font-comic-body hidden" style="font-size: 0.8rem; color: #dc2626; text-decoration: underline; font-weight: bold; background: none; border: none; cursor: pointer;">
-                    🔒 Konsole wieder sperren
-                </button>
-                <button onclick="toggleAdminModal()" class="comic-btn btn-pink" style="font-size: 1.1rem; padding: 8px 20px; margin-left: auto;">
-                    Schließen
-                </button>
-            </div>
+    <!-- HERO GOAL BANNER -->
+    <div class="comic-box bg-gradient-to-r from-red-500 via-amber-500 to-emerald-400 p-4 mb-6 relative overflow-hidden">
+      <div class="flex flex-wrap items-center justify-between gap-4 relative z-10 text-white">
+        <div class="flex items-center space-x-3">
+          <span class="text-4xl">🎄</span>
+          <div>
+            <h2 class="text-2xl font-black font-comic tracking-wide drop-shadow-[2px_2px_0px_#000] uppercase">
+              ZIEL-ETAPPE: KW 52 / HEILIGABEND 2026
+            </h2>
+            <p class="text-xs font-bold bg-white/90 text-black px-2.5 py-1 rounded-lg border border-black inline-block mt-1">
+              Am 24.12.2026 wird der Meister-Ermittler der Saison gekürt!
+            </p>
+          </div>
         </div>
+        <div class="bg-black/80 backdrop-blur text-amber-300 px-4 py-2 rounded-xl border-2 border-black text-center shadow-inner">
+          <div class="text-[10px] uppercase font-bold tracking-widest">Verbleibende Wochen</div>
+          <div id="weeks-left-count" class="text-2xl font-black font-comic">--</div>
+        </div>
+      </div>
     </div>
 
-    <!-- Firebase SDK Modules & Main Application Logic -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    <!-- TAB 1: FALLAKTE -->
+    <div id="tab-fallakte" class="space-y-6">
 
-        // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyD2-iLP73NYcLKVHZcb3n6QPfyW8MbUkgk",
-            authDomain: "krimitime.firebaseapp.com",
-            databaseURL: "https://krimitime-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "krimitime",
-            storageBucket: "krimitime.firebasestorage.app",
-            messagingSenderId: "637991563478",
-            appId: "1:637991563478:web:d032be22b574bfd5ef9977"
-        };
+      <!-- WEEK HEADER BOX -->
+      <div class="comic-box bg-white p-5 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center space-x-2">
+            <span id="kw-badge" class="bg-pink-500 text-white font-black text-xs px-3 py-1 rounded-full border-2 border-black uppercase shadow-[2px_2px_0px_#000]">
+              Kalenderwoche #--
+            </span>
+            <span id="season-tag" class="bg-amber-300 text-black text-xs font-bold px-2.5 py-1 rounded-full border border-black flex items-center gap-1">
+              🏷️ Saison
+            </span>
+            <span id="case-status-badge" class="bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded border border-red-300 uppercase tracking-wider animate-pulse">
+              Ermittlung läuft!
+            </span>
+          </div>
+          <h2 id="case-title" class="text-3xl font-black font-comic text-slate-900 mt-2 uppercase">
+            LADE FALLAKTE...
+          </h2>
+        </div>
 
-        let app, auth, db;
-        try {
-            app = initializeApp(firebaseConfig);
-            auth = getAuth(app);
-            db = getFirestore(app);
-        } catch (e) {
-            console.warn("Firebase App initialization notice:", e);
-        }
+        <button onclick="window.print()" class="comic-btn bg-amber-300 hover:bg-amber-400 text-black font-bold px-4 py-2 rounded-xl text-sm flex items-center space-x-2">
+          <i class="fa-solid fa-print"></i>
+          <span>DRUCKEN / AUSHANG</span>
+        </button>
+      </div>
 
-        // 19 DEFAULT TEAM MEMBERS
-        const DEFAULT_TEAM_MEMBERS = [
-            "Albert", "Evangelos", "Andreas", "Matthias", "Tatjana", "Mary", 
-            "Marcel", "Uwe", "Klaus", "Thorsten", "Sandy", "Susi K.", 
-            "Susi H.", "Guiseppe", "Nikolaos", "Gerd", "Jörg", "Alexander", "Hendrik"
-        ];
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        /* Clean Cards mapping (karten1.png - karten5.png) */
-        const PLAYER_CARDS = {
-            "Guiseppe": { src: "karten1.png", cropClass: "crop-top-left", title: "TÄTER" },
-            "Nikolaos": { src: "karten1.png", cropClass: "crop-top-right", title: "SPION" },
-            "Sandy": { src: "karten1.png", cropClass: "crop-bottom-left", title: "FÄLSCHER" },
-            "Susi K.": { src: "karten1.png", cropClass: "crop-bottom-right", title: "INFORMANTIN" },
+        <!-- LEFT COLUMN: CRIME SCENE & SUSPECTS -->
+        <div class="lg:col-span-2 space-y-6">
 
-            "Tatjana": { src: "karten2.png", cropClass: "crop-top-left", title: "INTERROGATOR" },
-            "Thorsten": { src: "karten2.png", cropClass: "crop-top-right", title: "PROFESSOR" },
-            "Uwe": { src: "karten2.png", cropClass: "crop-bottom-left", title: "SPION" },
-            "Susi H.": { src: "karten2.png", cropClass: "crop-bottom-right", title: "AGENTE" },
+          <!-- 1. TATORT-AKTE -->
+          <div class="comic-box bg-cyan-100 p-5">
+            <div class="flex items-center justify-between pb-3 border-b-2 border-black/20">
+              <h3 class="text-lg font-black font-comic text-slate-900 flex items-center space-x-2">
+                <i class="fa-solid fa-magnifying-glass text-cyan-600"></i>
+                <span>1. DIE TATORT-AKTE (FREIGESCHALTET: MONTAG)</span>
+              </h3>
+            </div>
+            <div id="case-description" class="mt-4 bg-white p-4 rounded-xl border-2 border-black text-slate-800 leading-relaxed font-medium">
+              Lade Fallakte...
+            </div>
+          </div>
 
-            "Mary": { src: "karten3.png", cropClass: "crop-top-left", title: "DRAHTZIEHERIN" },
-            "Matthias": { src: "karten3.png", cropClass: "crop-top-right", title: "VERRÄTER" },
-            "Hendrik": { src: "karten3.png", cropClass: "crop-bottom-left", title: "HEHLER" },
-            "Marcel": { src: "karten3.png", cropClass: "crop-bottom-right", title: "ÜBERWACHUNGSCHEF" },
+          <!-- 2. VERDÄCHTIGE & SPIELKARTEN -->
+          <div class="comic-box bg-amber-100 p-5">
+            <div class="flex items-center justify-between pb-3 border-b-2 border-black/20 mb-4">
+              <h3 class="text-lg font-black font-comic text-slate-900 flex items-center space-x-2">
+                <i class="fa-solid fa-user-secret text-amber-600"></i>
+                <span>2. DIE VERDÄCHTIGEN PERSONEN & SPIELKARTEN</span>
+              </h3>
+            </div>
 
-            "Albert": { src: "karten4.png", cropClass: "crop-top-left", title: "VERDÄCHTIGER" },
-            "Alexander": { src: "karten4.png", cropClass: "crop-top-right", title: "ZEUGE" },
-            "Andreas": { src: "karten4.png", cropClass: "crop-bottom-left", title: "LÜGNER" },
-            "Evangelos": { src: "karten4.png", cropClass: "crop-bottom-right", title: "DETEKTIV" },
+            <!-- CARDS CONTAINER -->
+            <div id="cards-container" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <!-- Cards rendered dynamically -->
+            </div>
+          </div>
 
-            "Gerd": { src: "karten5.png", cropClass: "crop-half-left", title: "DHL LOGISTIKER" },
-            "Jörg": { src: "karten5.png", cropClass: "crop-half-right", title: "PAKETZUSTELLER" }
-        };
+          <!-- ZUSATZFRAGE BOX -->
+          <div class="comic-box bg-pink-100 p-5">
+            <div class="flex items-center space-x-3 mb-2">
+              <div class="w-8 h-8 bg-pink-500 rounded-lg border-2 border-black flex items-center justify-center text-white font-bold text-sm shadow-[2px_2px_0px_#000]">
+                ?
+              </div>
+              <h4 class="font-black font-comic text-lg text-slate-900 uppercase">
+                Ermittler-Zusatzfrage (+1 Punkt):
+              </h4>
+            </div>
+            <p id="bonus-question-text" class="bg-white p-3 rounded-xl border-2 border-black font-semibold text-slate-800 text-sm">
+              Lade Zusatzfrage...
+            </p>
+          </div>
 
-        // FULL 52 HANDCRAFTED CASES FOR 2026
-        const CASES_2026 = [
-            { id: 1, tag: "❄️ Winter-Start", title: "Der Raub der Neujahrs-Glocke", desc: "In der Silvesternacht wurde die goldene Neujahrsglocke aus der Empfangshalle gestohlen!", suspects: [{name:"Evangelos", role:"Espresso-Fan", desc:"War bis spät an der Kaffeemaschine"}, {name:"Susi K.", role:"Gästeführerin", desc:"Machte Fotos im Saal"}, {name:"Klaus", role:"Barkeeper", desc:"Schenkte Sekt ein"}], bonusQuestion:"Welches Konfetti klebte am Safe?", clue1:"Susi K. trug braune Lederhandschuhe ohne Glitzer.", clue2:"Klaus war bis 02:00 Uhr nachweislich hinter der Bar.", culprit:"Evangelos", solutionText:"Evangelos wollte die Glocke für seine private Neujahrs-Show nutzen.", bonusAnswer:"Silbernes Sternenkonfetti" },
-            { id: 2, tag: "❄️ Winter", title: "Der verschwundene Möhren-Snack", desc: "Der Möhren-Räuber hat dem Riesenschneemann im Hof die Nase geklaut!", suspects: [{name:"Uwe", role:"Gärtner", desc:"Liebt Möhrensaft"}, {name:"Thorsten", role:"Sportler", desc:"Sucht Vitamine"}, {name:"Tatjana", role:"Zahlen-Genie", desc:"Brauchte Gemüsedeko"}], bonusQuestion:"Aus welchem Gemüse war die Ersatznase?", clue1:"Uwe verbrachte den Morgen im Gewächshaus.", clue2:"Es wurden Frischespuren von Thorstens Laufschuhen gefunden.", culprit:"Thorsten", solutionText:"Thorsten konnte dem Knusper-Snack nach dem Morgenlauf nicht wiederstehen!", bonusAnswer:"Gewürzgurke" },
-            { id: 3, tag: "❄️ Winter", title: "Die Eiszapfen-Sabotage", desc: "Die Heizung fiel aus. Jemand hat Eisblöcke im Thermostat vom Albert-Büro platziert!", suspects: [{name:"Albert", role:"Oberhaupt", desc:"Beschwert sich über Hitze"}, {name:"Mary", role:"Eiskunstfan", desc:"Friert selten"}, {name:"Jörg", role:"Techniker", desc:"Spielt gerne Streiche"}], bonusQuestion:"Welches Werkzeug lag am Thermostat?", clue1:"Mary hat ein lückenloses Alibi in der Kantine.", clue2:"Albert hatte dicke Fäustlinge mit Eisspuren an.", culprit:"Albert", solutionText:"Albert wollte es unbedingt erfrischend kühl beim Denken haben.", bonusAnswer:"Eiskratzer" },
-            { id: 4, tag: "❄️ Winter", title: "Der Krapfen-Senf-Attentäter", desc: "Sämtliche Krapfen wurden heimlich mit Scharfsenf statt Marmelade gefüllt!", suspects: [{name:"Guiseppe", role:"Feinschmecker", desc:"Hat Senf im Fach"}, {name:"Marcel", role:"Joke-Master", desc:"Liebt Faschingsstreiche"}, {name:"Sandy", role:"Naschkatze", desc:"Verwechselt oft Dosen"}], bonusQuestion:"Welcher Senf wurde verwendet?", clue1:"Marcel war zur Tatzeit im Meeting.", clue2:"Auf dem Senfeimer klebten Fingerspuren von Sandy.", culprit:"Sandy", solutionText:"Sandy hat im Dämmerschein versehentlich den Senfeimer gegriffen.", bonusAnswer:"Scharfer Dijon-Senf" },
-            { id: 5, tag: "🎭 Karneval / Fasching", title: "Der Raub der Narrenkappe", desc: "Der goldene Faschingsorden ist kurz vor der Feier verschwunden!", suspects: [{name:"Nikolaos", role:"Karnevalist", desc:"Vergisst oft Requisiten"}, {name:"Susi H.", role:"Organisatorin", desc:"Sucht den Orden"}, {name:"Gerd", role:"Unterhalter", desc:"Sucht Luftballons"}], bonusQuestion:"Welches Konfetti lag in der Schatulle?", clue1:"Susi H. war den ganzen Abend am Büfett.", clue2:"Gerd hat bunte Schminke an der Schatulle hinterlassen.", culprit:"Gerd", solutionText:"Gerd wollte den Orden für seine Zaubershow ausleihen.", bonusAnswer:"Rundes Buntglas-Konfetti" },
-            { id: 6, tag: "❄️ Winter", title: "Das Rätsel der vertauschten Schlittschuhe", desc: "Vor dem Firmen-Eislaufen wurden die Schlittschuhe von Andreas vertauscht!", suspects: [{name:"Andreas", role:"Eisläufer", desc:"Sucht seine Kufen"}, {name:"Matthias", role:"Rivale", desc:"Will das Rennen gewinnen"}, {name:"Thorsten", role:"Eismeister", desc:"Ärgert sich über Spätstarter"}], bonusQuestion:"Wo wurden die echten Schuhe versteckt?", clue1:"Thorsten hat die Halle um 18:00 Uhr zugesperrt.", clue2:"In Matthias' Tasche wurde ein passender Schlüssel gefunden.", culprit:"Matthias", solutionText:"Matthias wollte sich ohne Konkurrenz den 1. Platz sichern.", bonusAnswer:"Im Geräteschuppen" },
-            { id: 7, tag: "💘 Valentinstag", title: "Die verschwundenen Riesen-Pralinen", desc: "Eine 5-Kilo-Schokoherz-Packung ist spurlos aus dem Aufenthaltsraum verschwunden!", suspects: [{name:"Tatjana", role:"Süßwaren-Fan", desc:"Nascht gerne zum Kaffee"}, {name:"Albert", role:"Genießer", desc:"Sucht ein Geschenk"}, {name:"Evangelos", role:"Gourmet", desc:"Liebt Kakao"}], bonusQuestion:"An welchem Stuhl klebten Schokoflecken?", clue1:"Albert kaufte Blumen im Laden gegenüber.", clue2:"Tatjana hinterließ braune Fingerspuren am Tisch.", culprit:"Tatjana", solutionText:"Tatjana konnte beim Anblick des Schokoherzens einfach nicht widerstehen.", bonusAnswer:"Am Empfangsstuhl" },
-            { id: 8, tag: "❄️ Winter", title: "Der Thermoskannen-Dieb", desc: "In der eisigen Woche wurden alle Thermoskannen aus der Teeküche entwendet.", suspects: [{name:"Uwe", role:"Wanderer", desc:"Brauchte Proviant"}, {name:"Mary", role:"Putzdienst", desc:"Räumt extrem gründlich auf"}, {name:"Marcel", role:"Tee-Trinker", desc:"Lernt die ganze Nacht"}], bonusQuestion:"Welches Getränk war noch heiß?", clue1:"Mary schließt die Teeküche nie ab.", clue2:"In Marcels Rucksack klapperten metallische Kannen.", culprit:"Marcel", solutionText:"Marcel brauchte Dauerkaffee für seine Spätschicht.", bonusAnswer:"Kräutertee" },
-            { id: 9, tag: "❄️ Winter", title: "Der geheimnisvolle Fußabdruck im Schnee", desc: "Riesige 'Yeti-Abdrücke' führten direkt zum Pausenraum-Tresor!", suspects: [{name:"Klaus", role:"Schneeschuh-Geher", desc:"War draußen"}, {name:"Susi K.", role:"Fotografin", desc:"Sucht Motive"}, {name:"Jörg", role:"Praktikant", desc:"Macht gerne Streiche"}], bonusQuestion:"Welche Schuhgröße hatte der Yeti?", clue1:"Klaus war beim Vortrag in der Stadt.", clue2:"Jörg besaß riesige Kostümschuhe im Spind.", culprit:"Jörg", solutionText:"Jörg wollte Susi K. erschrecken und für Aufsehen sorgen.", bonusAnswer:"Größe 52" },
-            { id: 10, tag: "🌱 Frühling-Start", title: "Der Anschlag auf das Blumenbeet", desc: "Das Frühlingsbeet am Eingang wurde mit blauer Farbe besprüht!", suspects: [{name:"Gerd", role:"Künstler", desc:"Liebt blau"}, {name:"Susi H.", role:"Nachbarin", desc:"Ärgert sich über Pollen"}, {name:"Nikolaos", role:"Gärtner", desc:"Bastelte Schilder"}], bonusQuestion:"Welcher Farbton wurde genutzt?", clue1:"Susi H. war den ganzen Vormittag beim Termin.", clue2:"An Gerds Händen klebte 'Himmelblau' Sprühfarbe.", culprit:"Gerd", solutionText:"Gerd wollte ein modernes Kunstwerk für das Büro gestalten.", bonusAnswer:"Himmelblau-Neon" },
-            { id: 11, tag: "🌱 Frühling", title: "Das Rätsel der verschwundenen Tulpen", desc: "50 gelbe Tulpen wurden über Nacht aus dem Beet ausgegraben!", suspects: [{name:"Sandy", role:"Floristin", desc:"Brauchte Nachschub"}, {name:"Andreas", role:"Hobbygärtner", desc:"Stolz auf Tulpen"}, {name:"Guiseppe", role:"Koch", desc:"Brauchte Deko"}], bonusQuestion:"Wo wurden die Tulpen wiedergefunden?", clue1:"Sandy kaufte Tulpen auf dem Großmarkt mit Quittung.", clue2:"In Andreas' Vorgarten blühten plötzlich genau 50 gelbe Tulpen.", culprit:"Andreas", solutionText:"Andreas wollte den Nachbarschafts-Gartenwettbewerb gewinnen.", bonusAnswer:"Im Vorgarten von Andreas" },
-            { id: 12, tag: "🌱 Frühling", title: "Der Frühjahrsputz-Saboteur", desc: "Sämtliche Fensterputzmittel wurden durch Seifenblasen-Flüssigkeit ersetzt!", suspects: [{name:"Hendrik", role:"Reinigung", desc:"Wollte Pause"}, {name:"Thorsten", role:"Kindskopf", desc:"Liebt Seifenblasen"}, {name:"Mary", role:"Verwalterin", desc:"Sparsam"}], bonusQuestion:"Welches Motiv hatte die Seifenblasen-Dose?", clue1:"Mary war auf Geschäftsreise.", clue2:"Thorsten hatte eine Seifenblasen-Pistole in der Tasche.", culprit:"Thorsten", solutionText:"Thorsten wollte für gute Laune beim Putzen sorgen.", bonusAnswer:"Ein Buntstift-Smiley" },
-            { id: 13, tag: "🌱 Frühling", title: "Der Diebstahl der Sonnenuhr", desc: "Die historische Bronze-Sonnenuhr wurde vom Sockel im Garten geschraubt.", suspects: [{name:"Matthias", role:"Antik-Fan", desc:"Bewundert die Uhr"}, {name:"Uwe", role:"Handwerker", desc:"Sucht Altmetall"}, {name:"Albert", role:"Sammler", desc:"Wollte die Uhr umstellen"}], bonusQuestion:"Welcher Schraubenzieher lag am Boden?", clue1:"Uwe war nachweislich im Baumarkt.", clue2:"Matthias hatte Bronze-Politur am Ärmel.", culprit:"Matthias", solutionText:"Matthias wollte die Uhr reinigen und in seinem Büro ausstellen.", bonusAnswer:"Kreuzschlitz 6mm" },
-            { id: 14, tag: "🐰 Ostern-Special", title: "Der Raub der goldenen Ostereier", desc: "Die riesige Schoko-Eier-Lieferung für das Team ist spurlos verschwunden!", suspects: [{name:"Evangelos", role:"Osterhase", desc:"Versteckt gerne Dinge"}, {name:"Susi K.", role:"Naschkatze", desc:"Liebt Vollmilch"}, {name:"Klaus", role:"Lagerist", desc:"Hatte den Schlüssel"}], bonusQuestion:"In welchem Versteck lagen die Eier?", clue1:"Evangelos war beim Kostümfest im Nachbardorf.", clue2:"Klaus hatte Schokoflecken am Lieferschein-Klemmbrett.", culprit:"Klaus", solutionText:"Klaus wollte die Eier vorab für sich und seine Freunde sichern.", bonusAnswer:"Im Heizungskeller" },
-            { id: 15, tag: "🐰 Ostern", title: "Die vertauschten Ostereier-Farben", desc: "Alle Ostereier wurden mit wasserlöslicher Tinte statt echter Farbe bemalt!", suspects: [{name:"Tatjana", role:"Malerin", desc:"Nimmt Wasserfarben"}, {name:"Marcel", role:"Tollpatsch", desc:"Hatte Tuschkasten dabei"}, {name:"Susi H.", role:"Organisatorin", desc:"Planer"}], bonusQuestion:"Welche Farbe färbte am stärksten ab?", clue1:"Susi H. kaufte Eierfarbe im Supermarkt.", clue2:"Marcels Tuschkasten fehlte die blaue Tuschschale.", culprit:"Marcel", solutionText:"Marcel wollte die Malarbeit abkürzen und nahm seinen Schul-Tuschkasten.", bonusAnswer:"Preußisch-Blau" },
-            { id: 16, tag: "🌱 Frühling", title: "Der Anschlag auf das Vogelhaus", desc: "Das frisch gebaute Vogelhaus wurde mit Kaugummi komplett verklebt!", suspects: [{name:"Jörg", role:"Kaugummi-Fan", desc:"Kaut den ganzen Tag"}, {name:"Gerd", role:"Heimwerker", desc:"Kritisiert den Bau"}, {name:"Nikolaos", role:"Vogel-Fan", desc:"Beobachtet gerne"}], bonusQuestion:"Welche Kaugummi-Sorte war es?", clue1:"Jörg hatte eine leere Packung 'Erdbeer-Bubble' in der Tasche.", clue2:"Gerd nutzte Holzleim, keinen Kaugummi.", culprit:"Jörg", solutionText:"Jörg wollte das wackelnde Dach 'spontan' mit Kaugummi reparieren.", bonusAnswer:"Erdbeer-Bubble-Gum" },
-            { id: 17, tag: "🌱 Frühling", title: "Der verschwundene Rasenmäher", desc: "Der Roboter-Rasenmäher fuhr um 03:00 Uhr nachts einfach davon!", suspects: [{name:"Thorsten", role:"IT-Freak", desc:"Liebt Fernsteuerungen"}, {name:"Andreas", role:"Ruhesuchender", desc:"Hasst Motorenlärm"}, {name:"Albert", role:"Prüfer", desc:"Wartete das Gerät"}], bonusQuestion:"Auf welcher Frequenz steuerte der Täter?", clue1:"Andreas schlief um 03:00 Uhr tief und fest.", clue2:"Thorsten prahlte mit seiner neuen Roboter-App.", culprit:"Thorsten", solutionText:"Thorsten wollte testen, ob er den Mäher bis zu seiner Garage steuern kann.", bonusAnswer:"433 MHz" },
-            { id: 18, tag: "🌱 Frühling", title: "Das Rätsel der Blütenstaub-Bombe", desc: "Eine Blütenstaub-Bombe wurde im Wintergarten gezündet – Niesanfall für alle!", suspects: [{name:"Sandy", role:"Pranksterin", desc:"Sucht Klicks"}, {name:"Guiseppe", role:"Imker", desc:"Hat Blütenstaub"}, {name:"Mary", role:"Allergikerin", desc:"Niest ständig"}], bonusQuestion:"Welche Blumenpollen wurden genutzt?", clue1:"Guiseppe war bei seinen Bienenstöcken draußen.", clue2:"Sandy hatte eine gelbe Pulver-Dose in ihrer Prank-Tasche.", culprit:"Sandy", solutionText:"Sandy wollte ein lustiges Video für die Gruppe drehen.", bonusAnswer:"Rapsblüten-Pulver" },
-            { id: 19, tag: "🧹 Walpurgisnacht / 1. Mai", title: "Der Entwendete Maibaum", desc: "Der traditionelle 5-Meter-Maibaum verschwand spurlos!", suspects: [{name:"Uwe", role:"Maibaum-Dieb", desc:"Traditions-Fan"}, {name:"Klaus", role:"Holzfäller", desc:"Sägt gerne"}, {name:"Susi K.", role:"Wirtin", desc:"Brauchte Platz"}], bonusQuestion:"Womit wurde der Baum abtransportiert?", clue1:"Klaus war beim Sägewerk-Einsatz.", clue2:"Uwes Traktor hinterließ frische Reifenspuren am Tor.", culprit:"Uwe", solutionText:"Uwe wollte den Baum nach alter Tradition entführen und Auslöse fordern.", bonusAnswer:"Grüner Traktor mit Hänger" },
-            { id: 20, tag: "🌱 Frühling", title: "Der Schreck im Gewächshaus", desc: "Alle Pflanzentöpfe wurden heimlich mit blauen Schleifen verziert!", suspects: [{name:"Mary", role:"Dekofan", desc:"Liebt Schleifen"}, {name:"Nikolaos", role:"Praktikant", desc:"Sehr kreativ"}, {name:"Gerd", role:"Nachbar", desc:"Wollte helfen"}], bonusQuestion:"Wie viele Schleifen wurden gezählt?", clue1:"Gerd hat keine blauen Bänder.", clue2:"Mary vermisste ihr blaues Geschenkband-Set.", culprit:"Mary", solutionText:"Mary fand die grünen Töpfe einfach 'zu eintönig'.", bonusAnswer:"Genau 24 Schleifen" },
-            { id: 21, tag: "☀️ Sommer", title: "Der Grillfeuer-Löscher-Prank", desc: "Mitten beim Sommerfest wurde der heiße Grill mit einem Schaumlöscher gelöscht!", suspects: [{name:"Susi H.", role:"Sicherheitsfanatikerin", desc:"Übervorsichtig"}, {name:"Albert", role:"Chef-Koch", desc:"Sauer über Fleischloss"}, {name:"Marcel", role:"Skater", desc:"Panik vor Rauch"}], bonusQuestion:"Welcher Schaum bedeckte die Würstchen?", clue1:"Albert stand am Wurstteller.", clue2:"Susi H. hielt den leeren Löscher noch in der Hand.", culprit:"Susi H.", solutionText:"Susi H. sah kleine Funken und geriet in übereifrige Panik.", bonusAnswer:"AFFF-Löschschaum" },
-            { id: 22, tag: "☀️ Sommer", title: "Der Diebstahl der Eiscreme-Truhe", desc: "Die komplette Eistruhe mit 200 Stiel-Eisen wurde aus der Küche gerollt!", suspects: [{name:"Evangelos", role:"Eis-Schlecker", desc:"Liebt Erdbeereis"}, {name:"Tatjana", role:"Ordnung", desc:"Räumt um"}, {name:"Jörg", role:"Techniker", desc:"Wartete das Gerät"}], bonusQuestion:"Welches Eis wurde als Erstes gefuttert?", clue1:"Tatjana war im Meeting.", clue2:"Jörg hatte Eisstiele und Kühlaggregat im Lieferwagen.", culprit:"Jörg", solutionText:"Jörg wollte die Truhe 'testen' und nahm sie komplett mit.", bonusAnswer:"Erdbeer-Schoko-Crunch" },
-            { id: 23, tag: "☀️ Sommer", title: "Das Loch im Schlauchboot", desc: "Vor der Paddeltour wurden alle Schlauchboote mit kleinen Nadelstichen versenkt!", suspects: [{name:"Andreas", role:"Wassermuffel", desc:"Bleibt lieber an Land"}, {name:"Sandy", role:"Kapitänin", desc:"Ärgert sich"}, {name:"Matthias", role:"Angler", desc:"Sucht Ruhe"}], bonusQuestion:"Welche Nadel wurde verwendet?", clue1:"Sandy war beim Steg-Aufbau.", clue2:"Matthias trug eine Ködernadel an seiner Weste mit Schlauchboot-Gummi-Resten.", culprit:"Matthias", solutionText:"Matthias wollte keine lauten Paddler an seinem Angelrevier haben.", bonusAnswer:"Köder-Köpernadel 2mm" },
-            { id: 24, tag: "☀️ Sommer", title: "Der Flamingo-KLAU im Pool", desc: "Der 2-Meter-aufblasbare rosa Flamingo ist aus dem Pool verschwunden!", suspects: [{name:"Susi K.", role:"Influencerin", desc:"Brauchte Foto-Requisite"}, {name:"Klaus", role:"Bademeister", desc:"Hasst Plastik im Pool"}, {name:"Thorsten", role:"Partygast", desc:"Nachtschwimmer"}], bonusQuestion:"Wo tauchte der Flamingo wieder auf?", clue1:"Klaus war im Kassenhäuschen.", clue2:"Susi K. postete ein Bild mit exakt diesem Flamingo auf dem Dach.", culprit:"Susi K.", solutionText:"Susi K. brauchte das perfekte Foto bei Sonnenuntergang auf dem Dach.", bonusAnswer:"Auf dem Sonnendach" },
-            { id: 25, tag: "☀️ Sommer", title: "Die Sonnencreme-Vertauschung", desc: "Die Sonnencreme LSF 50 wurde heimlich mit Mayonnaise aufgefüllt!", suspects: [{name:"Guiseppe", role:"Imbiss-Chef", desc:"Hat Mayo in Eimern"}, {name:"Mary", role:"Strandgast", desc:"Riecht komisch"}, {name:"Marcel", role:"Prankster", desc:"Lacht laut"}], bonusQuestion:"Welche Mayonnaise-Marke war es?", clue1:"Guiseppe verkaufte den ganzen Tag Pommes.", clue2:"Marcel hatte Mayo-Tube und leere Sonnencreme-Flasche im Rucksack.", culprit:"Marcel", solutionText:"Marcel hielt es für den 'ultimativen Strand-Gag'.", bonusAnswer:"Delikatess-Mayo 80%" },
-            { id: 26, tag: "☀️ Sommer", title: "Der Raub der Garten-Hängematte", desc: "Die gemütlichste Hängematte des Parks wurde samt Seilen entwendet.", suspects: [{name:"Nikolaos", role:"Dauer-Müde", desc:"Sucht Schlafplatz"}, {name:"Gerd", role:"Aufseher", desc:"Gegen Wildcampen"}, {name:"Tatjana", role:"Yoga-Lehrerin", desc:"Braucht Tücher"}], bonusQuestion:"Welcher Knoten wurde geknüpft?", clue1:"Gerd war bei der Tier-Fütterung.", clue2:"Nikolaos lag 100 Meter weiter in genau dieser Hängematte.", culprit:"Nikolaos", solutionText:"Nikolaos brauchte dringend ein ungestörtes Schläfchen im Schatten.", bonusAnswer:"Doppelter Palstek" },
-            { id: 27, tag: "🏝️ Ferien-Zeit", title: "Das Verschwinden der Reise-Pässe", desc: "Aus dem Tresor der Gruppe fehlten kurz vor der Sommerfahrt alle Pässe!", suspects: [{name:"Uwe", role:"Mitreisender", desc:"Hat Flugangst"}, {name:"Susi H.", role:"Organisatorin", desc:"Hektisch"}, {name:"Albert", role:"Chauffeur", desc:"Will pünktlich los"}], bonusQuestion:"Wo waren die Pässe versteckt?", clue1:"Susi H. hatte den Tresorschlüssel um den Hals.", clue2:"Uwe gestand, dass er die Pässe ins Handschuhfach gelegt hatte.", culprit:"Uwe", solutionText:"Uwe wollte die Abfahrt um einen Tag verzögern wegen Flugangst.", bonusAnswer:"Im Bus-Handschuhfach" },
-            { id: 28, tag: "☀️ Sommer", title: "Der Wassermelonen-Mörder", desc: "Die 10-Kilo-Preismelone für das Sommerfest wurde im Schuppen zertreten!", suspects: [{name:"Thorsten", role:"Mucki-Fan", desc:"Testet seine Muskeln"}, {name:"Sandy", role:"Bar-Mixerin", desc:"Brauchte Melone"}, {name:"Evangelos", role:"Gourmet", desc:"Liebt Melonen"}], bonusQuestion:"Welcher Schuhabdruck lag im Fruchtfleisch?", clue1:"Sandy nutzte nur den Mixer in der Küche.", clue2:"Thorstens Sportschuh-Profil passte exakt zum Abdruck im Melonenmatsch.", culprit:"Thorsten", solutionText:"Thorsten wollte demonstrieren, wie stark er zutreten kann – ging schief!", bonusAnswer:"Nike-Profil Größe 46" },
-            { id: 29, tag: "☀️ Sommer", title: "Der Stromausfall im Eis-Labor", desc: "Die Kühlung fiel aus, weil jemand den Stecker für seine Handy-Ladestation zog!", suspects: [{name:"Mary", role:"Handy-Fan", desc:"Immer 1% Akku"}, {name:"Klaus", role:"Besitzer", desc:"Verzweifelt"}, {name:"Alexander", role:"Techniker", desc:"Prüfte Kabel"}], bonusQuestion:"Welches Ladekabel steckte in der Dose?", clue1:"Klaus war im Verkaufsraum.", clue2:"Marys pinkes Glitzer-Ladekabel steckte genau in der Kühlungs-Dose.", culprit:"Mary", solutionText:"Mary brauchte dringend Strom für ein Video und zog blind den Stecker.", bonusAnswer:"Pinkes USB-C Glitzerkabel" },
-            { id: 30, tag: "☀️ Sommer", title: "Das Rätsel der roten Swimmingpool-Farbe", desc: "Das Poolwasser färbte sich über Nacht knallrot!", suspects: [{name:"Guiseppe", role:"Koch", desc:"Arbeitete mit Saft"}, {name:"Marcel", role:"Gästekind", desc:"Hat Lebensmittelfarbe"}, {name:"Andreas", role:"Poolpfleger", desc:"Dosierte Chemie"}], bonusQuestion:"Was färbte das Wasser wirklich?", clue1:"Andreas nutzte nur chlorhaltiges Pulver.", clue2:"Marcel wurde mit roten Lebensmittelfarbe-Händen erwischt.", culprit:"Marcel", solutionText:"Marcel wollte den Pool wie einen 'Vulkan-See' aussehen lassen.", bonusAnswer:"Lebensmittelfarbe Rot 500ml" },
-            { id: 31, tag: "☀️ Sommer", title: "Der Diebstahl der Grill-Zange", desc: "Die vergoldete Meister-Grillzange wurde direkt vom Rost entwendet!", suspects: [{name:"Gerd", role:"Grillmeister", desc:"Vermisst sein Tool"}, {name:"Tatjana", role:"Veggie-Fan", desc:"Gegen Fleischgrillen"}, {name:"Matthias", role:"Glanz-Fan", desc:"Sammelt Stücke"}], bonusQuestion:"Wo lag die Zange versteckt?", clue1:"Gerd stand dauerhaft am Rost.", clue2:"Tatjana hatte die Zange im Biomüll versteckt.", culprit:"Tatjana", solutionText:"Tatjana wollte das Grillen stoppen und mehr Gemüsespieße durchsetzen.", bonusAnswer:"Im grünen Biomüll-Eimer" },
-            { id: 32, tag: "☀️ Sommer-Special", title: "Der Anschlag auf die Hängematte", desc: "Die Seile der Hängematte wurden angeritzt – Sturz ins Gras für Albert!", suspects: [{name:"Nikolaos", role:"Mitarbeiter", desc:"Wollte den Platz"}, {name:"Susi K.", role:"Prüferin", desc:"Warnte vor Seilen"}, {name:"Evangelos", role:"Beobachter", desc:"Sah alles"}], bonusQuestion:"Welcher Schnitt wurde nachgewiesen?", clue1:"Susi K. nutzte nur ein Klemmbrett.", clue2:"Nikolaos hatte ein Taschenmesser mit Seilfasern in der Hülle.", culprit:"Nikolaos", solutionText:"Nikolaos war sauer, weil er nie in die Hängematte durfte.", bonusAnswer:"Gezahnte Messer-Klinge" },
-            { id: 33, tag: "🍂 Spätsommer", title: "Das Verschwinden der Mappen", desc: "100 neue Mappen fehlten aus dem Lagerraum!", suspects: [{name:"Uwe", role:"Drucker", desc:"Braucht Karton"}, {name:"Susi H.", role:"Ordnungsfan", desc:"Räumt um"}, {name:"Albert", role:"Leiter", desc:"Verstreut Akten"}], bonusQuestion:"Welche Farbe hatten die Mappen?", clue1:"Albert war bei der Besprechung.", clue2:"Susi H. hatte die Mappen im falschen Archiv-Schrank verstaut.", culprit:"Susi H.", solutionText:"Susi H. wollte Ordnung schaffen, hat die Mappen aber völlig falsch einsortiert.", bonusAnswer:"Knallgelb" },
-            { id: 34, tag: "🍂 Spätsommer", title: "Der Limonaden-Raub", desc: "Eine Kiste hausgemachte Himbeer-Limonade verschwand vom Balkon.", suspects: [{name:"Thorsten", role:"Sportler", desc:"Überhitzt"}, {name:"Sandy", role:"Rezept-Diebin", desc:"Sucht Zutaten"}, {name:"Klaus", role:"Erfrischungssucher", desc:"Mag Süßes"}], bonusQuestion:"Wie viele Flaschen fehlten?", clue1:"Sandy kaufte Zitronen im Laden.", clue2:"Thorsten hinterließ leere Himbeer-Flaschen unter der Flurbank.", culprit:"Thorsten", solutionText:"Thorsten hatte nach dem Training Bärenhunger und Riesen-Durst.", bonusAnswer:"12 Glasflaschen" },
-            { id: 35, tag: "🍂 Spätsommer", title: "Der Wespennest-Fehlalarm", desc: "Alarm wegen eines angebliche Wespennests – das nur aus Pappmaché war!", suspects: [{name:"Mary", role:"Allergikerin", desc:"Ängstlich"}, {name:"Hendrik", role:"Bastler", desc:"Baut Papp-Figuren"}, {name:"Marcel", role:"Faulpelz", desc:"Wollte Feierabend"}], bonusQuestion:"Woraus bestand das Nest?", clue1:"Mary rannte sofort nach draußen.", clue2:"Marcel hatte Zeitungspapier und Kleister-Reste an den Fingern.", culprit:"Marcel", solutionText:"Marcel wollte früher nach Hause, um das Fußballspiel zu sehen.", bonusAnswer:"Zeitungspapier & Tapetenkleister" },
-            { id: 36, tag: "🍺 Oktoberfest / Wiesn", title: "Der Brezel-KLAU auf der Wiesn", desc: "Die 1-Meter-Riesenbrezel für den Anstich wurde entwendet!", suspects: [{name:"Andreas", role:"Traditions-Fan", desc:"Hungrig"}, {name:"Tatjana", role:"Kellnerin", desc:"Trägt 10 Maß"}, {name:"Guiseppe", role:"Gast", desc:"Sucht Souvenir"}], bonusQuestion:"Welches Salz war auf der Brezel?", clue1:"Tatjana trug nur Maßkrüge.", clue2:"Guiseppe knupperte im Zelt an der Riesenbrezel-Ecke.", culprit:"Guiseppe", solutionText:"Guiseppe dachte, die Riesenbrezel sei ein kostenloses Deko-Geschenk.", bonusAnswer:"Grobkörniges Hagelsalz" },
-            { id: 37, tag: "🍺 Oktoberfest", title: "Der Maßkrug-Verwandlungstrick", desc: "Alle Bierkrüge wurden heimlich gegen alkoholfreies Malzbier ausgetauscht!", suspects: [{name:"Susi K.", role:"Gesundheitsfan", desc:"Gegen Alkohol"}, {name:"Evangelos", role:"Leiter", desc:"Sorgt für Ordnung"}, {name:"Gerd", role:"Zauberer", desc:"Macht Shows"}], bonusQuestion:"Welche Marke Malzbier wurde genutzt?", clue1:"Gerd war auf der Zauberbühne.", clue2:"Susi K. hatte 5 leere Malzbier-Kästen versteckt.", culprit:"Susi K.", solutionText:"Susi K. wollte einen 'nüchternen und gesunden Festtag' erzwingen.", bonusAnswer:"Vitamalz Classic" },
-            { id: 38, tag: "🍂 Herbst", title: "Der Laubhaufen-Anschlag", desc: "Der zusammengekehrte Laubhaufen wurde mit dem Laubbläser wieder verteilt!", suspects: [{name:"Nikolaos", role:"Laubbläser-Fan", desc:"Liebt laute Geräte"}, {name:"Uwe", role:"Verzweifelt", desc:"Putzt ständig"}, {name:"Matthias", role:"Tollpatsch", desc:"Toben gerne"}], bonusQuestion:"Welches Blatt lag im Flur?", clue1:"Uwe saß entnervt in der Pause.", clue2:"Nikolaos hatte den Laubbläser noch auf 'Stufe Max' eingestellt.", culprit:"Nikolaos", solutionText:"Nikolaos wollte die Saug-Funktion testen, schaltete aber auf 'Pusten'!", bonusAnswer:"Ahorn-Blatt Rot" },
-            { id: 39, tag: "🍂 Herbst", title: "Der Kürbiskopf-Räuber", desc: "Der 20-Kilo-Riesenkürbis wurde nachts vom Eingangsportal gestohlen!", suspects: [{name:"Klaus", role:"Züchter", desc:"Neidisch"}, {name:"Susi H.", role:"Köchin", desc:"Sucht Kürbissuppe"}, {name:"Thorsten", role:"Halloween-Fan", desc:"Schnitzt Gesichter"}], bonusQuestion:"Welche Kürbis-Rasse war es?", clue1:"Susi H. kaufte Hokkaido im Laden.", clue2:"Thorsten hatte Kürbisfleisch-Spuren an seinem Schnitzmesser.", culprit:"Thorsten", solutionText:"Thorsten wollte den größten Grusel-Kürbis der Stadt schnitzen.", bonusAnswer:"Atlantic Giant" },
-            { id: 40, tag: "🍂 Herbst", title: "Der Drachen-Verhedderer", desc: "Der bunte Herbstdrachen verfing sich in der Antenne auf dem Dach!", suspects: [{name:"Sandy", role:"Drachenfliegerin", desc:"Steuert steil"}, {name:"Alexander", role:"Techniker", desc:"Genervt"}, {name:"Mary", role:"Spielt im Hof", desc:"Verlor die Schnur"}], bonusQuestion:"Welche Farbe hatte die Drachenschnur?", clue1:"Alexander stieg erst nach dem Unfall aufs Dach.", clue2:"Sandys Drachenspule hatte keine Schnur mehr.", culprit:"Sandy", solutionText:"Sandy unterschätzte die stürmische Herbstböe völlig.", bonusAnswer:"Neongelbe Drachenschnur" },
-            { id: 41, tag: "🍂 Herbst", title: "Der Kastanien-Maniak", desc: "1000 Kastanien wurden im Treppenhaus verstreut – Rutschgefahr!", suspects: [{name:"Gerd", role:"Sammler", desc:"Trägt Eimer"}, {name:"Evangelos", role:"Bastler", desc:"Baut Kastanienmännchen"}, {name:"Marcel", role:"Prankster", desc:"Versteckt sich"}], bonusQuestion:"Welche Figur wurde aus den Kastanien gebaut?", clue1:"Gerd stellte seine Eimer geordnet im Keller ab.", clue2:"Marcel prahlte mit seiner 'Kastanien-Falle'.", culprit:"Marcel", solutionText:"Marcel wollte eine Rutschbahn bauen – völlig unverantwortlich!", bonusAnswer:"Kastanien-Schlange" },
-            { id: 42, tag: "🍂 Herbst", title: "Der Apfelmost-Räuber", desc: "Das frisch gepresste Fass Apfelmost verschwand aus der Kelterei!", suspects: [{name:"Guiseppe", role:"Genießer", desc:"Liebt frischen Most"}, {name:"Albert", role:"Besitzer", desc:"Sucht das Fass"}, {name:"Tatjana", role:"Produzentin", desc:"Braucht Apfelessig"}], bonusQuestion:"Welche Apfelsorte wurde gemostet?", clue1:"Albert hatte die Schlüssel im Haus.", clue2:"Guiseppe wurde mit Most-Flecken am Hemd erwischt.", culprit:"Guiseppe", solutionText:"Guiseppe wollte das Fass für seine private Herbstfete abzweigen.", bonusAnswer:"Elstar & Boskoop" },
-            { id: 43, tag: "🍂 Herbst", title: "Der Regenschirm-Vertauscher", desc: "An einem Regentag wurden alle Regenschirme durch kaputte Exemplare ersetzt!", suspects: [{name:"Andreas", role:"Händler", desc:"Sucht Schirme"}, {name:"Nikolaos", role:"Verwirrt", desc:"Nimmt den falschen"}, {name:"Susi K.", role:"Mitarbeiterin", desc:"Ärgert sich"}], bonusQuestion:"Welche Farbe hatte der Hauptschirm?", clue1:"Andreas verkaufte neue Schirme im Laden.", clue2:"Nikolaos hatte versehentlich seinen kaputten Schirm-Sack eingepackt.", culprit:"Nikolaos", solutionText:"Nikolaos verwechselte seinen Schirmsack mit dem Ständer am Eingang.", bonusAnswer:"Schwarz mit roten Punkten" },
-            { id: 44, tag: "🎃 Halloween-Special", title: "Das Gespenst von KW 44", desc: "In der Halloween-Nacht stahl ein 'Gespenst' das Süßigkeiten-Lager!", suspects: [{name:"Mary", role:"Kostümfan", desc:"Trägt Betttuch"}, {name:"Sandy", role:"Naschkatze", desc:"Liebt Halloween-Schoki"}, {name:"Thorsten", role:"Vampir", desc:"Trägt Fledermäuse"}], bonusQuestion:"Woraus bestand das Gespenster-Kostüm?", clue1:"Thorsten war beim Auftritt im Theater.", clue2:"Sandy hatte weiße Laken-Fasern und Schokoflecken am Ärmel.", culprit:"Sandy", solutionText:"Sandy verkleidete sich als Gespenst, um ungesehen das Naschlager zu leeren.", bonusAnswer:"Weißes Bettlaken mit Augenausschnitt" },
-            { id: 45, tag: "🍂 Herbst", title: "Der St. Martin Laternen-Klau", desc: "Die 2-Meter-Riesen-Laterne für den St. Martins-Umzug verschwand!", suspects: [{name:"Matthias", role:"Bastler", desc:"Stolz auf die Laterne"}, {name:"Klaus", role:"Reiter", desc:"Pferd erschrak sich"}, {name:"Uwe", role:"Nachbar", desc:"Will die beste Laterne"}], bonusQuestion:"Welches Motiv hatte die Riesen-Laterne?", clue1:"Matthias suchte verzweifelt im Schuppen.", clue2:"In Uwes Werkstatt klebten Papierreste und Draht der Riesen-Laterne.", culprit:"Uwe", solutionText:"Uwe wollte die Laterne als seine eigene beim Umzug präsentieren.", bonusAnswer:"Sonne, Mond und Sterne" },
-            { id: 46, tag: "🍂 Late Fall", title: "Der Weckmann-Rosinen-Räuber", desc: "Aus 100 frischen Weckmännern wurden alle Rosinen herausgepickt!", suspects: [{name:"Hendrik", role:"Liebt Rosinen", desc:"Hasst Teig"}, {name:"Guiseppe", role:"Bäcker", desc:"Backte Weckmänner"}, {name:"Susi H.", role:"Organisatorin", desc:"Verteilt Gebäck"}], bonusQuestion:"Wie viele Rosinen wurden herausgepickt?", clue1:"Guiseppe lieferte die Weckmänner komplett ab.", clue2:"Hendriks Finger waren braun klebrig von Rosinen-Saft.", culprit:"Hendrik", solutionText:"Hendrik liebt Rosinen abgöttisch, verabscheut aber den Hefe-Teig.", bonusAnswer:"Exakt 200 Rosinen" },
-            { id: 47, tag: "🍂 Late Fall", title: "Der Thermostat-Schock", desc: "Jemand stellte die Heizung nachts auf 30 Grad – Tropenhitze im Raum!", suspects: [{name:"Tatjana", role:"Friert immer", desc:"Trägt 3 Pullover"}, {name:"Gerd", role:"Sparfuchs", desc:"Gegen Hitze"}, {name:"Nikolaos", role:"Techniker", desc:"Prüft Rohre"}], bonusQuestion:"Auf wie viel Grad stand der Regler?", clue1:"Gerd kontrolliert die Zähler morgens.", clue2:"Tatjana gab zu, dass ihr abends im Büro extrem kalt war.", culprit:"Tatjana", solutionText:"Tatjana wollte am nächsten Morgen einen schön warmen Raum vorfinden.", bonusAnswer:"30 Grad Maximum" },
-            { id: 48, tag: "🍂 Late Fall", title: "Der Spekulatius-Raub", desc: "50 Packungen Gewürz-Spekulatius wurden aus dem Vorratslager entwendet!", suspects: [{name:"Albert", role:"Gebäck-Fan", desc:"Isst Spekulatius ab September"}, {name:"Evangelos", role:"Lagerist", desc:"Zählt Pakete"}, {name:"Susi K.", role:"Mitarbeiterin", desc:"Bäckt selber"}], bonusQuestion:"Welches Gewürz roch man im Flur?", clue1:"Susi K. bäckt nur Zimtsterne.", clue2:"Im Büro von Albert lagen 50 leere Spekulatius-Hüllen im Papierkorb.", culprit:"Albert", solutionText:"Albert konnte der Spekulatius-Sucht im Spätherbst nicht widerstehen.", bonusAnswer:"Zimt & Kardamom" },
-            { id: 49, tag: "🎅 Nikolaus-Special (6. Dez)", title: "Der Raub der Nikolaus-Stiefel", desc: "In der Nacht zum 6. Dezember wurden alle bereitgestellten Stiefel geklaut!", suspects: [{name:"Marcel", role:"Grießgram", desc:"Mag keine Geschenke"}, {name:"Andreas", role:"Schuh-Fan", desc:"Sucht Stiefel"}, {name:"Nikolaos", role:"Darsteller", desc:"Sucht Geschenke"}], bonusQuestion:"Was lag statt Schokolade in den Stiefeln?", clue1:"Nikolaos füllte die Stiefel vorschriftsmäßig.", clue2:"Marcel hatte den Sack voller Stiefel im Keller.", culprit:"Marcel", solutionText:"Marcel wollte den Kolleginnen und Kollegen einen bösen Streich spielen.", bonusAnswer:"Trockene Kohlen-Stücke" },
-            { id: 50, tag: "🕯️ 2. Advent Special", title: "Der Knabber-Anschlag auf den Adventskranz", desc: "Am 2. Advent wurden alle Tannenzweige des Kranzes kahlgezupft!", suspects: [{name:"Mary", role:"Floristin", desc:"Brauchte Zweige"}, {name:"Thorsten", role:"Deko-Hasser", desc:"Gegen Kränze"}, {name:"Sandy", role:"Kollektiv-Fan", desc:"Sucht Tannen"}], bonusQuestion:"Welche Kerzenfarbe brannte auf dem Kranz?", clue1:"Thorsten saß gemütlich bei Plätzchen.", clue2:"Mary hatte die Tannennadeln an ihrer Schürze kleben.", culprit:"Mary", solutionText:"Mary brauchte dichte Tannenzweige für ein Last-Minute-Gesteck.", bonusAnswer:"Klassisch Rot" },
-            { id: 51, tag: "🕯️ 3. Advent Special", title: "Der Glühwein-Punsch-Pirat", desc: "Der komplette 30-Liter-Glühweintopf wurde durch Früchtetee ersetzt!", suspects: [{name:"Guiseppe", role:"Chef-Punscher", desc:"Achtet auf Qualität"}, {name:"Uwe", role:"Abstinenz-Fan", desc:"Gegen Alkohol"}, {name:"Tatjana", role:"Genießerin", desc:"Sucht Geschmack"}], bonusQuestion:"Welche Teesorte wurde verwendet?", clue1:"Guiseppe kochte nach Original-Rezept.", clue2:"Uwe hinterließ 10 leere Früchtetee-Packungen in der Mülltonne.", culprit:"Uwe", solutionText:"Uwe wollte einen vollkommen nüchternen Advent für alle erzwingen.", bonusAnswer:"Hagebutte-Zimt-Tee" },
-            { id: 52, tag: "🎄 WEIHNACHTS-FINALE 2026 (24.12.)", title: "Der Diebstahl der Goldenen Christbaum-Spitze & Krönung des Jahressiegers", desc: "HEILIGABEND 2026! Der goldene Engel von der Tannenbaumspitze im Festsaal ist verschwunden! Wer war es kurz vor der großen Jahressiegerehrung?", suspects: [{name:"Gerd", role:"Grinch", desc:"Hasst Glanz"}, {name:"Susi H.", role:"Festleitung", desc:"Im Stress"}, {name:"Die Spielleitung selbst!", role:"Spielemacher", desc:"Wollte den finalen Showdown!"}], bonusQuestion:"Wo war die Engelspitze versteckt?", clue1:"Gerd feierte dieses Jahr fröhlich mit.", clue2:"Susi H. schmückte friedlich den Baum.", culprit:"Die Spielleitung selbst!", solutionText:"Die Spielleitung hat den Engel im Geschenkkorb des JAHRESSIEGERS 2026 versteckt! Frohe Weihnachten und Glückwunsch an den Champion!", bonusAnswer:"Im Sieger-Geschenkkorb" }
-        ];
+        </div>
 
-        CASES_2026.sort((a, b) => a.id - b.id);
+        <!-- RIGHT COLUMN: CLUES & TIPP ACTION -->
+        <div class="space-y-6">
 
-        // SMART MERGER: Guarantees 19 DEFAULT MEMBERS ARE ALWAYS INCLUDED
-        function getMergedPlayersList(rawList) {
-            const map = new Map();
+          <!-- 3. HINWEIS-SPUREN -->
+          <div class="comic-box bg-white p-5">
+            <h3 class="text-lg font-black font-comic text-slate-900 flex items-center space-x-2 pb-3 border-b-2 border-black/10">
+              <i class="fa-solid fa-mask text-purple-600"></i>
+              <span>3. HINWEIS-SPUREN</span>
+            </h3>
+
+            <div class="space-y-4 mt-4">
+              
+              <!-- HINWEIS 1 -->
+              <div id="clue1-box" class="p-4 rounded-xl border-2 border-black bg-slate-100 transition-all">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="font-bold text-xs uppercase text-slate-600">Hinweis 1 (Mittwoch)</span>
+                  <i id="clue1-icon" class="fa-solid fa-lock text-slate-400"></i>
+                </div>
+                <div id="clue1-text" class="text-sm italic text-slate-500">
+                  🔒 Wird erst am Mittwoch enthüllt...
+                </div>
+              </div>
+
+              <!-- HINWEIS 2 -->
+              <div id="clue2-box" class="p-4 rounded-xl border-2 border-black bg-slate-100 transition-all">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="font-bold text-xs uppercase text-slate-600">Hinweis 2 (Donnerstag)</span>
+                  <i id="clue2-icon" class="fa-solid fa-lock text-slate-400"></i>
+                </div>
+                <div id="clue2-text" class="text-sm italic text-slate-500">
+                  🔒 Wird erst am Donnerstag enthüllt...
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- SOLUTION BOX (FREITAG/WOCHENENDE) -->
+          <div id="solution-box" class="comic-box bg-emerald-200 p-5 hidden">
+            <h3 class="text-lg font-black font-comic text-slate-900 flex items-center space-x-2 pb-2 border-b-2 border-black/20">
+              <i class="fa-solid fa-check-circle text-emerald-700"></i>
+              <span>4. AUFLÖSUNG (FREITAG)</span>
+            </h3>
+            <div class="mt-3 bg-white p-3 rounded-xl border-2 border-black space-y-2">
+              <div>
+                <span class="text-[10px] font-bold uppercase text-slate-500 block">Überführter Täter:</span>
+                <span id="solution-culprit" class="font-black font-comic text-2xl text-emerald-600">--</span>
+              </div>
+              <div>
+                <span class="text-[10px] font-bold uppercase text-slate-500 block">Auflösung & Motiv:</span>
+                <p id="solution-text" class="text-xs font-semibold text-slate-800 leading-relaxed mt-0.5">--</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- TIP SUBMISSION PROMPT -->
+          <div class="comic-box bg-purple-300 p-6 text-center space-y-4">
+            <div class="w-12 h-12 bg-amber-400 rounded-2xl border-3 border-black mx-auto flex items-center justify-center text-xl shadow-[3px_3px_0px_#000]">
+              ✏️
+            </div>
+            <div>
+              <h3 class="text-xl font-black font-comic text-slate-900 uppercase">DEINE VERMUTUNG ABGEBEN?</h3>
+              <p class="text-xs font-bold text-slate-800 mt-1">
+                Gib deinen offiziellen Anklagetipp ab. Jeder Ermittler hat <strong>genau 1 Versuch pro Woche</strong>!
+              </p>
+            </div>
+            <button onclick="switchTab('tippen')" class="comic-btn w-full bg-pink-500 hover:bg-pink-600 text-white font-black py-3 rounded-xl text-sm uppercase tracking-wide">
+              JETZT TIPP EINREICHEN
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- TAB 2: TIPPEN (NUR 1 TIPP PRO WOCHE) -->
+    <div id="tab-tippen" class="hidden space-y-6">
+
+      <div class="comic-box bg-white p-6 max-w-2xl mx-auto">
+        <div class="text-center pb-4 border-b-2 border-black/10">
+          <span class="bg-amber-300 text-black font-black text-xs px-3 py-1 rounded-full border border-black uppercase">
+            Offizielle Anklageschrift
+          </span>
+          <h2 class="text-3xl font-black font-comic text-slate-900 mt-2 uppercase">
+            ERMITTLER-TIPP ABGEBEN
+          </h2>
+          <p class="text-xs font-semibold text-slate-600 mt-1">
+            Wähle deinen Namen aus, um deinen Wochen-Tipp einzureichen oder einzusehen.
+          </p>
+          <div id="early-bonus-banner" class="mt-3 bg-pink-100 border-2 border-black text-pink-700 font-bold text-xs p-2 rounded-xl flex items-center justify-center space-x-1.5 shadow-[2px_2px_0px_#000]">
+            <span>⚡ SCHNELLABGABE-BONUS: Tippe am Montag oder Dienstag für +2 EXTRA-PUNKTE!</span>
+          </div>
+        </div>
+
+        <form id="tip-form" onsubmit="handleTipSubmit(event)" class="mt-6 space-y-5">
+          
+          <!-- ERMITTLER WAHL -->
+          <div>
+            <label class="block font-black text-sm uppercase text-slate-900 mb-1">
+              1. Wer bist du? (Ermittler-Name)
+            </label>
+            <select id="tip-investigator" onchange="checkExistingTipStatus()" class="w-full p-3 rounded-xl border-3 border-black font-bold bg-amber-50 focus:outline-none focus:ring-2 focus:ring-pink-500">
+              <option value="">-- Bitte Namen auswählen --</option>
+            </select>
+          </div>
+
+          <!-- DYNAMIC CONTENT AREA FOR LOCK STATUS OR FORM -->
+          <div id="tip-lock-container" class="space-y-5">
             
-            // 1. Put all 19 default members into the map
-            DEFAULT_TEAM_MEMBERS.forEach(name => {
-                map.set(name.toLowerCase(), { name, points: 0, solvedCases: 0, deleted: false });
-            });
+            <!-- SUSPECT SELECTION -->
+            <div>
+              <label class="block font-black text-sm uppercase text-slate-900 mb-1">
+                2. Welcher Verdächtige ist der Täter?
+              </label>
+              <select id="tip-suspect" required class="w-full p-3 rounded-xl border-3 border-black font-bold bg-white focus:outline-none focus:ring-2 focus:ring-pink-500">
+                <option value="">-- Verdächtigen wählen --</option>
+              </select>
+            </div>
 
-            // 2. Overlay any saved / passed player data
-            if (Array.isArray(rawList)) {
-                rawList.forEach(p => {
-                    if (p && p.name) {
-                        const key = p.name.toLowerCase();
-                        if (p.deleted) {
-                            map.delete(key);
-                        } else {
-                            const existing = map.get(key) || { name: p.name, points: 0, solvedCases: 0 };
-                            map.set(key, {
-                                ...existing,
-                                ...p,
-                                points: (p.points !== undefined) ? p.points : existing.points
-                            });
-                        }
-                    }
-                });
-            }
+            <!-- BONUS QUESTION -->
+            <div>
+              <label class="block font-black text-sm uppercase text-slate-900 mb-1">
+                3. Zusatzfrage (+1 Punkt):
+              </label>
+              <p id="tip-bonus-q-label" class="text-xs text-slate-600 mb-2 font-semibold">Lade Frage...</p>
+              <input type="text" id="tip-bonus-answer" placeholder="Deine Antwort hier eingeben..." required class="w-full p-3 rounded-xl border-3 border-black font-semibold bg-white focus:outline-none focus:ring-2 focus:ring-pink-500">
+            </div>
 
-            return Array.from(map.values());
+            <!-- SUBMIT BUTTON -->
+            <button type="submit" id="submit-tip-btn" class="comic-btn w-full bg-emerald-400 hover:bg-emerald-500 text-black font-black py-3.5 rounded-xl text-base uppercase tracking-wider flex items-center justify-center space-x-2">
+              <i class="fa-solid fa-lock"></i>
+              <span>TIPP VERBINDLICH EINREICHEN</span>
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+
+    <!-- TAB 3: RANGLISTE -->
+    <div id="tab-rangliste" class="hidden space-y-6">
+
+      <div class="comic-box bg-white p-6">
+        <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b-2 border-black/10">
+          <div>
+            <h2 class="text-3xl font-black font-comic text-slate-900 uppercase">
+              MEISTER-ERMITTLER RANGLISTE 2026
+            </h2>
+            <p class="text-xs font-semibold text-slate-600 mt-1">
+              Punktestand aller Kollegen im Saisonverlauf
+            </p>
+          </div>
+          <div class="bg-amber-100 border-2 border-black rounded-xl px-4 py-2 flex items-center space-x-2">
+            <i class="fa-solid fa-award text-amber-600 text-xl"></i>
+            <span class="text-xs font-bold text-slate-800">🎯 Täter: 3 Pkt. | ⚡ Schnellabgabe (Mo/Di): +2 Pkt. | ❓ Zusatzfrage: 1 Pkt.</span>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto mt-6">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b-3 border-black text-slate-900 font-black text-sm uppercase bg-amber-100">
+                <th class="p-3 rounded-tl-xl">Rang</th>
+                <th class="p-3">Ermittler</th>
+                <th class="p-3 text-center">KW-Tipps</th>
+                <th class="p-3 text-right rounded-tr-xl">Gesamtpunkte</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-body" class="divide-y-2 divide-slate-200 font-bold text-slate-800">
+              <!-- Leaderboard rows dynamically rendered -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ADMIN MODAL -->
+  <div id="admin-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="comic-box bg-white max-w-xl w-full p-6 space-y-5 max-h-[90vh] overflow-y-auto">
+      
+      <div class="flex items-center justify-between pb-3 border-b-2 border-black/10">
+        <h3 class="text-2xl font-black font-comic text-slate-900 uppercase flex items-center space-x-2">
+          <i class="fa-solid fa-user-shield text-pink-500"></i>
+          <span>ADMIN-ZENTRALE</span>
+        </h3>
+        <button onclick="closeAdminModal()" class="w-8 h-8 rounded-full border-2 border-black bg-slate-100 hover:bg-slate-200 font-black">✕</button>
+      </div>
+
+      <!-- PIN AUTHENTICATION -->
+      <div id="admin-auth-sec" class="space-y-3">
+        <p class="text-xs font-bold text-slate-600">Bitte den Admin-Code eingeben:</p>
+        <div class="flex space-x-2">
+          <input type="password" id="admin-pin" placeholder="PIN" class="p-2.5 border-2 border-black rounded-xl font-bold w-full">
+          <button onclick="unlockAdmin()" class="comic-btn bg-pink-500 text-white font-bold px-4 py-2 rounded-xl text-sm uppercase">Freischalten</button>
+        </div>
+      </div>
+
+      <!-- ADMIN CONTROLS (HIDDEN UNTIL UNLOCKED) -->
+      <div id="admin-controls" class="hidden space-y-6">
+        
+        <!-- STATUS & RE-LOCK BUTTON -->
+        <div class="flex items-center justify-between pb-2 border-b-2 border-black/10">
+          <span class="text-xs font-bold text-emerald-600 flex items-center gap-1.5">
+            <i class="fa-solid fa-circle-check"></i> Admin-Modus aktiv
+          </span>
+          <button onclick="lockAdmin()" class="comic-btn bg-red-500 hover:bg-red-600 text-white font-bold px-3 py-1.5 rounded-xl text-xs uppercase flex items-center space-x-1.5">
+            <i class="fa-solid fa-lock"></i>
+            <span>Admin-Modus sperren</span>
+          </button>
+        </div>
+
+        <!-- KW SELECTION -->
+        <div class="bg-amber-50 p-4 rounded-xl border-2 border-black space-y-3">
+          <h4 class="font-black text-sm uppercase text-slate-900">1. Spielwoche wählen</h4>
+          <div class="flex items-center space-x-2">
+            <select id="admin-week-select" onchange="changeAdminWeek()" class="p-2 border-2 border-black rounded-xl font-bold bg-white text-sm">
+              <!-- 52 weeks options -->
+            </select>
+            <button onclick="resetToAutoWeek()" class="comic-btn bg-cyan-300 text-black font-bold px-3 py-2 rounded-xl text-xs uppercase">
+              ➔ Aktuelle KW laden
+            </button>
+          </div>
+        </div>
+
+        <!-- MANAGE INVESTIGATORS & DIRECT POINT ASSIGNMENT -->
+        <div class="bg-cyan-50 p-4 rounded-xl border-2 border-black space-y-3">
+          <h4 class="font-black text-sm uppercase text-slate-900">2. Ermittler verwalten & Punkte zuweisen</h4>
+          
+          <div class="flex space-x-2">
+            <input type="text" id="new-player-name" placeholder="Neuer Ermittler Name" class="p-2 border-2 border-black rounded-xl font-bold text-sm flex-1">
+            <button onclick="addNewPlayer()" class="comic-btn bg-emerald-400 text-black font-bold px-3 py-2 rounded-xl text-xs uppercase">+ Hinzufügen</button>
+          </div>
+
+          <div id="admin-player-list" class="max-h-60 overflow-y-auto space-y-2 pt-2 border-t border-black/10">
+            <!-- Player list for score edits and direct point assignment -->
+          </div>
+
+          <button onclick="resetDefaultPlayers()" class="comic-btn bg-amber-200 text-slate-800 font-bold px-3 py-1.5 rounded-lg text-xs w-full text-center mt-2">
+            ↺ 19 Standard-Spieler wiederherstellen
+          </button>
+        </div>
+
+        <!-- SUBMITTED TIPS OVERVIEW & UNLOCK -->
+        <div class="bg-purple-50 p-4 rounded-xl border-2 border-black space-y-3">
+          <h4 class="font-black text-sm uppercase text-slate-900">3. Eingereichte Tipps dieser Woche (Freigabe/Reset)</h4>
+          <div id="admin-tips-overview" class="max-h-48 overflow-y-auto space-y-2 text-xs font-semibold">
+            <!-- Submitted tips listed here -->
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CONFIRMATION MODAL FOR TIP LOCK -->
+  <div id="confirm-tip-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="comic-box bg-white max-w-md w-full p-6 text-center space-y-4">
+      <div class="w-14 h-14 bg-amber-400 border-3 border-black rounded-2xl mx-auto flex items-center justify-center text-2xl shadow-[3px_3px_0px_#000]">
+        🔒
+      </div>
+      <h3 class="text-2xl font-black font-comic text-slate-900 uppercase">TIPP VERBINDLICH EINREICHEN?</h3>
+      <p class="text-xs font-bold text-slate-700 leading-relaxed">
+        Bist du sicher? Nach dem Absenden ist dein Tipp für diese Kalenderwoche unumkehrbar <strong class="text-pink-600">versiegelt</strong>!
+      </p>
+
+      <div class="bg-amber-50 p-3 rounded-xl border-2 border-black text-left text-xs font-bold space-y-1">
+        <div>Ermittler: <span id="confirm-investigator" class="text-slate-900">--</span></div>
+        <div>Täter-Verdacht: <span id="confirm-suspect" class="text-pink-600">--</span></div>
+        <div>Zusatzantwort: <span id="confirm-answer" class="text-slate-800">--</span></div>
+      </div>
+
+      <div class="flex space-x-3 pt-2">
+        <button onclick="closeConfirmModal()" class="comic-btn w-1/2 bg-slate-200 text-black font-bold py-2.5 rounded-xl text-xs uppercase">
+          Abbrechen
+        </button>
+        <button onclick="finalizeTipSubmission()" class="comic-btn w-1/2 bg-pink-500 hover:bg-pink-600 text-white font-black py-2.5 rounded-xl text-xs uppercase">
+          Ja, Tipp versiegeln!
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FIREBASE & APPLICATION LOGIC -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // --- 19 DEFAULT INVESTIGATORS ---
+    const DEFAULT_PLAYERS = [
+      "Guiseppe", "Nikolaos", "Sandy", "Susi K.", 
+      "Tatjana", "Thorsten", "Uwe", "Susi H.", 
+      "Mary", "Matthias", "Hendrik", "Marcel", 
+      "Albert", "Alexander", "Andreas", "Evangelos", 
+      "Gerd", "Jörg"
+    ];
+
+    // --- INDIVIDUAL PLAYER CARD CROPPING MAPPINGS ---
+    const PLAYER_CARDS = {
+      "Guiseppe": { src: "karten1.jpg", cropClass: "crop-top-left" },
+      "Nikolaos": { src: "karten1.jpg", cropClass: "crop-top-right" },
+      "Sandy": { src: "karten1.jpg", cropClass: "crop-bottom-left" },
+      "Susi K.": { src: "karten1.jpg", cropClass: "crop-bottom-right" },
+
+      "Tatjana": { src: "karten2.jpg", cropClass: "crop-top-left" },
+      "Thorsten": { src: "karten2.jpg", cropClass: "crop-top-right" },
+      "Uwe": { src: "karten2.jpg", cropClass: "crop-bottom-left" },
+      "Susi H.": { src: "karten2.jpg", cropClass: "crop-bottom-right" },
+
+      "Mary": { src: "karten3.jpg", cropClass: "crop-top-left" },
+      "Matthias": { src: "karten3.jpg", cropClass: "crop-top-right" },
+      "Hendrik": { src: "karten3.jpg", cropClass: "crop-bottom-left" },
+      "Marcel": { src: "karten3.jpg", cropClass: "crop-bottom-right" },
+
+      "Albert": { src: "karten4.jpg", cropClass: "crop-top-left" },
+      "Alexander": { src: "karten4.jpg", cropClass: "crop-top-right" },
+      "Andreas": { src: "karten4.jpg", cropClass: "crop-bottom-left" },
+      "Evangelos": { src: "karten4.jpg", cropClass: "crop-bottom-right" },
+
+      "Gerd": { src: "karten5.jpg", cropClass: "crop-half-left" },
+      "Jörg": { src: "karten5.jpg", cropClass: "crop-half-right" }
+    };
+
+    // --- FULL 52 HANDCRAFTED SEASONAL & HOLIDAY CASES FOR 2026 ---
+    const CASES_DATA = {
+      1: {
+        tag: "❄️ Neujahr",
+        title: "Der Raub der Neujahrs-Glocke",
+        description: "In der Silvesternacht wurde die goldene Neujahrsglocke aus der Empfangshalle gestohlen! Wer steckt dahinter?",
+        suspects: [
+          { name: "Evangelos", role: "Techniker", desc: "War bis spät an der Kaffeemaschine" },
+          { name: "Susi K.", role: "Agentin", desc: "Machte Fotos im Festsaal" },
+          { name: "Gerd", role: "Meister", desc: "Schenkte Sekt am Buffet ein" }
+        ],
+        clue1: "Susi K. trug braune Lederhandschuhe ohne Glitzer.",
+        clue2: "Gerd war bis 02:00 Uhr nachweislich hinter der Bar.",
+        correctSuspect: "Evangelos",
+        question: "Welches Konfetti klebte am Safe?",
+        bonusAnswer: "Silbernes Sternenkonfetti",
+        solutionText: "Evangelos wollte die Glocke für seine private Neujahrs-Show nutzen."
+      },
+      2: {
+        tag: "❄️ Winter",
+        title: "Der verschwundene Möhren-Snack",
+        description: "Der Möhren-Räuber hat dem Riesenschneemann im Hof die Nase geklaut!",
+        suspects: [
+          { name: "Uwe", role: "Drucker", desc: "Liebt Möhrensaft" },
+          { name: "Thorsten", role: "Verdächtiger", desc: "Sucht Vitamine nach dem Lauf" },
+          { name: "Tatjana", role: "Spionin", desc: "Brauchte Gemüsedeko" }
+        ],
+        clue1: "Uwe verbrachte den Morgen im Gewächshaus.",
+        clue2: "Es wurden Frischespuren von Thorstens Laufschuhen gefunden.",
+        correctSuspect: "Thorsten",
+        question: "Aus welchem Gemüse war die Ersatznase?",
+        bonusAnswer: "Gewürzgurke",
+        solutionText: "Thorsten konnte dem Knusper-Snack nach dem Morgenlauf nicht widerstehen!"
+      },
+      3: {
+        tag: "❄️ Winter",
+        title: "Die Eiszapfen-Sabotage",
+        description: "Die Heizung fiel aus. Jemand hat Eisblöcke im Thermostat vom Albert-Büro platziert!",
+        suspects: [
+          { name: "Albert", role: "Leiter", desc: "Beschwert sich ständig über Hitze" },
+          { name: "Mary", role: "Zeugin", desc: "Friert extrem selten" },
+          { name: "Jörg", role: "Strategist", desc: "Spielt gerne Streiche" }
+        ],
+        clue1: "Mary hat ein lückenloses Alibi in der Kantine.",
+        clue2: "Albert hatte dicke Fäustlinge mit Eisspuren an.",
+        correctSuspect: "Albert",
+        question: "Welches Werkzeug lag am Thermostat?",
+        bonusAnswer: "Eiskratzer",
+        solutionText: "Albert wollte es unbedingt erfrischend kühl beim Denken haben."
+      },
+      4: {
+        tag: "❄️ Winter",
+        title: "Der Krapfen-Senf-Attentäter",
+        description: "Sämtliche Krapfen wurden heimlich mit Scharfsenf statt Marmelade gefüllt!",
+        suspects: [
+          { name: "Guiseppe", role: "Spion", desc: "Hat Senf im Fach" },
+          { name: "Marcel", role: "Archivar", desc: "Liebt Faschingsstreiche" },
+          { name: "Sandy", role: "Verdächtige", desc: "Verwechselt oft Dosen" }
+        ],
+        clue1: "Marcel war zur Tatzeit nachweislich im Meeting.",
+        clue2: "Auf dem Senfeimer klebten Fingerspuren von Sandy.",
+        correctSuspect: "Sandy",
+        question: "Welcher Senf wurde verwendet?",
+        bonusAnswer: "Dijon-Senf",
+        solutionText: "Sandy hat im Dämmerschein versehentlich den Senfeimer gegriffen."
+      },
+      5: {
+        tag: "🎭 Karneval",
+        title: "Der Raub der Narrenkappe",
+        description: "Der goldene Faschingsorden ist kurz vor der Feier verschwunden!",
+        suspects: [
+          { name: "Nikolaos", role: "Gefährder", desc: "Vergisst oft Requisiten" },
+          { name: "Susi H.", role: "Ordnungsfan", desc: "Sucht den Orden" },
+          { name: "Gerd", role: "Meister", desc: "Sucht Luftballons für Zaubershow" }
+        ],
+        clue1: "Susi H. war den ganzen Abend am Büfett beschäftigt.",
+        clue2: "Gerd hat bunte Schminke an der Schatulle hinterlassen.",
+        correctSuspect: "Gerd",
+        question: "Welches Konfetti lag in der Schatulle?",
+        bonusAnswer: "Buntglas-Konfetti",
+        solutionText: "Gerd wollte den Orden für seine Zaubershow ausleihen."
+      },
+      6: {
+        tag: "❄️ Winter",
+        title: "Die vertauschten Schlittschuhe",
+        description: "Vor dem Firmen-Eislaufen wurden die Schlittschuhe von Andreas vertauscht!",
+        suspects: [
+          { name: "Andreas", role: "Prüfer", desc: "Sucht seine Kufen" },
+          { name: "Matthias", role: "IT-Guru", desc: "Will das Rennen gewinnen" },
+          { name: "Thorsten", role: "Verdächtiger", desc: "Ärgert sich über Spätstarter" }
+        ],
+        clue1: "Thorsten hat die Halle um 18:00 Uhr zugesperrt.",
+        clue2: "In Matthias' Tasche wurde ein passender Schlüssel gefunden.",
+        correctSuspect: "Matthias",
+        question: "Wo wurden die echten Schuhe versteckt?",
+        bonusAnswer: "Geräteschuppen",
+        solutionText: "Matthias wollte sich ohne Konkurrenz den 1. Platz sichern."
+      },
+      7: {
+        tag: "💘 Valentinstag",
+        title: "Die verschwundenen Riesen-Pralinen", description: "Eine 5-Kilo-Schokoherz-Packung ist spurlos aus dem Aufenthaltsraum verschwunden!",
+        suspects: [
+          { name: "Tatjana", role: "Spionin", desc: "Nascht gerne zum Kaffee" },
+          { name: "Albert", role: "Leiter", desc: "Sucht ein Geschenk" },
+          { name: "Evangelos", role: "Techniker", desc: "Liebt Kakao" }
+        ],
+        clue1: "Albert kaufte Blumen im Laden gegenüber.",
+        clue2: "Tatjana hinterließ braune Fingerspuren am Tisch.",
+        correctSuspect: "Tatjana",
+        question: "An welchem Stuhl klebten Schokoflecken?",
+        bonusAnswer: "Empfangsstuhl",
+        solutionText: "Tatjana konnte beim Anblick des Schokoherzens einfach nicht widerstehen."
+      },
+      8: {
+        tag: "❄️ Winter",
+        title: "Der Thermoskannen-Dieb",
+        description: "In der eisigen Woche wurden alle Thermoskannen aus der Teeküche entwendet.",
+        suspects: [
+          { name: "Uwe", role: "Drucker", desc: "Brauchte Warmgetränke" },
+          { name: "Mary", role: "Zeugin", desc: "Räumt extrem gründlich auf" },
+          { name: "Marcel", role: "Archivar", desc: "Lernt die ganze Nacht" }
+        ],
+        clue1: "Mary schließt die Teeküche nie ab.",
+        clue2: "In Marcels Rucksack klapperten metallische Kannen.",
+        correctSuspect: "Marcel",
+        question: "Welches Getränk war noch heiß?",
+        bonusAnswer: "Kräutertee",
+        solutionText: "Marcel brauchte Dauerkaffee für seine Spätschicht."
+      },
+      9: {
+        tag: "❄️ Winter",
+        title: "Der Yeti-Footprint im Schnee",
+        description: "Riesige 'Yeti-Abdrücke' führten direkt zum Pausenraum-Tresor!",
+        suspects: [
+          { name: "Alexander", role: "Analyst", desc: "War draußen im Schnee" },
+          { name: "Susi K.", role: "Agentin", desc: "Sucht Motive" },
+          { name: "Jörg", role: "Strategist", desc: "Macht gerne Pranks" }
+        ],
+        clue1: "Alexander war beim Vortrag in der Stadt.",
+        clue2: "Jörg besaß riesige Kostümschuhe im Spind.",
+        correctSuspect: "Jörg",
+        question: "Welche Schuhgröße hatte der Yeti?",
+        bonusAnswer: "Größe 52",
+        solutionText: "Jörg wollte Susi K. erschrecken und für Aufsehen sorgen."
+      },
+      10: {
+        tag: "🌱 Frühling",
+        title: "Der Anschlag auf das Blumenbeet",
+        description: "Das Frühlingsbeet am Eingang wurde mit blauer Sprühfarbe verschandelt!",
+        suspects: [
+          { name: "Gerd", role: "Meister", desc: "Liebt blaue Farbe" },
+          { name: "Susi H.", role: "Ordnungsfan", desc: "Ärgert sich über Pollen" },
+          { name: "Nikolaos", role: "Gefährder", desc: "Bastelte Schilder" }
+        ],
+        clue1: "Susi H. war den ganzen Vormittag beim Termin.",
+        clue2: "An Gerds Händen klebte 'Himmelblau' Sprühfarbe.",
+        correctSuspect: "Gerd",
+        question: "Welcher Farbton wurde genutzt?",
+        bonusAnswer: "Himmelblau",
+        solutionText: "Gerd wollte ein modernes Kunstwerk für das Büro gestalten."
+      },
+      11: {
+        tag: "🌱 Frühling",
+        title: "Das Rätsel der 50 Tulpen",
+        description: "50 gelbe Tulpen wurden über Nacht aus dem Beet ausgegraben!",
+        suspects: [
+          { name: "Sandy", role: "Verdächtige", desc: "Brauchte Blumendoku" },
+          { name: "Andreas", role: "Prüfer", desc: "Stolz auf Tulpen" },
+          { name: "Guiseppe", role: "Spion", desc: "Brauchte Tischdeko" }
+        ],
+        clue1: "Sandy kaufte Tulpen auf dem Großmarkt mit Quittung.",
+        clue2: "In Andreas' Vorgarten blühten plötzlich genau 50 gelbe Tulpen.",
+        correctSuspect: "Andreas",
+        question: "Wo wurden die Tulpen wiedergefunden?",
+        bonusAnswer: "Vorgarten",
+        solutionText: "Andreas wollte den Nachbarschafts-Gartenwettbewerb gewinnen."
+      },
+      12: {
+        tag: "🌱 Frühling",
+        title: "Der Frühjahrsputz-Saboteur",
+        description: "Sämtliche Fensterputzmittel wurden durch Seifenblasen-Flüssigkeit ersetzt!",
+        suspects: [
+          { name: "Hendrik", role: "Kaffeegenießer", desc: "Wollte Pause" },
+          { name: "Thorsten", role: "Verdächtiger", desc: "Liebt Seifenblasen" },
+          { name: "Mary", role: "Zeugin", desc: "Sparsam beim Einkauf" }
+        ],
+        clue1: "Mary war auf Geschäftsreise.",
+        clue2: "Thorsten hatte eine Seifenblasen-Pistole in der Tasche.",
+        correctSuspect: "Thorsten",
+        question: "Welches Motiv hatte die Seifenblasen-Dose?",
+        bonusAnswer: "Smiley",
+        solutionText: "Thorsten wollte für gute Laune beim Putzen sorgen."
+      },
+      13: {
+        tag: "🌱 Frühling",
+        title: "Der Diebstahl der Sonnenuhr",
+        description: "Die historische Bronze-Sonnenuhr wurde vom Sockel im Garten geschraubt.",
+        suspects: [
+          { name: "Matthias", role: "IT-Guru", desc: "Bewundert Antikes" },
+          { name: "Uwe", role: "Drucker", desc: "Sucht Altmetall" },
+          { name: "Albert", role: "Leiter", desc: "Wollte die Uhr umstellen" }
+        ],
+        clue1: "Uwe war nachweislich im Baumarkt.",
+        clue2: "Matthias hatte Bronze-Politur am Ärmel.",
+        correctSuspect: "Matthias",
+        question: "Welcher Schraubenzieher lag am Boden?",
+        bonusAnswer: "Kreuzschlitz",
+        solutionText: "Matthias wollte die Uhr reinigen und in seinem Büro ausstellen."
+      },
+      14: {
+        tag: "🐰 Ostern",
+        title: "Der Raub der goldenen Ostereier",
+        description: "Die riesige Schoko-Eier-Lieferung für das Team ist spurlos verschwunden!",
+        suspects: [
+          { name: "Evangelos", role: "Techniker", desc: "Versteckt gerne Dinge" },
+          { name: "Susi K.", role: "Agentin", desc: "Liebt Vollmilch" },
+          { name: "Hendrik", role: "Kaffeegenießer", desc: "Hatte den Schlüssel" }
+        ],
+        clue1: "Evangelos war beim Fest im Nachbardorf.",
+        clue2: "Hendrik hatte Schokoflecken am Lieferschein.",
+        correctSuspect: "Hendrik",
+        question: "In welchem Versteck lagen die Eier?",
+        bonusAnswer: "Heizungskeller",
+        solutionText: "Hendrik wollte die Eier vorab für sich sichern."
+      },
+      15: {
+        tag: "🐰 Ostern",
+        title: "Die vertauschten Ostereier-Farben",
+        description: "Alle Ostereier wurden mit wasserlöslicher Tinte statt echter Farbe bemalt!",
+        suspects: [
+          { name: "Tatjana", role: "Spionin", desc: "Nimmt Wasserfarben" },
+          { name: "Marcel", role: "Archivar", desc: "Hatte Tuschkasten dabei" },
+          { name: "Susi H.", role: "Ordnungsfan", desc: "Planerin" }
+        ],
+        clue1: "Susi H. kaufte Eierfarbe im Supermarkt.",
+        clue2: "Marcels Tuschkasten fehlte die blaue Tuschschale.",
+        correctSuspect: "Marcel",
+        question: "Welche Farbe färbte am stärksten ab?",
+        bonusAnswer: "Preußisch-Blau",
+        solutionText: "Marcel wollte die Malarbeit abkürzen und nahm seinen Tuschkasten."
+      },
+      16: {
+        tag: "🌱 Frühling",
+        title: "Der Anschlag auf das Vogelhaus",
+        description: "Das frisch gebaute Vogelhaus wurde mit Kaugummi komplett verklebt!",
+        suspects: [
+          { name: "Jörg", role: "Strategist", desc: "Kaut den ganzen Tag Kaugummi" },
+          { name: "Gerd", role: "Meister", desc: "Kritisiert den Bau" },
+          { name: "Nikolaos", role: "Gefährder", desc: "Beobachtet Vögel" }
+        ],
+        clue1: "Jörg hatte eine leere Packung 'Erdbeer-Bubble' in der Tasche.",
+        clue2: "Gerd nutzte Holzleim, keinen Kaugummi.",
+        correctSuspect: "Jörg",
+        question: "Welche Kaugummi-Sorte war es?",
+        bonusAnswer: "Erdbeer",
+        solutionText: "Jörg wollte das wackelnde Dach 'spontan' mit Kaugummi reparieren."
+      },
+      17: {
+        tag: "🌱 Frühling",
+        title: "Der entführte Mähroboter",
+        description: "Der Roboter-Rasenmäher fuhr um 03:00 Uhr nachts einfach von alleine davon!",
+        suspects: [
+          { name: "Thorsten", role: "Verdächtiger", desc: "Liebt Fernsteuerungen" },
+          { name: "Andreas", role: "Prüfer", desc: "Hasst Motorenlärm" },
+          { name: "Albert", role: "Leiter", desc: "Wartete das Gerät" }
+        ],
+        clue1: "Andreas schlief um 03:00 Uhr tief und fest.",
+        clue2: "Thorsten prahlte mit seiner neuen Roboter-App.",
+        correctSuspect: "Thorsten",
+        question: "Auf welcher Frequenz steuerte der Täter?",
+        bonusAnswer: "433 MHz",
+        solutionText: "Thorsten wollte testen, ob er den Mäher bis zu seiner Garage steuern kann."
+      },
+      18: {
+        tag: "🌱 Frühling",
+        title: "Die Blütenstaub-Bombe",
+        description: "Eine Blütenstaub-Bombe wurde im Wintergarten gezündet – Niesanfall für alle!",
+        suspects: [
+          { name: "Sandy", role: "Verdächtige", desc: "Sucht Internet-Klicks" },
+          { name: "Guiseppe", role: "Spion", desc: "Hat Bienenstöcke" },
+          { name: "Mary", role: "Zeugin", desc: "Niest ständig" }
+        ],
+        clue1: "Guiseppe war bei seinen Bienenstöcken draußen.",
+        clue2: "Sandy hatte eine gelbe Pulver-Dose in ihrer Prank-Tasche.",
+        correctSuspect: "Sandy",
+        question: "Welche Blumenpollen wurden genutzt?",
+        bonusAnswer: "Rapsblüten",
+        solutionText: "Sandy wollte ein lustiges Prank-Video für die Gruppe drehen."
+      },
+      19: {
+        tag: "🧹 Mai-Feiertag",
+        title: "Der entwendete Maibaum",
+        description: "Der traditionelle 5-Meter-Maibaum verschwand spurlos in der Walpurgisnacht!",
+        suspects: [
+          { name: "Uwe", role: "Drucker", desc: "Traditions-Fan" },
+          { name: "Alexander", role: "Analyst", desc: "Sägt gerne Holz" },
+          { name: "Susi K.", role: "Agentin", desc: "Brauchte Platz" }
+        ],
+        clue1: "Alexander war beim Sägewerk-Einsatz.",
+        clue2: "Uwes Traktor hinterließ frische Reifenspuren am Tor.",
+        correctSuspect: "Uwe",
+        question: "Womit wurde der Baum abtransportiert?",
+        bonusAnswer: "Traktor",
+        solutionText: "Uwe wollte den Baum nach alter Tradition entführen und Auslöse fordern."
+      },
+      20: {
+        tag: "🌱 Frühling",
+        title: "Der Schreck im Gewächshaus",
+        description: "Alle Pflanzentöpfe wurden heimlich mit blauen Schleifen verziert!",
+        suspects: [
+          { name: "Mary", role: "Zeugin", desc: "Liebt Schleifendeko" },
+          { name: "Nikolaos", role: "Gefährder", desc: "Sehr kreativ" },
+          { name: "Gerd", role: "Meister", desc: "Wollte helfen" }
+        ],
+        clue1: "Gerd hat keine blauen Bänder.",
+        clue2: "Mary vermisste ihr blaues Geschenkband-Set.",
+        correctSuspect: "Mary",
+        question: "Wie viele Schleifen wurden gezählt?",
+        bonusAnswer: "24",
+        solutionText: "Mary fand die grünen Töpfe einfach 'zu eintönig'."
+      },
+      21: {
+        tag: "☀️ Sommer",
+        title: "Der Grillfeuer-Löscher-Prank",
+        description: "Mitten beim Sommerfest wurde der heiße Grill mit einem Schaumlöscher gelöscht!",
+        suspects: [
+          { name: "Susi H.", role: "Ordnungsfan", desc: "Übervorsichtig" },
+          { name: "Albert", role: "Leiter", desc: "Sauer über Fleischverlust" },
+          { name: "Marcel", role: "Archivar", desc: "Panik vor Rauch" }
+        ],
+        clue1: "Albert stand geduldig am Wurstteller.",
+        clue2: "Susi H. hielt den leeren Löscher noch in der Hand.",
+        correctSuspect: "Susi H.",
+        question: "Welcher Schaum bedeckte die Würstchen?",
+        bonusAnswer: "Löschschaum",
+        solutionText: "Susi H. sah kleine Funken und geriet in übereifrige Panik."
+      },
+      22: {
+        tag: "☀️ Sommer",
+        title: "Der Diebstahl der Eiscreme-Truhe",
+        description: "Die komplette Eistruhe mit 200 Stiel-Eisen wurde aus der Küche gerollt!",
+        suspects: [
+          { name: "Evangelos", role: "Techniker", desc: "Liebt Erdbeereis" },
+          { name: "Tatjana", role: "Spionin", desc: "Räumt um" },
+          { name: "Jörg", role: "Strategist", desc: "Wartete das Kühlgerät" }
+        ],
+        clue1: "Tatjana war im Meeting.",
+        clue2: "Jörg hatte Eisstiele und Kühlaggregat im Lieferwagen.",
+        correctSuspect: "Jörg",
+        question: "Welches Eis wurde als Erstes gefuttert?",
+        bonusAnswer: "Erdbeer",
+        solutionText: "Jörg wollte die Truhe 'testen' und nahm sie komplett mit."
+      },
+      23: {
+        tag: "☀️ Sommer",
+        title: "Das Loch im Schlauchboot",
+        description: "Vor der Paddeltour wurden alle Schlauchboote mit kleinen Nadelstichen versenkt!",
+        suspects: [
+          { name: "Andreas", role: "Prüfer", desc: "Bleibt lieber an Land" },
+          { name: "Sandy", role: "Verdächtige", desc: "Kapitänin" },
+          { name: "Matthias", role: "IT-Guru", desc: "Angler auf Ruhe-Suche" }
+        ],
+        clue1: "Sandy war beim Steg-Aufbau.",
+        clue2: "Matthias trug eine Ködernadel an seiner Weste.",
+        correctSuspect: "Matthias",
+        question: "Welche Nadel wurde verwendet?",
+        bonusAnswer: "Ködernadel",
+        solutionText: "Matthias wollte keine lauten Paddler an seinem Angelrevier haben."
+      },
+      24: {
+        tag: "☀️ Sommer",
+        title: "Der Flamingo-Klau im Pool",
+        description: "Der 2-Meter-aufblasbare rosa Flamingo ist aus dem Pool verschwunden!",
+        suspects: [
+          { name: "Susi K.", role: "Agentin", desc: "Brauchte Foto-Requisite" },
+          { name: "Alexander", role: "Analyst", desc: "Hasst Plastik im Wasser" },
+          { name: "Thorsten", role: "Verdächtiger", desc: "Nachtschwimmer" }
+        ],
+        clue1: "Alexander war im Kassenhäuschen.",
+        clue2: "Susi K. postete ein Bild mit exakt diesem Flamingo auf dem Dach.",
+        correctSuspect: "Susi K.",
+        question: "Wo tauchte der Flamingo wieder auf?",
+        bonusAnswer: "Dach",
+        solutionText: "Susi K. brauchte das perfekte Foto bei Sonnenuntergang auf dem Dach."
+      },
+      25: {
+        tag: "☀️ Sommer",
+        title: "Die Sonnencreme-Mayonnaise-Falle",
+        description: "Die Sonnencreme LSF 50 wurde heimlich mit Mayonnaise aufgefüllt!",
+        suspects: [
+          { name: "Guiseppe", role: "Spion", desc: "Hat Mayo im Kühlschrank" },
+          { name: "Mary", role: "Zeugin", desc: "Strandgast" },
+          { name: "Marcel", role: "Archivar", desc: "Prankster" }
+        ],
+        clue1: "Guiseppe verkaufte den ganzen Tag Pommes.",
+        clue2: "Marcel hatte Mayo-Tube und leere Sonnencreme-Flasche im Rucksack.",
+        correctSuspect: "Marcel",
+        question: "Welche Mayonnaise-Marke war es?",
+        bonusAnswer: "Delikatess",
+        solutionText: "Marcel hielt es für den 'ultimativen Strand-Gag'."
+      },
+      26: {
+        tag: "☀️ Sommer",
+        title: "Der Raub der Garten-Hängematte",
+        description: "Die gemütlichste Hängematte des Parks wurde samt Seilen entwendet.",
+        suspects: [
+          { name: "Nikolaos", role: "Gefährder", desc: "Sucht Schlafplatz" },
+          { name: "Gerd", role: "Meister", desc: "Gegen Wildcampen" },
+          { name: "Tatjana", role: "Spionin", desc: "Braucht Tücher" }
+        ],
+        clue1: "Gerd war bei der Fütterung.",
+        clue2: "Nikolaos lag 100 Meter weiter in genau dieser Hängematte.",
+        correctSuspect: "Nikolaos",
+        question: "Welcher Knoten wurde geknüpft?",
+        bonusAnswer: "Palstek",
+        solutionText: "Nikolaos brauchte dringend ein ungestörtes Schläfchen im Schatten."
+      },
+      27: {
+        tag: "🏝️ Ferien-Zeit",
+        title: "Das Verschwinden der Reisepässe",
+        description: "Aus dem Tresor der Gruppe fehlten kurz vor der Sommerfahrt alle Pässe!",
+        suspects: [
+          { name: "Uwe", role: "Drucker", desc: "Hat Flugangst" },
+          { name: "Susi H.", role: "Ordnungsfan", desc: "Hektisch" },
+          { name: "Albert", role: "Leiter", desc: "Will pünktlich los" }
+        ],
+        clue1: "Susi H. hatte den Tresorschlüssel um den Hals.",
+        clue2: "Uwe gestand, dass er die Pässe ins Handschuhfach gelegt hatte.",
+        correctSuspect: "Uwe",
+        question: "Wo waren die Pässe versteckt?",
+        bonusAnswer: "Handschuhfach",
+        solutionText: "Uwe wollte die Abfahrt um einen Tag verzögern wegen Flugangst."
+      },
+      28: {
+        tag: "☀️ Sommer",
+        title: "Der Wassermelonen-Mörder",
+        description: "Die 10-Kilo-Preismelone für das Sommerfest wurde im Schuppen zertreten!",
+        suspects: [
+          { name: "Thorsten", role: "Verdächtiger", desc: "Testet seine Muskeln" },
+          { name: "Sandy", role: "Verdächtige", desc: "Brauchte Melone" },
+          { name: "Evangelos", role: "Techniker", desc: "Liebt Melonen" }
+        ],
+        clue1: "Sandy nutzte nur den Mixer in der Küche.",
+        clue2: "Thorstens Sportschuh-Profil passte exakt zum Abdruck im Melonenmatsch.",
+        correctSuspect: "Thorsten",
+        question: "Welcher Schuhabdruck lag im Fruchtfleisch?",
+        bonusAnswer: "Nike",
+        solutionText: "Thorsten wollte demonstrieren, wie stark er zutreten kann – ging schief!"
+      },
+      29: {
+        tag: "☀️ Sommer",
+        title: "Der Stromausfall im Eis-Labor",
+        description: "Die Kühlung fiel aus, weil jemand den Stecker für seine Handy-Ladestation zog!",
+        suspects: [
+          { name: "Mary", role: "Zeugin", desc: "Immer 1% Akku" },
+          { name: "Alexander", role: "Analyst", desc: "Techniker" },
+          { name: "Hendrik", role: "Kaffeegenießer", desc: "Ladekabelsucher" }
+        ],
+        clue1: "Alexander stieg erst nach dem Unfall in den Raum.",
+        clue2: "Marys pinkes Glitzer-Ladekabel steckte genau in der Kühlungs-Dose.",
+        correctSuspect: "Mary",
+        question: "Welches Ladekabel steckte in der Dose?",
+        bonusAnswer: "Glitzerkabel",
+        solutionText: "Mary brauchte dringend Strom für ein Video und zog blind den Stecker."
+      },
+      30: {
+        tag: "☀️ Sommer",
+        title: "Roter Swimmingpool",
+        description: "Das Poolwasser färbte sich über Nacht knallrot!",
+        suspects: [
+          { name: "Guiseppe", role: "Spion", desc: "Arbeitete mit Kirschsaft" },
+          { name: "Marcel", role: "Archivar", desc: "Hat Lebensmittelfarbe" },
+          { name: "Andreas", role: "Prüfer", desc: "Dosierte Chemie" }
+        ],
+        clue1: "Andreas nutzte nur chlorhaltiges Pulver.",
+        clue2: "Marcel wurde mit roten Lebensmittelfarbe-Händen erwischt.",
+        correctSuspect: "Marcel",
+        question: "Was färbte das Wasser wirklich?",
+        bonusAnswer: "Lebensmittelfarbe",
+        solutionText: "Marcel wollte den Pool wie einen 'Vulkan-See' aussehen lassen."
+      },
+      31: {
+        tag: "☀️ Sommer",
+        title: "Die vergoldete Grillzange",
+        description: "Die vergoldete Meister-Grillzange wurde direkt vom Rost entwendet!",
+        suspects: [
+          { name: "Gerd", role: "Meister", desc: "Grillmeister" },
+          { name: "Tatjana", role: "Spionin", desc: "Veggie-Fan gegen Fleisch" },
+          { name: "Matthias", role: "IT-Guru", desc: "Sammelt glänzende Stücke" }
+        ],
+        clue1: "Gerd stand dauerhaft am Rost.",
+        clue2: "Tatjana hatte die Zange im Biomüll versteckt.",
+        correctSuspect: "Tatjana",
+        question: "Wo lag die Zange versteckt?",
+        bonusAnswer: "Biomüll",
+        solutionText: "Tatjana wollte das Grillen stoppen und mehr Gemüsespieße durchsetzen."
+      },
+      32: {
+        tag: "☀️ Sommer-Special",
+        title: "Der Anschlag auf die Hängematte",
+        description: "Die Seile der Hängematte wurden angeritzt – Sturz ins Gras für Albert!",
+        suspects: [
+          { name: "Nikolaos", role: "Gefährder", desc: "Wollte den schattigen Platz" },
+          { name: "Susi K.", role: "Agentin", desc: "Warnte vor mürben Seilen" },
+          { name: "Evangelos", role: "Techniker", desc: "Beobachter" }
+        ],
+        clue1: "Susi K. nutzte nur ihr Klemmbrett.",
+        clue2: "Nikolaos hatte ein Taschenmesser mit Seilfasern in der Tasche.",
+        correctSuspect: "Nikolaos",
+        question: "Welcher Schnitt wurde nachgewiesen?",
+        bonusAnswer: "Messer",
+        solutionText: "Nikolaos war sauer, weil er nie in die Hängematte durfte."
+      },
+      33: {
+        tag: "🍂 Spätsommer",
+        title: "Das Verschwinden der Mappen",
+        description: "100 neue Aktenmappen fehlten plötzlich aus dem zentralen Lagerraum! Spuren führen in den Druckerraum.",
+        suspects: [
+          { name: "Uwe", role: "Drucker", desc: "Braucht Karton" },
+          { name: "Susi H.", role: "Ordnungsfan", desc: "Räumt um" },
+          { name: "Albert", role: "Leiter", desc: "Verstreut Akten" }
+        ],
+        clue1: "Albert war bei der Besprechung im 1. Stock.",
+        clue2: "Susi H. hatte die Mappen im falschen Archiv-Schrank verstaut.",
+        correctSuspect: "Susi H.",
+        question: "Wie viele Mappen waren noch übrig?",
+        bonusAnswer: "10",
+        solutionText: "Susi H. wollte Ordnung schaffen, hat die Mappen aber völlig falsch einsortiert."
+      },
+      34: {
+        tag: "🍂 Spätsommer",
+        title: "Der Limonaden-Raub",
+        description: "Eine Kiste hausgemachte Himbeer-Limonade verschwand vom Balkon.",
+        suspects: [
+          { name: "Thorsten", role: "Verdächtiger", desc: "Überhitzt nach dem Sport" },
+          { name: "Sandy", role: "Verdächtige", desc: "Sucht Zutaten" },
+          { name: "Alexander", role: "Analyst", desc: "Mag Süßes" }
+        ],
+        clue1: "Sandy kaufte Zitronen im Laden.",
+        clue2: "Thorsten hinterließ leere Himbeer-Flaschen unter der Flurbank.",
+        correctSuspect: "Thorsten",
+        question: "Wie viele Flaschen fehlten?",
+        bonusAnswer: "12",
+        solutionText: "Thorsten hatte nach dem Training Bärenhunger und Riesen-Durst."
+      },
+      35: {
+        tag: "🍂 Spätsommer",
+        title: "Der Wespennest-Fehlalarm",
+        description: "Alarm wegen eines angebliche Wespennests – das nur aus Pappmaché war!",
+        suspects: [
+          { name: "Mary", role: "Zeugin", desc: "Ängstlich" },
+          { name: "Hendrik", role: "Kaffeegenießer", desc: "Baut Papp-Figuren" },
+          { name: "Marcel", role: "Archivar", desc: "Wollte Feierabend" }
+        ],
+        clue1: "Mary rannte sofort nach draußen.",
+        clue2: "Marcel hatte Zeitungspapier und Kleister-Reste an den Fingern.",
+        correctSuspect: "Marcel",
+        question: "Woraus bestand das Nest?",
+        bonusAnswer: "Zeitungspapier",
+        solutionText: "Marcel wollte früher nach Hause, um das Fußballspiel zu sehen."
+      },
+      36: {
+        tag: "🍺 Oktoberfest",
+        title: "Der Brezel-Klau auf der Wiesn",
+        description: "Die 1-Meter-Riesenbrezel für den Festanstich wurde entwendet!",
+        suspects: [
+          { name: "Andreas", role: "Prüfer", desc: "Hungrig" },
+          { name: "Tatjana", role: "Spionin", desc: "Trägt Maßkrüge" },
+          { name: "Guiseppe", role: "Spion", desc: "Sucht Souvenir" }
+        ],
+        clue1: "Tatjana trug nur Krüge.",
+        clue2: "Guiseppe knupperte im Zelt an der Riesenbrezel-Ecke.",
+        correctSuspect: "Guiseppe",
+        question: "Welches Salz war auf der Brezel?",
+        bonusAnswer: "Hagelsalz",
+        solutionText: "Guiseppe dachte, die Riesenbrezel sei ein kostenloses Deko-Geschenk."
+      },
+      37: {
+        tag: "🍺 Oktoberfest",
+        title: "Der Malzbier-Trick",
+        description: "Alle Bierkrüge wurden heimlich gegen alkoholfreies Malzbier ausgetauscht!",
+        suspects: [
+          { name: "Susi K.", role: "Agentin", desc: "Gegen Alkohol" },
+          { name: "Evangelos", role: "Techniker", desc: "Sorgt für Ordnung" },
+          { name: "Gerd", role: "Meister", desc: "Zauberer" }
+        ],
+        clue1: "Gerd war auf der Zauberbühne.",
+        clue2: "Susi K. hatte 5 leere Malzbier-Kästen versteckt.",
+        correctSuspect: "Susi K.",
+        question: "Welche Marke Malzbier wurde genutzt?",
+        bonusAnswer: "Vitamalz",
+        solutionText: "Susi K. wollte einen 'nüchternen und gesunden Festtag' erzwingen."
+      },
+      38: {
+        tag: "🍂 Herbst",
+        title: "Der Laubhaufen-Anschlag",
+        description: "Der zusammengekehrte Laubhaufen wurde mit dem Laubbläser wieder im ganzen Hof verteilt!",
+        suspects: [
+          { name: "Nikolaos", role: "Gefährder", desc: "Liebt laute Geräte" },
+          { name: "Uwe", role: "Drucker", desc: "Putzt ständig" },
+          { name: "Matthias", role: "IT-Guru", desc: "Tobt gerne im Laub" }
+        ],
+        clue1: "Uwe saß entnervt in der Pause.",
+        clue2: "Nikolaos hatte den Laubbläser noch auf 'Stufe Max' eingestellt.",
+        correctSuspect: "Nikolaos",
+        question: "Welches Blatt lag im Flur?",
+        bonusAnswer: "Ahorn",
+        solutionText: "Nikolaos wollte die Saug-Funktion testen, schaltete aber auf 'Pusten'!"
+      },
+      39: {
+        tag: "🍂 Herbst",
+        title: "Der Kürbiskopf-Räuber",
+        description: "Der 20-Kilo-Riesenkürbis wurde nachts vom Eingangsportal gestohlen!",
+        suspects: [
+          { name: "Alexander", role: "Analyst", desc: "Züchter" },
+          { name: "Susi H.", role: "Ordnungsfan", desc: "Sucht Kürbissuppe" },
+          { name: "Thorsten", role: "Verdächtiger", desc: "Schnitzt Gesichter" }
+        ],
+        clue1: "Susi H. kaufte Hokkaido im Laden.",
+        clue2: "Thorsten hatte Kürbisfleisch-Spuren an seinem Schnitzmesser.",
+        correctSuspect: "Thorsten",
+        question: "Welche Kürbis-Rasse war es?",
+        bonusAnswer: "Atlantic Giant",
+        solutionText: "Thorsten wollte den größten Grusel-Kürbis der Stadt schnitzen."
+      },
+      40: {
+        tag: "🍂 Herbst",
+        title: "Der Drachen auf dem Dach",
+        description: "Der bunte Herbstdrachen verfing sich in der Antenne auf dem Dach!",
+        suspects: [
+          { name: "Sandy", role: "Verdächtige", desc: "Steuert steil" },
+          { name: "Alexander", role: "Analyst", desc: "Genervt" },
+          { name: "Mary", role: "Zeugin", desc: "Verlor die Schnur" }
+        ],
+        clue1: "Alexander stieg erst nach dem Unfall aufs Dach.",
+        clue2: "Sandys Drachenspule hatte keine Schnur mehr.",
+        correctSuspect: "Sandy",
+        question: "Welche Farbe hatte die Drachenschnur?",
+        bonusAnswer: "Neongelb",
+        solutionText: "Sandy unterschätzte die stürmische Herbstböe völlig."
+      },
+      41: {
+        tag: "🍂 Herbst",
+        title: "Der Kastanien-Maniak",
+        description: "1000 Kastanien wurden im Treppenhaus verstreut – Rutschgefahr!",
+        suspects: [
+          { name: "Gerd", role: "Meister", desc: "Trägt Eimer" },
+          { name: "Evangelos", role: "Techniker", desc: "Baut Kastanienmännchen" },
+          { name: "Marcel", role: "Archivar", desc: "Versteckt sich" }
+        ],
+        clue1: "Gerd stellte seine Eimer geordnet im Keller ab.",
+        clue2: "Marcel prahlte mit seiner 'Kastanien-Falle'.",
+        correctSuspect: "Marcel",
+        question: "Welche Figur wurde aus den Kastanien gebaut?",
+        bonusAnswer: "Schlange",
+        solutionText: "Marcel wollte eine Rutschbahn bauen – völlig unverantwortlich!"
+      },
+      42: {
+        tag: "🍂 Herbst",
+        title: "Der Apfelmost-Räuber",
+        description: "Das frisch gepresste Fass Apfelmost verschwand aus der Kelterei!",
+        suspects: [
+          { name: "Guiseppe", role: "Spion", desc: "Liebt frischen Most" },
+          { name: "Albert", role: "Leiter", desc: "Sucht das Fass" },
+          { name: "Tatjana", role: "Spionin", desc: "Braucht Apfelessig" }
+        ],
+        clue1: "Albert hatte die Schlüssel im Haus.",
+        clue2: "Guiseppe wurde mit Most-Flecken am Hemd erwischt.",
+        correctSuspect: "Guiseppe",
+        question: "Welche Apfelsorte wurde gemostet?",
+        bonusAnswer: "Elstar",
+        solutionText: "Guiseppe wollte das Fass für seine private Herbstfete abzweigen."
+      },
+      43: {
+        tag: "🍂 Herbst",
+        title: "Der Regenschirm-Vertauscher",
+        description: "An einem Regentag wurden alle Regenschirme durch kaputte Exemplare ersetzt!",
+        suspects: [
+          { name: "Andreas", role: "Prüfer", desc: "Sucht Schirme" },
+          { name: "Nikolaos", role: "Gefährder", desc: "Nimmt den falschen" },
+          { name: "Susi K.", role: "Agentin", desc: "Ärgert sich" }
+        ],
+        clue1: "Andreas verkaufte neue Schirme im Laden.",
+        clue2: "Nikolaos hatte versehentlich seinen kaputten Schirm-Sack eingepackt.",
+        correctSuspect: "Nikolaos",
+        question: "Welche Farbe hatte der Hauptschirm?",
+        bonusAnswer: "Schwarz",
+        solutionText: "Nikolaos verwechselte seinen Schirmsack mit dem Ständer am Eingang."
+      },
+      44: {
+        tag: "🎃 Halloween",
+        title: "Das Gespenst von KW 44",
+        description: "In der Halloween-Nacht stahl ein 'Gespenst' das Süßigkeiten-Lager!",
+        suspects: [
+          { name: "Mary", role: "Zeugin", desc: "Trägt Betttuch" },
+          { name: "Sandy", role: "Verdächtige", desc: "Liebt Halloween-Schoki" },
+          { name: "Thorsten", role: "Verdächtiger", desc: "Trägt Fledermäuse" }
+        ],
+        clue1: "Thorsten war beim Auftritt im Theater.",
+        clue2: "Sandy hatte weiße Laken-Fasern und Schokoflecken am Ärmel.",
+        correctSuspect: "Sandy",
+        question: "Woraus bestand das Gespenster-Kostüm?",
+        bonusAnswer: "Bettlaken",
+        solutionText: "Sandy verkleidete sich als Gespenst, um ungesehen das Naschlager zu leeren."
+      },
+      45: {
+        tag: "🍂 Herbst",
+        title: "Der St. Martin Laternen-Klau",
+        description: "Die 2-Meter-Riesen-Laterne für den St. Martins-Umzug verschwand!",
+        suspects: [
+          { name: "Matthias", role: "IT-Guru", desc: "Stolz auf die Laterne" },
+          { name: "Alexander", role: "Analyst", desc: "Reiter" },
+          { name: "Uwe", role: "Drucker", desc: "Will die beste Laterne" }
+        ],
+        clue1: "Matthias suchte verzweifelt im Schuppen.",
+        clue2: "In Uwes Werkstatt klebten Papierreste und Draht der Riesen-Laterne.",
+        correctSuspect: "Uwe",
+        question: "Welches Motiv hatte die Riesen-Laterne?",
+        bonusAnswer: "Sonne",
+        solutionText: "Uwe wollte die Laterne als seine eigene beim Umzug präsentieren."
+      },
+      46: {
+        tag: "🍂 Spätherbst",
+        title: "Der Weckmann-Rosinen-Räuber",
+        description: "Aus 100 frischen Weckmännern wurden alle Rosinen herausgepickt!",
+        suspects: [
+          { name: "Hendrik", role: "Kaffeegenießer", desc: "Liebt Rosinen" },
+          { name: "Guiseppe", role: "Spion", desc: "Backte Weckmänner" },
+          { name: "Susi H.", role: "Ordnungsfan", desc: "Verteilt Gebäck" }
+        ],
+        clue1: "Guiseppe lieferte die Weckmänner komplett ab.",
+        clue2: "Hendriks Finger waren braun klebrig von Rosinen-Saft.",
+        correctSuspect: "Hendrik",
+        question: "Wie viele Rosinen wurden herausgepickt?",
+        bonusAnswer: "200",
+        solutionText: "Hendrik liebt Rosinen abgöttisch, verabscheut aber den Hefe-Teig."
+      },
+      47: {
+        tag: "🍂 Spätherbst",
+        title: "Der Thermostat-Schock",
+        description: "Jemand stellte die Heizung nachts auf 30 Grad – Tropenhitze im Raum!",
+        suspects: [
+          { name: "Tatjana", role: "Spionin", desc: "Friert immer" },
+          { name: "Gerd", role: "Meister", desc: "Sparfuchs" },
+          { name: "Nikolaos", role: "Gefährder", desc: "Techniker" }
+        ],
+        clue1: "Gerd kontrolliert die Zähler morgens.",
+        clue2: "Tatjana gab zu, dass ihr abends im Büro extrem kalt war.",
+        correctSuspect: "Tatjana",
+        question: "Auf wie viel Grad stand der Regler?",
+        bonusAnswer: "30 Grad",
+        solutionText: "Tatjana wollte am nächsten Morgen einen schön warmen Raum vorfinden."
+      },
+      48: {
+        tag: "🍂 Spätherbst",
+        title: "Der Spekulatius-Raub",
+        description: "50 Packungen Gewürz-Spekulatius wurden aus dem Vorratslager entwendet!",
+        suspects: [
+          { name: "Albert", role: "Leiter", desc: "Isst Spekulatius ab September" },
+          { name: "Evangelos", role: "Techniker", desc: "Zählt Pakete" },
+          { name: "Susi K.", role: "Agentin", desc: "Bäckt selber" }
+        ],
+        clue1: "Susi K. bäckt nur Zimtsterne.",
+        clue2: "Im Büro von Albert lagen 50 leere Spekulatius-Hüllen im Papierkorb.",
+        correctSuspect: "Albert",
+        question: "Welches Gewürz roch man im Flur?",
+        bonusAnswer: "Zimt",
+        solutionText: "Albert konnte der Spekulatius-Sucht im Spätherbst nicht widerstehen."
+      },
+      49: {
+        tag: "🎅 Nikolaus",
+        title: "Der Raub der Nikolaus-Stiefel",
+        description: "In der Nacht zum 6. Dezember wurden alle bereitgestellten Stiefel geklaut!",
+        suspects: [
+          { name: "Marcel", role: "Archivar", desc: "Mag keine Geschenke" },
+          { name: "Andreas", role: "Prüfer", desc: "Sucht Stiefel" },
+          { name: "Nikolaos", role: "Gefährder", desc: "Darsteller" }
+        ],
+        clue1: "Nikolaos füllte die Stiefel vorschriftsmäßig.",
+        clue2: "Marcel hatte den Sack voller Stiefel im Keller.",
+        correctSuspect: "Marcel",
+        question: "Was lag statt Schokolade in den Stiefeln?",
+        bonusAnswer: "Kohlen",
+        solutionText: "Marcel wollte den Kolleginnen und Kollegen einen bösen Streich spielen."
+      },
+      50: {
+        tag: "🕯️ 2. Advent",
+        title: "Anschlag auf den Adventskranz",
+        description: "Am 2. Advent wurden alle Tannenzweige des Kranzes kahlgezupft!",
+        suspects: [
+          { name: "Mary", role: "Zeugin", desc: "Brauchte Zweige" },
+          { name: "Thorsten", role: "Verdächtiger", desc: "Deko-Hasser" },
+          { name: "Sandy", role: "Verdächtige", desc: "Sucht Tannen" }
+        ],
+        clue1: "Thorsten saß gemütlich bei Plätzchen.",
+        clue2: "Mary hatte die Tannennadeln an ihrer Schürze kleben.",
+        correctSuspect: "Mary",
+        question: "Welche Kerzenfarbe brannte auf dem Kranz?",
+        bonusAnswer: "Rot",
+        solutionText: "Mary brauchte dichte Tannenzweige für ein Last-Minute-Gesteck."
+      },
+      51: {
+        tag: "🕯️ 3. Advent",
+        title: "Der Glühwein-Punsch-Pirat",
+        description: "Der komplette 30-Liter-Glühweintopf wurde durch Früchtetee ersetzt!",
+        suspects: [
+          { name: "Guiseppe", role: "Spion", desc: "Achtet auf Qualität" },
+          { name: "Uwe", role: "Drucker", desc: "Gegen Alkohol" },
+          { name: "Tatjana", role: "Spionin", desc: "Sucht Geschmack" }
+        ],
+        clue1: "Guiseppe kochte nach Original-Rezept.",
+        clue2: "Uwe hinterließ 10 leere Früchtetee-Packungen in der Mülltonne.",
+        correctSuspect: "Uwe",
+        question: "Welche Teesorte wurde verwendet?",
+        bonusAnswer: "Hagebutte",
+        solutionText: "Uwe wollte einen vollkommen nüchternen Advent für alle erzwingen."
+      },
+      52: {
+        tag: "🎄 FINALE",
+        title: "Der Diebstahl der Engelspitze",
+        description: "HEILIGABEND 2026! Der goldene Engel von der Tannenbaumspitze im Festsaal ist verschwunden! Wer war es kurz vor der großen Jahressiegerehrung?",
+        suspects: [
+          { name: "Gerd", role: "Meister", desc: "Feiert mit" },
+          { name: "Susi H.", role: "Ordnungsfan", desc: "Festleitung" },
+          { name: "Jörg", role: "Strategist", desc: "Wollte den finalen Showdown!" }
+        ],
+        clue1: "Gerd feierte dieses Jahr fröhlich mit.",
+        clue2: "Susi H. schmückte friedlich den Baum.",
+        correctSuspect: "Jörg",
+        question: "Wo war die Engelspitze versteckt?",
+        bonusAnswer: "Geschenkkorb",
+        solutionText: "Jörg hat den Engel im Geschenkkorb des JAHRESSIEGERS 2026 versteckt! Frohe Weihnachten und Glückwunsch an den Champion!"
+      }
+    };
+
+    // --- ISO WEEK CALCULATOR ---
+    function getAutoKW() {
+      const now = new Date();
+      const target = new Date(now.valueOf());
+      const dayNr = (now.getDay() + 6) % 7;
+      target.setDate(target.getDate() - dayNr + 3);
+      const firstThursday = target.valueOf();
+      target.setMonth(0, 1);
+      if (target.getDay() !== 4) {
+        target.setMonth(0, 1 + ((4 - target.getDay() + 7) % 7));
+      }
+      return Math.min(52, Math.max(1, 1 + Math.round((firstThursday - target) / 604800000)));
+    }
+
+    // --- GAME STATE ---
+    let currentWeek = getAutoKW();
+    let playersState = {};
+    let tipsState = {}; // Structure: tipsState[week][playerName] = { suspect, answer, timestamp, daySubmitted, isEarly }
+    let isAdminUnlocked = false;
+    let pendingTip = null;
+
+    // --- INITIALIZE PLAYERS ---
+    DEFAULT_PLAYERS.forEach(p => {
+      playersState[p] = { points: 0, tipsCount: 0 };
+    });
+
+    // --- FIREBASE SYNC (FALLBACK LOCAL) ---
+    const firebaseConfig = {
+      apiKey: "",
+      authDomain: "krimitime2026.firebaseapp.com",
+      projectId: "krimitime2026",
+      storageBucket: "krimitime2026.appspot.com",
+      messagingSenderId: "123456789",
+      appId: "1:123456789:web:abcdef"
+    };
+
+    let db = null;
+    try {
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.firestore();
+      
+      const appIdStr = typeof __app_id !== 'undefined' ? __app_id : 'krimitime-2026-prod';
+      db.collection('artifacts').doc(appIdStr).collection('public').doc('data').onSnapshot((doc) => {
+        if (doc.exists) {
+          const data = doc.data();
+          if (data.players) mergePlayers(data.players);
+          if (data.tips) tipsState = data.tips;
+          if (data.currentWeek) currentWeek = data.currentWeek;
+          renderAll();
+        }
+      }, err => {
+        console.log("Firebase sync fallback to local storage");
+      });
+    } catch (e) {
+      console.log("Offline mode initialized");
+    }
+
+    // --- MERGE PLAYERS UTILITY ---
+    function mergePlayers(incoming) {
+      DEFAULT_PLAYERS.forEach(p => {
+        if (!playersState[p]) playersState[p] = { points: 0, tipsCount: 0 };
+      });
+      Object.keys(incoming).forEach(k => {
+        playersState[k] = incoming[k];
+      });
+    }
+
+    function saveState() {
+      // Local Backup
+      localStorage.setItem('krimitime_players', JSON.stringify(playersState));
+      localStorage.setItem('krimitime_tips', JSON.stringify(tipsState));
+
+      // Cloud Sync
+      if (db) {
+        const appIdStr = typeof __app_id !== 'undefined' ? __app_id : 'krimitime-2026-prod';
+        db.collection('artifacts').doc(appIdStr).collection('public').doc('data').set({
+          players: playersState,
+          tips: tipsState,
+          currentWeek: currentWeek,
+          updatedAt: new Date().toISOString()
+        }, { merge: true });
+      }
+    }
+
+    // Load local backup immediately on start
+    try {
+      const locP = localStorage.getItem('krimitime_players');
+      const locT = localStorage.getItem('krimitime_tips');
+      if (locP) mergePlayers(JSON.parse(locP));
+      if (locT) tipsState = JSON.parse(locT);
+    } catch(e) {}
+
+    // --- GLOBAL INTERACTION HANDLERS ---
+    window.switchTab = function(tabId) {
+      ['fallakte', 'tippen', 'rangliste'].forEach(t => {
+        const tabEl = document.getElementById(`tab-${t}`);
+        const btnEl = document.getElementById(`tab-btn-${t}`);
+        if (tabEl) tabEl.classList.add('hidden');
+        if (btnEl) btnEl.className = "comic-btn bg-amber-200 text-black font-bold px-3 py-1.5 rounded-xl text-sm flex items-center space-x-1.5";
+      });
+
+      const targetTab = document.getElementById(`tab-${tabId}`);
+      const targetBtn = document.getElementById(`tab-btn-${tabId}`);
+      if (targetTab) targetTab.classList.remove('hidden');
+      if (targetBtn) targetBtn.className = "comic-btn bg-cyan-400 text-black font-bold px-3 py-1.5 rounded-xl text-sm flex items-center space-x-1.5";
+    };
+
+    window.openAdminModal = function() {
+      document.getElementById('admin-modal').classList.remove('hidden');
+    };
+
+    window.closeAdminModal = function() {
+      document.getElementById('admin-modal').classList.add('hidden');
+    };
+
+    window.unlockAdmin = function() {
+      const pin = document.getElementById('admin-pin').value;
+      if (pin === '2121') {
+        isAdminUnlocked = true;
+        document.getElementById('admin-auth-sec').classList.add('hidden');
+        document.getElementById('admin-controls').classList.remove('hidden');
+        renderAdminPanel();
+      } else {
+        alert("Falscher Admin-Code!");
+      }
+    };
+
+    window.lockAdmin = function() {
+      isAdminUnlocked = false;
+      document.getElementById('admin-pin').value = '';
+      document.getElementById('admin-auth-sec').classList.remove('hidden');
+      document.getElementById('admin-controls').classList.add('hidden');
+    };
+
+    // --- RENDER APPLICATION ---
+    function renderAll() {
+      renderHeaderAndHero();
+      renderCaseTab();
+      renderInvestigatorSelect();
+      renderLeaderboard();
+      checkExistingTipStatus();
+      if (isAdminUnlocked) renderAdminPanel();
+    }
+
+    function renderHeaderAndHero() {
+      const days = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
+      const now = new Date();
+      document.getElementById('header-date-badge').innerText = `KW ${currentWeek} • ${days[now.getDay()]}`;
+      document.getElementById('weeks-left-count').innerText = `${Math.max(0, 52 - currentWeek)}`;
+      document.getElementById('kw-badge').innerText = `Kalenderwoche #${currentWeek}`;
+    }
+
+    function renderCaseTab() {
+      const c = CASES_DATA[currentWeek] || CASES_DATA[1];
+      document.getElementById('case-title').innerText = c.title;
+      document.getElementById('case-description').innerText = c.description;
+      document.getElementById('bonus-question-text').innerText = c.question;
+      document.getElementById('tip-bonus-q-label').innerText = c.question;
+      document.getElementById('season-tag').innerText = `${c.tag}`;
+
+      // Unlock Clues based on weekday (0=Sun, 1=Mon, 3=Wed, 4=Thu, 5=Fri)
+      const day = new Date().getDay(); 
+      const clue1Box = document.getElementById('clue1-box');
+      const clue1Text = document.getElementById('clue1-text');
+      const clue1Icon = document.getElementById('clue1-icon');
+
+      if (day >= 3 || day === 0 || currentWeek < getAutoKW()) { // Unlocked on Wednesday
+        clue1Box.className = "p-4 rounded-xl border-2 border-black bg-emerald-100";
+        clue1Text.className = "text-sm font-semibold text-slate-800";
+        clue1Text.innerText = c.clue1;
+        clue1Icon.className = "fa-solid fa-unlock text-emerald-600";
+      } else {
+        clue1Box.className = "p-4 rounded-xl border-2 border-black bg-slate-100";
+        clue1Text.className = "text-sm italic text-slate-500";
+        clue1Text.innerText = "🔒 Wird erst am Mittwoch enthüllt...";
+        clue1Icon.className = "fa-solid fa-lock text-slate-400";
+      }
+
+      const clue2Box = document.getElementById('clue2-box');
+      const clue2Text = document.getElementById('clue2-text');
+      const clue2Icon = document.getElementById('clue2-icon');
+
+      if (day >= 4 || day === 0 || currentWeek < getAutoKW()) { // Unlocked on Thursday
+        clue2Box.className = "p-4 rounded-xl border-2 border-black bg-emerald-100";
+        clue2Text.className = "text-sm font-semibold text-slate-800";
+        clue2Text.innerText = c.clue2;
+        clue2Icon.className = "fa-solid fa-unlock text-emerald-600";
+      } else {
+        clue2Box.className = "p-4 rounded-xl border-2 border-black bg-slate-100";
+        clue2Text.className = "text-sm italic text-slate-500";
+        clue2Text.innerText = "🔒 Wird erst am Donnerstag enthüllt...";
+        clue2Icon.className = "fa-solid fa-lock text-slate-400";
+      }
+
+      // Solution Box (Freitag/Wochenende)
+      const solBox = document.getElementById('solution-box');
+      if (day >= 5 || day === 0 || currentWeek < getAutoKW()) {
+        solBox.classList.remove('hidden');
+        document.getElementById('solution-culprit').innerText = c.correctSuspect;
+        document.getElementById('solution-text').innerText = c.solutionText;
+        document.getElementById('case-status-badge').innerText = "Fall gelöst!";
+        document.getElementById('case-status-badge').className = "bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded border border-emerald-400 uppercase tracking-wider";
+      } else {
+        solBox.classList.add('hidden');
+        document.getElementById('case-status-badge').innerText = "Ermittlung läuft!";
+        document.getElementById('case-status-badge').className = "bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded border border-red-300 uppercase tracking-wider animate-pulse";
+      }
+
+      // Render Suspect Cards with Cropping
+      const container = document.getElementById('cards-container');
+      const suspectSelect = document.getElementById('tip-suspect');
+      container.innerHTML = '';
+      suspectSelect.innerHTML = '<option value="">-- Verdächtigen wählen --</option>';
+
+      c.suspects.forEach((s) => {
+        // Dropdown option
+        const opt = document.createElement('option');
+        opt.value = s.name;
+        opt.innerText = `${s.name} (${s.role})`;
+        suspectSelect.appendChild(opt);
+
+        // Card HTML
+        const cardDiv = document.createElement('div');
+        cardDiv.className = "comic-box bg-white p-3 card-zoom flex flex-col items-center text-center space-y-2";
+        
+        const cardData = PLAYER_CARDS[s.name];
+        let cardImgHtml = '';
+
+        if (cardData) {
+          const imgSrc = cardData.src;
+          const altImgSrc = imgSrc.endsWith('.jpg') ? imgSrc.replace('.jpg', '.png') : imgSrc.replace('.png', '.jpg');
+          
+          cardImgHtml = `
+            <div class="card-crop-wrap w-full mb-1">
+              <img src="${imgSrc}" onerror="this.onerror=null; this.src='${altImgSrc}';" class="card-crop-img ${cardData.cropClass}" alt="${s.name}">
+            </div>
+          `;
+        } else {
+          cardImgHtml = `
+            <div class="w-full h-44 rounded-xl border-2 border-black overflow-hidden bg-slate-100 flex items-center justify-center font-bold text-slate-500">
+              🕵️ ${s.name}
+            </div>
+          `;
         }
 
-        // Automatic precise ISO Calendar Week calculator
-        function getAutoKW() {
-            const d = new Date();
-            d.setHours(0, 0, 0, 0);
-            d.setDate(d.getDate() + 3 - (d.getDay() + 6) % 7);
-            const week1 = new Date(d.getFullYear(), 0, 4);
-            return 1 + Math.round(((d.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
-        }
+        cardDiv.innerHTML = `
+          ${cardImgHtml}
+          <div class="w-full">
+            <div class="flex items-center justify-between">
+              <span class="font-black font-comic text-xl text-slate-900">${s.name}</span>
+              <span class="bg-amber-200 text-black text-[10px] font-bold px-2 py-0.5 rounded border border-black uppercase">${s.role}</span>
+            </div>
+            <p class="text-xs text-slate-600 font-semibold text-left mt-1">${s.desc}</p>
+          </div>
+        `;
+        container.appendChild(cardDiv);
+      });
+    }
 
-        let rawStoredPlayers = null;
-        try {
-            rawStoredPlayers = JSON.parse(localStorage.getItem('krimi2026_manual_players'));
-        } catch(e) {}
+    function renderInvestigatorSelect() {
+      const select = document.getElementById('tip-investigator');
+      const lastSelected = select.value;
+      select.innerHTML = '<option value="">-- Bitte Namen auswählen --</option>';
 
-        let state = {
-            currentWeek: getAutoKW(),
-            simulatedDay: null,
-            isAdminUnlocked: false,
-            guesses: JSON.parse(localStorage.getItem('krimi2026_guesses') || '{}'),
-            manualPlayers: getMergedPlayersList(rawStoredPlayers)
-        };
+      Object.keys(playersState).sort().forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p;
+        opt.innerText = p;
+        if (p === lastSelected) opt.selected = true;
+        select.appendChild(opt);
+      });
+    }
 
-        // Always store clean merged players array
-        localStorage.setItem('krimi2026_manual_players', JSON.stringify(state.manualPlayers));
+    // --- CHECK TIP LOCK STATUS WITH EARLY BONUS DISPLAY ---
+    window.checkExistingTipStatus = function() {
+      const name = document.getElementById('tip-investigator').value;
+      const container = document.getElementById('tip-lock-container');
+      
+      if (!name) {
+        container.classList.remove('opacity-50', 'pointer-events-none');
+        return;
+      }
 
-        // Image retry engine for JPG/PNG case mismatches
-        window.handleCardImgError = function(img, name) {
-            if (!img.dataset.retryCount) {
-                img.dataset.retryCount = "1";
-                const currentSrc = img.src;
-                if (currentSrc.toLowerCase().endsWith('.jpg')) {
-                    img.src = currentSrc.slice(0, -4) + '.png';
-                    return;
-                } else if (currentSrc.toLowerCase().endsWith('.png')) {
-                    img.src = currentSrc.slice(0, -4) + '.jpg';
-                    return;
-                }
-            } else if (img.dataset.retryCount === "1") {
-                img.dataset.retryCount = "2";
-                const currentSrc = img.src;
-                if (currentSrc.toLowerCase().endsWith('.png')) {
-                    img.src = currentSrc.slice(0, -4) + '.PNG';
-                    return;
-                } else if (currentSrc.toLowerCase().endsWith('.jpg')) {
-                    img.src = currentSrc.slice(0, -4) + '.JPG';
-                    return;
-                }
-            }
+      const weekTips = (tipsState[currentWeek] || {});
+      const existingTip = weekTips[name];
+
+      if (existingTip) {
+        const wasEarly = existingTip.isEarly || existingTip.daySubmitted === 1 || existingTip.daySubmitted === 2;
+        
+        container.innerHTML = `
+          <div class="bg-purple-100 p-5 rounded-2xl border-3 border-black text-center space-y-3">
+            <div class="w-12 h-12 bg-pink-500 text-white rounded-xl border-2 border-black mx-auto flex items-center justify-center text-xl shadow-[3px_3px_0px_#000]">
+              🔒
+            </div>
+            <h3 class="text-xl font-black font-comic text-slate-900 uppercase">
+              TIPP FÜR KW ${currentWeek} VERSIEGELT!
+            </h3>
+            <p class="text-xs font-bold text-slate-700">
+              Du hast deinen Tipp für diese Kalenderwoche bereits eingereicht.
+            </p>
+            <div class="bg-white p-3 rounded-xl border-2 border-black text-left text-xs font-bold space-y-1">
+              <div class="text-slate-600">Ermittler: <span class="text-slate-900 font-black">${name}</span></div>
+              <div class="text-slate-600">Verdächtiger: <span class="text-pink-600 font-black">${existingTip.suspect}</span></div>
+              <div class="text-slate-600">Zusatzantwort: <span class="text-slate-800">${existingTip.answer}</span></div>
+              ${wasEarly ? '<div class="text-emerald-700 bg-emerald-100 p-1.5 rounded-lg border border-emerald-400 mt-2 text-center font-black">⚡ Schnellabgabe-Bonus (+2 Pkt) gesichert!</div>' : ''}
+              <div class="text-[10px] text-slate-400 mt-1">Abgegeben am: ${new Date(existingTip.timestamp).toLocaleString('de-DE')}</div>
+            </div>
+            <div class="bg-emerald-300 text-black text-xs font-bold p-2.5 rounded-xl border-2 border-black uppercase tracking-wider">
+              ✅ Dein Versuch ist gesichert!
+            </div>
+          </div>
+        `;
+      } else {
+        const c = CASES_DATA[currentWeek] || CASES_DATA[1];
+        let optionsHtml = '<option value="">-- Verdächtigen wählen --</option>';
+        c.suspects.forEach(s => {
+          optionsHtml += `<option value="${s.name}">${s.name} (${s.role})</option>`;
+        });
+
+        const dayNow = new Date().getDay();
+        const isEarlyNow = (dayNow === 1 || dayNow === 2);
+
+        container.innerHTML = `
+          ${isEarlyNow ? '<div class="bg-amber-300 text-black text-xs font-black p-2.5 rounded-xl border-2 border-black text-center uppercase tracking-wider shadow-[2px_2px_0px_#000]">⚡ Heute aktiver Schnellabgabe-Bonus (+2 Extra-Punkte bei richtigem Täter)!</div>' : ''}
+          <div>
+            <label class="block font-black text-sm uppercase text-slate-900 mb-1">
+              2. Welcher Verdächtige ist der Täter?
+            </label>
+            <select id="tip-suspect" required class="w-full p-3 rounded-xl border-3 border-black font-bold bg-white focus:outline-none focus:ring-2 focus:ring-pink-500">
+              ${optionsHtml}
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-black text-sm uppercase text-slate-900 mb-1">
+              3. Zusatzfrage (+1 Punkt):
+            </label>
+            <p class="text-xs text-slate-600 mb-2 font-semibold">${c.question}</p>
+            <input type="text" id="tip-bonus-answer" placeholder="Deine Antwort hier eingeben..." required class="w-full p-3 rounded-xl border-3 border-black font-semibold bg-white focus:outline-none focus:ring-2 focus:ring-pink-500">
+          </div>
+
+          <button type="submit" id="submit-tip-btn" class="comic-btn w-full bg-emerald-400 hover:bg-emerald-500 text-black font-black py-3.5 rounded-xl text-base uppercase tracking-wider flex items-center justify-center space-x-2">
+            <i class="fa-solid fa-lock"></i>
+            <span>TIPP VERBINDLICH EINREICHEN</span>
+          </button>
+        `;
+      }
+    };
+
+    // --- TIP SUBMISSION HANDLERS ---
+    window.handleTipSubmit = function(e) {
+      e.preventDefault();
+      const investigator = document.getElementById('tip-investigator').value;
+      const suspect = document.getElementById('tip-suspect').value;
+      const answer = document.getElementById('tip-bonus-answer').value;
+
+      if (!investigator) {
+        alert("Bitte wähle zuerst deinen Namen aus!");
+        return;
+      }
+
+      pendingTip = { investigator, suspect, answer };
+
+      document.getElementById('confirm-investigator').innerText = investigator;
+      document.getElementById('confirm-suspect').innerText = suspect;
+      document.getElementById('confirm-answer').innerText = answer;
+      document.getElementById('confirm-tip-modal').classList.remove('hidden');
+    };
+
+    window.closeConfirmModal = function() {
+      document.getElementById('confirm-tip-modal').classList.add('hidden');
+      pendingTip = null;
+    };
+
+    window.finalizeTipSubmission = function() {
+      if (!pendingTip) return;
+
+      const { investigator, suspect, answer } = pendingTip;
+      const now = new Date();
+      const dayOfWeek = now.getDay(); // 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat
+      const isEarly = (dayOfWeek === 1 || dayOfWeek === 2); // Monday or Tuesday
+
+      if (!tipsState[currentWeek]) tipsState[currentWeek] = {};
+
+      tipsState[currentWeek][investigator] = {
+        suspect: suspect,
+        answer: answer,
+        timestamp: now.toISOString(),
+        daySubmitted: dayOfWeek,
+        isEarly: isEarly
+      };
+
+      // Increment tip counter
+      if (playersState[investigator]) {
+        playersState[investigator].tipsCount = (playersState[investigator].tipsCount || 0) + 1;
+      }
+
+      saveState();
+      closeConfirmModal();
+      checkExistingTipStatus();
+      renderLeaderboard();
+    };
+
+    // --- LEADERBOARD & AUTOMATIC SCORE CALCULATION ---
+    function calculateTotalScore(playerName) {
+      let total = playersState[playerName]?.points || 0; // Manual admin points
+      
+      // Calculate points from all submitted weekly tips
+      Object.keys(tipsState).forEach(week => {
+        const weekNum = parseInt(week, 10);
+        const tip = tipsState[weekNum]?.[playerName];
+        const c = CASES_DATA[weekNum];
+
+        if (tip && c) {
+          // 1. Correct Suspect (+3 Pkt)
+          if (tip.suspect && c.correctSuspect && tip.suspect.toLowerCase() === c.correctSuspect.toLowerCase()) {
+            total += 3;
             
-            const wrap = img.closest('.card-crop-wrap');
-            if (wrap) {
-                wrap.style.paddingTop = "0";
-                wrap.style.minHeight = "180px";
-                wrap.style.backgroundColor = "#fde047";
-                wrap.innerHTML = `
-                    <div style="text-align: center; padding: 12px; width: 100%;">
-                        <div style="font-size: 2.5rem; margin-bottom: 4px;">🕵️</div>
-                        <span class="font-comic-title" style="font-size: 1.1rem; color: #000; text-transform: uppercase; display: block;">${name}</span>
-                        <span class="font-comic-body" style="font-size: 10px; font-weight: bold; border: 2px solid #000; padding: 2px 6px; border-radius: 6px; background: #fff; margin-top: 4px; display: inline-block;">VERDÄCHTIGER</span>
-                    </div>
-                `;
+            // 2. Early Submission Bonus on Monday or Tuesday (+2 Pkt)
+            if (tip.isEarly || tip.daySubmitted === 1 || tip.daySubmitted === 2) {
+              total += 2;
             }
-        };
+          }
 
-        async function initFirebase() {
-            if (!auth || !db) return;
-            try {
-                await signInAnonymously(auth);
-                const dot = document.getElementById('sync-status-dot');
-                if (dot) dot.style.background = '#10b981';
-                setupFirestoreListeners();
-            } catch (err) {
-                console.warn("Firebase Auth Notice:", err);
-                const dot = document.getElementById('sync-status-dot');
-                if (dot) dot.style.background = '#f59e0b';
-            }
+          // 3. Correct Bonus Answer (+1 Pkt)
+          if (tip.answer && c.bonusAnswer && tip.answer.toLowerCase().includes(c.bonusAnswer.toLowerCase())) {
+            total += 1;
+          }
         }
+      });
 
-        function setupFirestoreListeners() {
-            if (!db) return;
+      return total;
+    }
 
-            try {
-                const guessesRef = collection(db, 'guesses');
-                const playersRef = collection(db, 'players');
+    function renderLeaderboard() {
+      const tbody = document.getElementById('leaderboard-body');
+      tbody.innerHTML = '';
 
-                onSnapshot(guessesRef, (snapshot) => {
-                    snapshot.forEach((docSnap) => {
-                        const data = docSnap.data();
-                        if (data && data.week) {
-                            if (!state.guesses[data.week]) state.guesses[data.week] = [];
-                            state.guesses[data.week] = state.guesses[data.week].filter(g => g.playerName !== data.playerName);
-                            state.guesses[data.week].push(data);
-                        }
-                    });
-                    localStorage.setItem('krimi2026_guesses', JSON.stringify(state.guesses));
-                    renderCurrentState();
-                }, (err) => console.warn("Guesses listener warning:", err));
+      const sorted = Object.keys(playersState).map(k => ({
+        name: k,
+        points: calculateTotalScore(k),
+        tipsCount: playersState[k].tipsCount || 0
+      })).sort((a, b) => b.points - a.points || b.tipsCount - a.tipsCount);
 
-                onSnapshot(playersRef, (snapshot) => {
-                    const firestorePlayers = [];
-                    if (!snapshot.empty) {
-                        snapshot.forEach((docSnap) => {
-                            const data = docSnap.data();
-                            if (data && data.name) {
-                                firestorePlayers.push(data);
-                            }
-                        });
-                    }
+      sorted.forEach((p, idx) => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-amber-50 transition-colors";
+        
+        let medal = `#${idx + 1}`;
+        if (idx === 0) medal = "🥇 1.";
+        if (idx === 1) medal = "🥈 2.";
+        if (idx === 2) medal = "🥉 3.";
 
-                    // Smart Merge 19 defaults + local storage + firestore
-                    state.manualPlayers = getMergedPlayersList([
-                        ...state.manualPlayers,
-                        ...firestorePlayers
-                    ]);
-                    localStorage.setItem('krimi2026_manual_players', JSON.stringify(state.manualPlayers));
-                    renderCurrentState();
-                }, (err) => console.warn("Players listener warning:", err));
-            } catch (err) {
-                console.warn("Setup listeners caught notice:", err);
-            }
+        tr.innerHTML = `
+          <td class="p-3 font-black text-slate-900">${medal}</td>
+          <td class="p-3 font-bold text-slate-900">${p.name}</td>
+          <td class="p-3 text-center text-slate-600">${p.tipsCount} Abgaben</td>
+          <td class="p-3 text-right font-black text-pink-600 text-lg">${p.points} Pkt.</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // --- ADMIN PANEL METHODS ---
+    function renderAdminPanel() {
+      // 1. Render Week Select
+      const weekSel = document.getElementById('admin-week-select');
+      weekSel.innerHTML = '';
+      for (let w = 1; w <= 52; w++) {
+        const opt = document.createElement('option');
+        opt.value = w;
+        opt.innerText = `KW ${w}: ${CASES_DATA[w]?.title || 'Fall'} ${w === currentWeek ? '(Aktiv)' : ''}`;
+        if (w === currentWeek) opt.selected = true;
+        weekSel.appendChild(opt);
+      }
+
+      // 2. Render Players for direct point score edits & management
+      const playerList = document.getElementById('admin-player-list');
+      playerList.innerHTML = '';
+      Object.keys(playersState).sort().forEach(p => {
+        const currentPts = playersState[p].points || 0;
+        const div = document.createElement('div');
+        div.className = "flex items-center justify-between bg-white p-2 rounded-xl border border-black text-xs font-bold gap-2";
+        div.innerHTML = `
+          <span class="truncate font-black text-slate-800 max-w-[110px]">${p}</span>
+          <div class="flex items-center space-x-1">
+            <button onclick="updatePoints('${p}', -1)" class="w-7 h-7 bg-red-200 hover:bg-red-300 rounded-lg border border-black font-black text-slate-900" title="-1 Punkt">-1</button>
+            <input type="number" id="pts-input-${p}" value="${currentPts}" min="0" class="w-14 p-1 text-center font-black border-2 border-black rounded-lg text-pink-600 bg-amber-50 focus:bg-white" onkeydown="if(event.key==='Enter') setDirectPoints('${p}')">
+            <button onclick="setDirectPoints('${p}')" class="comic-btn bg-pink-500 hover:bg-pink-600 text-white font-bold px-2 py-1 rounded-lg text-[11px] uppercase" title="Punkte direkt zuweisen">Setzen</button>
+            <button onclick="updatePoints('${p}', 1)" class="w-7 h-7 bg-emerald-200 hover:bg-emerald-300 rounded-lg border border-black font-black text-slate-900" title="+1 Punkt">+1</button>
+            <button onclick="deletePlayer('${p}')" class="w-7 h-7 bg-slate-100 hover:bg-red-500 hover:text-white rounded-lg border border-black text-xs font-bold ml-1" title="Spieler löschen">🗑️</button>
+          </div>
+        `;
+        playerList.appendChild(div);
+      });
+
+      // 3. Render submitted tips overview for current week
+      const tipsOverview = document.getElementById('admin-tips-overview');
+      tipsOverview.innerHTML = '';
+      const currentWeekTips = tipsState[currentWeek] || {};
+      const keys = Object.keys(currentWeekTips);
+
+      if (keys.length === 0) {
+        tipsOverview.innerHTML = '<div class="text-slate-400 italic">Noch keine Tipps für KW ' + currentWeek + ' eingereicht.</div>';
+      } else {
+        keys.forEach(p => {
+          const t = currentWeekTips[p];
+          const div = document.createElement('div');
+          div.className = "flex items-center justify-between bg-white p-2 rounded-lg border border-black";
+          div.innerHTML = `
+            <div>
+              <strong class="text-slate-900">${p}:</strong> ${t.suspect} (${t.answer})
+            </div>
+            <button onclick="unlockUserTip('${p}')" class="bg-red-500 text-white text-[10px] px-2 py-1 rounded border border-black font-bold">
+              Freigeben / Löschen
+            </button>
+          `;
+          tipsOverview.appendChild(div);
+        });
+      }
+    }
+
+    window.changeAdminWeek = function() {
+      currentWeek = parseInt(document.getElementById('admin-week-select').value, 10);
+      saveState();
+      renderAll();
+    };
+
+    window.resetToAutoWeek = function() {
+      currentWeek = getAutoKW();
+      saveState();
+      renderAll();
+    };
+
+    window.updatePoints = function(player, delta) {
+      if (playersState[player]) {
+        playersState[player].points = Math.max(0, (playersState[player].points || 0) + delta);
+        saveState();
+        renderAll();
+      }
+    };
+
+    window.setDirectPoints = function(player) {
+      const input = document.getElementById(`pts-input-${player}`);
+      if (input && playersState[player]) {
+        const val = parseInt(input.value, 10);
+        if (!isNaN(val) && val >= 0) {
+          playersState[player].points = val;
+          saveState();
+          renderAll();
+        } else {
+          alert("Bitte gib eine gültige Punktezahl (≥ 0) ein!");
         }
-
-        window.switchTab = function(tabName) {
-            ['case', 'submit', 'ranking'].forEach(tab => {
-                const view = document.getElementById(`view-${tab}`);
-                const btn = document.getElementById(`tab-${tab}`);
-                if (view) view.classList.add('hidden');
-                if (btn) btn.className = "comic-btn btn-dark";
-            });
-
-            const targetView = document.getElementById(`view-${tabName}`);
-            const targetBtn = document.getElementById(`tab-${tabName}`);
-            if (targetView) targetView.classList.remove('hidden');
-            if (targetBtn) targetBtn.className = "comic-btn btn-cyan";
-        };
-
-        window.toggleAdminModal = function() {
-            const modal = document.getElementById('admin-modal');
-            if (modal) modal.classList.toggle('hidden');
-        };
-
-        window.checkAdminPassword = function() {
-            const input = document.getElementById('admin-password-input');
-            const errorMsg = document.getElementById('admin-auth-error');
-            if (input && input.value === '2121') {
-                state.isAdminUnlocked = true;
-                if (errorMsg) errorMsg.classList.add('hidden');
-                document.getElementById('admin-login-view').classList.add('hidden');
-                document.getElementById('admin-controls-view').classList.remove('hidden');
-                document.getElementById('admin-lock-btn').classList.remove('hidden');
-                input.value = '';
-                renderAdminGuesses();
-                renderAdminPlayersList();
-            } else if (errorMsg) {
-                errorMsg.classList.remove('hidden');
-            }
-        };
-
-        window.lockAdminConsole = function() {
-            state.isAdminUnlocked = false;
-            document.getElementById('admin-login-view').classList.remove('hidden');
-            document.getElementById('admin-controls-view').classList.add('hidden');
-            document.getElementById('admin-lock-btn').classList.add('hidden');
-        };
-
-        function getSimulatedOrRealDay() {
-            if (state.simulatedDay) return state.simulatedDay;
-            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-            return days[new Date().getDay()];
-        }
-
-        function getDayNameGerman(day) {
-            const map = { Mon: 'Montag', Tue: 'Dienstag', Wed: 'Mittwoch', Thu: 'Donnerstag', Fri: 'Freitag', Sat: 'Samstag', Sun: 'Sonntag' };
-            return map[day] || day;
-        }
-
-        function renderCurrentState() {
-            const currentCase = CASES_2026.find(c => c.id === parseInt(state.currentWeek)) || CASES_2026[0];
-            const currentDay = getSimulatedOrRealDay();
-
-            document.getElementById('current-time-display').innerText = `KW ${currentCase.id} • ${getDayNameGerman(currentDay)}`;
-            document.getElementById('case-week-tag').innerText = `KALENDERWOCHE #${String(currentCase.id).padStart(2, '0')}`;
-            document.getElementById('case-season-tag').innerText = currentCase.tag;
-            document.getElementById('case-title').innerText = currentCase.title;
-            document.getElementById('case-description').innerText = currentCase.desc;
-            document.getElementById('case-bonus-question').innerText = currentCase.bonusQuestion;
-
-            document.getElementById('submit-week-display').innerText = `#${currentCase.id}`;
-            document.getElementById('guess-question-preview').innerText = currentCase.bonusQuestion;
-
-            const playerSelect = document.getElementById('guess-player-select');
-            if (playerSelect) {
-                playerSelect.innerHTML = '<option value="">-- Name wählen --</option>';
-                state.manualPlayers.forEach(p => {
-                    playerSelect.innerHTML += `<option value="${p.name}">${p.name}</option>`;
-                });
-            }
-
-            const suspectSelect = document.getElementById('guess-suspect-select');
-            if (suspectSelect) suspectSelect.innerHTML = '<option value="">-- Verdächtigen wählen --</option>';
-
-            const suspectsContainer = document.getElementById('suspects-list');
-            if (suspectsContainer) {
-                suspectsContainer.innerHTML = '';
-
-                currentCase.suspects.forEach(s => {
-                    if (suspectSelect) suspectSelect.innerHTML += `<option value="${s.name}">${s.name} (${s.role})</option>`;
-
-                    const cardData = PLAYER_CARDS[s.name];
-                    let cardHtml = '';
-
-                    if (cardData) {
-                        cardHtml = `
-                            <div class="card-crop-wrap" style="margin-bottom: 8px;">
-                                <img src="${encodeURI(cardData.src)}" class="card-crop-img ${cardData.cropClass}" alt="${s.name}" onerror="window.handleCardImgError(this, '${s.name}')">
-                            </div>
-                        `;
-                    } else {
-                        cardHtml = `
-                            <div class="fallback-card-wrap">
-                                <div style="font-size: 2.5rem; margin-bottom: 4px;">🕵️</div>
-                                <span class="font-comic-title" style="font-size: 1.2rem; color: #000; text-transform: uppercase;">${s.name}</span>
-                            </div>
-                        `;
-                    }
-
-                    suspectsContainer.innerHTML += `
-                        <div style="background: #fff; padding: 12px; border-radius: 16px; border: 3px solid #000; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 3px 3px 0px #000;">
-                            ${cardHtml}
-                            <div>
-                                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 4px;">
-                                    <span class="font-comic-title" style="font-size: 1.3rem; color: #000;">${s.name}</span>
-                                    <span class="font-comic-body" style="font-size: 10px; background: #fde047; color: #000; padding: 2px 6px; border-radius: 6px; border: 1px solid #000; font-weight: bold;">${s.role}</span>
-                                </div>
-                                <p class="font-comic-body" style="font-size: 0.8rem; color: #334155; margin-top: 4px; line-height: 1.3;">${s.desc}</p>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-
-            const showWed = ['Wed', 'Thu', 'Fri'].includes(currentDay);
-            const showThu = ['Thu', 'Fri'].includes(currentDay);
-            const showFri = ['Fri'].includes(currentDay) || currentCase.id === 52;
-
-            const clue1Box = document.getElementById('clue-1-box');
-            const clue1Text = document.getElementById('clue-1-text');
-            const clue2Box = document.getElementById('clue-2-box');
-            const clue2Text = document.getElementById('clue-2-text');
-            const solutionBox = document.getElementById('solution-box');
-            const stamp = document.getElementById('case-status-stamp');
-
-            if (showWed && clue1Box && clue1Text) {
-                clue1Box.style.background = "#fbcfe8";
-                clue1Text.innerText = currentCase.clue1;
-                clue1Text.style.color = "#000";
-            } else if (clue1Box && clue1Text) {
-                clue1Box.style.background = "#f1f5f9";
-                clue1Text.innerText = "🔒 Wird erst am Mittwoch enthüllt...";
-                clue1Text.style.color = "#64748b";
-            }
-
-            if (showThu && clue2Box && clue2Text) {
-                clue2Box.style.background = "#e9d5ff";
-                clue2Text.innerText = currentCase.clue2;
-                clue2Text.style.color = "#000";
-            } else if (clue2Box && clue2Text) {
-                clue2Box.style.background = "#f1f5f9";
-                clue2Text.innerText = "🔒 Wird erst am Donnerstag enthüllt...";
-                clue2Text.style.color = "#64748b";
-            }
-
-            if (showFri && solutionBox && stamp) {
-                solutionBox.classList.remove('hidden');
-                document.getElementById('solution-culprit').innerText = currentCase.culprit;
-                document.getElementById('solution-text').innerText = currentCase.solutionText;
-                stamp.className = "comic-stamp-solved";
-                stamp.innerText = "FALL GELÖST!";
-            } else if (stamp) {
-                if (solutionBox) solutionBox.classList.add('hidden');
-                stamp.className = "comic-stamp";
-                stamp.innerText = "ERMITTLUNG LÄUFT!";
-            }
-
-            const left = 52 - currentCase.id;
-            const weekLeftEl = document.getElementById('weeks-left-count');
-            if (weekLeftEl) weekLeftEl.innerText = left > 0 ? `${left} Woche${left === 1 ? '' : 'n'}` : 'FINALE!';
-
-            renderRankingTable();
-            if (state.isAdminUnlocked) {
-                renderAdminGuesses();
-                renderAdminPlayersList();
-            }
-        }
-
-        window.submitGuessDirectly = async function(e) {
-            e.preventDefault();
-            const playerName = document.getElementById('guess-player-select').value;
-            const suspect = document.getElementById('guess-suspect-select').value;
-            const bonusAnswer = document.getElementById('guess-bonus-input').value.trim();
-
-            if (!playerName || !suspect) return;
-
-            const week = state.currentWeek;
-            const docId = `week_${week}_user_${playerName.replace(/\s+/g, '_')}`;
-
-            const guessObj = {
-                playerName,
-                suspect,
-                bonusAnswer,
-                week,
-                daySubmitted: getSimulatedOrRealDay(),
-                timestamp: new Date().toISOString()
-            };
-
-            if (!state.guesses[week]) state.guesses[week] = [];
-            state.guesses[week] = state.guesses[week].filter(g => g.playerName !== playerName);
-            state.guesses[week].push(guessObj);
-            localStorage.setItem('krimi2026_guesses', JSON.stringify(state.guesses));
-
-            try {
-                if (db) {
-                    const docRef = doc(db, 'guesses', docId);
-                    await setDoc(docRef, guessObj);
-                }
-            } catch (err) {
-                console.warn("Firestore save notice:", err);
-            }
-
-            alert(`Klasse Detektiv ${playerName}! Deine Verdächtigung für KW ${week} wurde übermittelt!`);
-            document.getElementById('direct-guess-form').reset();
-            switchTab('ranking');
-        };
-
-        function calculateRankings() {
-            const scores = {};
-            state.manualPlayers.forEach(p => {
-                scores[p.name] = { totalScore: p.points || 0, solvedCases: p.solvedCases || 0 };
-            });
-
-            Object.keys(state.guesses).forEach(weekStr => {
-                const weekNum = parseInt(weekStr);
-                const currentCase = CASES_2026.find(c => c.id === weekNum);
-                if (!currentCase) return;
-
-                const guesses = state.guesses[weekStr];
-                guesses.forEach(g => {
-                    if (!scores[g.playerName]) scores[g.playerName] = { totalScore: 0, solvedCases: 0 };
-
-                    let points = 0;
-                    if (g.suspect.toLowerCase() === currentCase.culprit.toLowerCase()) {
-                        points += 3;
-                        scores[g.playerName].solvedCases += 1;
-                        if (['Mon', 'Tue'].includes(g.daySubmitted)) points += 2;
-                    }
-
-                    if (g.bonusAnswer && currentCase.bonusAnswer && 
-                        g.bonusAnswer.toLowerCase().includes(currentCase.bonusAnswer.toLowerCase())) {
-                        points += 1;
-                    }
-
-                    scores[g.playerName].totalScore += points;
-                });
-            });
-
-            return scores;
-        }
-
-        function renderRankingTable() {
-            const tbody = document.getElementById('ranking-table-body');
-            if (!tbody) return;
-
-            tbody.innerHTML = '';
-            const scores = calculateRankings();
-            const sortedPlayers = Object.keys(scores).map(name => ({
-                name,
-                ...scores[name]
-            })).sort((a, b) => b.totalScore - a.totalScore);
-
-            sortedPlayers.forEach((player, index) => {
-                const rankBadge = index === 0 ? '🥇 CHAMPION' : index === 1 ? '🥈 2. PLATZ' : index === 2 ? '🥉 3. PLATZ' : `#${index + 1}`;
-                const rowBg = index === 0 ? '#fef9c3' : index % 2 === 0 ? '#f8fafc' : '#ffffff';
-
-                tbody.innerHTML += `
-                    <tr style="background: ${rowBg}; border-bottom: 2px solid #000;">
-                        <td class="font-comic-title" style="padding: 14px; font-size: 1.2rem; color: #000;">${rankBadge}</td>
-                        <td style="padding: 14px; font-size: 1.1rem; color: #0f172a;">${player.name}</td>
-                        <td style="padding: 14px; text-align: center; color: #334155;">${player.solvedCases}</td>
-                        <td class="font-comic-title" style="padding: 14px; text-align: right; font-size: 1.4rem; color: #ec4899;">${player.totalScore} PTS</td>
-                    </tr>
-                `;
-            });
-        }
-
-        function renderAdminGuesses() {
-            const container = document.getElementById('admin-guesses-list');
-            const weekGuesses = state.guesses[state.currentWeek] || [];
-            document.getElementById('admin-guesses-week-display').innerText = state.currentWeek;
-            document.getElementById('admin-guesses-count-badge').innerText = `${weekGuesses.length} Tipps`;
-
-            if (!container) return;
-            container.innerHTML = '';
-
-            if (weekGuesses.length === 0) {
-                container.innerHTML = '<p class="font-comic-body" style="font-size: 0.8rem; color: #64748b;">Keine Tipps vorhanden.</p>';
-                return;
-            }
-
-            weekGuesses.forEach((g) => {
-                container.innerHTML += `
-                    <div style="background: #fef9c3; border: 2px solid #000; padding: 10px; border-radius: 12px; display: flex; justify-between; align-items: center;">
-                        <div>
-                            <strong>${g.playerName}</strong> (${getDayNameGerman(g.daySubmitted)})
-                            <p style="color: #ec4899; margin-top: 2px;">Tipp: ${g.suspect}</p>
-                            <p style="font-size: 0.8rem; color: #475569;">Zusatz: ${g.bonusAnswer || '-'}</p>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        window.adminAddOrUpdatePlayer = async function() {
-            const nameInput = document.getElementById('admin-add-name');
-            const scoreInput = document.getElementById('admin-add-score');
-            const name = nameInput ? nameInput.value.trim() : '';
-            const points = scoreInput ? (parseInt(scoreInput.value) || 0) : 0;
-            if (!name) return;
-
-            const existingIdx = state.manualPlayers.findIndex(p => p.name.toLowerCase() === name.toLowerCase());
-            if (existingIdx >= 0) {
-                state.manualPlayers[existingIdx].points = points;
-                state.manualPlayers[existingIdx].deleted = false;
-            } else {
-                state.manualPlayers.push({ name, points, solvedCases: 0, deleted: false });
-            }
-
-            // Clean merge
-            state.manualPlayers = getMergedPlayersList(state.manualPlayers);
-            localStorage.setItem('krimi2026_manual_players', JSON.stringify(state.manualPlayers));
-
-            try {
-                if (db) {
-                    const docRef = doc(db, 'players', name.replace(/\s+/g, '_'));
-                    await setDoc(docRef, { name, points, solvedCases: 0, deleted: false });
-                }
-            } catch (err) { console.warn("Firestore player save notice:", err); }
-
-            if (nameInput) nameInput.value = '';
-            if (scoreInput) scoreInput.value = '';
-            renderCurrentState();
-        };
-
-        window.adminDeletePlayer = async function(name) {
-            state.manualPlayers = state.manualPlayers.filter(p => p.name.toLowerCase() !== name.toLowerCase());
-            localStorage.setItem('krimi2026_manual_players', JSON.stringify(state.manualPlayers));
-            
-            try {
-                if (db) {
-                    const docRef = doc(db, 'players', name.replace(/\s+/g, '_'));
-                    await setDoc(docRef, { name, deleted: true });
-                }
-            } catch (err) { console.warn(err); }
-
-            renderCurrentState();
-        };
-
-        window.adminResetPlayersToDefault = function() {
-            localStorage.removeItem('krimi2026_manual_players');
-            state.manualPlayers = getMergedPlayersList([]);
-            localStorage.setItem('krimi2026_manual_players', JSON.stringify(state.manualPlayers));
-            renderCurrentState();
-        };
-
-        function renderAdminPlayersList() {
-            const container = document.getElementById('admin-players-list');
-            const countBadge = document.getElementById('admin-player-count');
-            if (countBadge) countBadge.innerText = `${state.manualPlayers.length} Mitspieler`;
-            if (!container) return;
-
-            container.innerHTML = '';
-
-            state.manualPlayers.forEach(p => {
-                container.innerHTML += `
-                    <div style="display: flex; justify-between; align-items: center; padding: 6px 8px; font-size: 0.85rem; border-bottom: 1px solid #e2e8f0;">
-                        <span style="font-weight: bold; color: #0f172a;">${p.name}</span>
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <span style="background: #fde047; padding: 2px 8px; border-radius: 6px; font-weight: bold; border: 1px solid #000;">${p.points} PTS</span>
-                            <button onclick="adminDeletePlayer('${p.name}')" class="comic-btn btn-red" style="font-size: 0.7rem; padding: 2px 6px;">Löschen</button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        window.changeWeek = function(w) {
-            state.currentWeek = parseInt(w);
-            renderCurrentState();
-        };
-
-        window.resetToCurrentRealWeek = function() {
-            state.currentWeek = getAutoKW();
-            state.simulatedDay = null;
-            const weekSelect = document.getElementById('admin-week-select');
-            if (weekSelect) weekSelect.value = state.currentWeek;
-            renderCurrentState();
-        };
-
-        window.simulateDay = function(d) {
-            state.simulatedDay = d;
-            renderCurrentState();
-        };
-
-        window.showResetConfirm = function(show) {
-            document.getElementById('reset-confirm-box').classList.toggle('hidden', !show);
-        };
-
-        window.adminResetAllData = function() {
-            state.guesses = {};
-            showResetConfirm(false);
-            renderCurrentState();
-        };
-
-        // Populate Week Selector in Admin Modal
-        const weekSelect = document.getElementById('admin-week-select');
-        if (weekSelect) {
-            weekSelect.innerHTML = '';
-            for (let i = 1; i <= 52; i++) {
-                const caseObj = CASES_2026.find(c => c.id === i);
-                const titleStr = caseObj ? caseObj.title : `Fall KW ${i}`;
-                weekSelect.innerHTML += `<option value="${i}">KW ${i}: ${titleStr}</option>`;
-            }
-            weekSelect.value = state.currentWeek;
-        }
-
-        // INSTANT INITIAL RENDER (NO DELAY, RUNS IMMEDIATELY)
-        renderCurrentState();
-
-        // Initialize Firebase in background
-        initFirebase();
-    </script>
+      }
+    };
+
+    window.deletePlayer = function(player) {
+      if (confirm(`Möchtest du den Ermittler "${player}" wirklich löschen?`)) {
+        delete playersState[player];
+        saveState();
+        renderAll();
+      }
+    };
+
+    window.addNewPlayer = function() {
+      const name = document.getElementById('new-player-name').value.trim();
+      if (name && !playersState[name]) {
+        playersState[name] = { points: 0, tipsCount: 0 };
+        document.getElementById('new-player-name').value = '';
+        saveState();
+        renderAll();
+      }
+    };
+
+    window.resetDefaultPlayers = function() {
+      DEFAULT_PLAYERS.forEach(p => {
+        if (!playersState[p]) playersState[p] = { points: 0, tipsCount: 0 };
+      });
+      saveState();
+      renderAll();
+    };
+
+    window.unlockUserTip = function(player) {
+      if (tipsState[currentWeek] && tipsState[currentWeek][player]) {
+        delete tipsState[currentWeek][player];
+        saveState();
+        renderAll();
+      }
+    };
+
+    // --- INITIAL START ---
+    window.onload = function() {
+      renderAll();
+    };
+  </script>
 </body>
 </html>
