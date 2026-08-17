@@ -14,7 +14,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <!-- Google Fonts: Comic / Bold style -->
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
 
   <style>
@@ -61,7 +61,7 @@
       box-shadow: 7px 7px 0px #000000;
     }
 
-    /* CARD CROPPING ENGINE FOR SAMMELKARTEN (2x2 GRID PER SHEET) */
+    /* CARD CROPPING ENGINE FOR SAMMELKARTEN (2x2 GRID) */
     .card-img-container {
       width: 100%;
       height: 220px;
@@ -80,7 +80,6 @@
       max-width: none;
     }
 
-    /* 4 Quadrants for 2x2 cards */
     .crop-top-left     { top: 0; left: 0; }
     .crop-top-right    { top: 0; left: -100%; }
     .crop-bottom-left  { top: -100%; left: 0; }
@@ -93,7 +92,6 @@
   <header class="bg-amber-400 border-b-4 border-black px-4 py-3 sticky top-0 z-40 shadow-md">
     <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
       
-      <!-- LOGO & SUBTITLE -->
       <div class="flex items-center space-x-3">
         <div class="w-12 h-12 bg-pink-500 rounded-2xl border-3 border-black flex items-center justify-center text-white text-2xl font-black shadow-[3px_3px_0px_#000]">
           ⚡
@@ -109,13 +107,11 @@
         </div>
       </div>
 
-      <!-- CURRENT WEEK BADGE -->
       <div class="bg-white border-2 border-black rounded-full px-4 py-1.5 shadow-[3px_3px_0px_#000] flex items-center space-x-2">
         <span class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse border border-black"></span>
         <span id="header-date-badge" class="font-bold text-sm text-slate-900">Lade Datum...</span>
       </div>
 
-      <!-- NAVIGATION TABS -->
       <nav class="flex items-center space-x-2">
         <button onclick="switchTab('fallakte')" id="tab-btn-fallakte" class="comic-btn bg-cyan-400 text-black font-bold px-3 py-1.5 rounded-xl text-sm flex items-center space-x-1.5">
           <i class="fa-solid fa-book-open"></i>
@@ -140,7 +136,7 @@
   <!-- MAIN CONTAINER -->
   <main class="max-w-6xl mx-auto px-4 mt-6">
 
-    <!-- HERO GOAL BANNER -->
+    <!-- HERO BANNER -->
     <div class="comic-box bg-gradient-to-r from-red-500 via-amber-500 to-emerald-400 p-4 mb-6 relative overflow-hidden">
       <div class="flex flex-wrap items-center justify-between gap-4 relative z-10 text-white">
         <div class="flex items-center space-x-3">
@@ -164,7 +160,6 @@
     <!-- TAB 1: FALLAKTE -->
     <div id="tab-fallakte" class="space-y-6">
 
-      <!-- WEEK HEADER BOX -->
       <div class="comic-box bg-white p-5 flex flex-wrap items-center justify-between gap-4">
         <div>
           <div class="flex items-center space-x-2">
@@ -191,7 +186,6 @@
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        <!-- LEFT COLUMN: CRIME SCENE & SUSPECTS -->
         <div class="lg:col-span-2 space-y-6">
 
           <!-- 1. TATORT-AKTE -->
@@ -207,7 +201,7 @@
             </div>
           </div>
 
-          <!-- 2. VERDÄCHTIGE & SPIELKARTEN -->
+          <!-- 2. VERDÄCHTIGE -->
           <div class="comic-box bg-amber-100 p-5">
             <div class="flex items-center justify-between pb-3 border-b-2 border-black/20 mb-4">
               <h3 class="text-lg font-black font-comic text-slate-900 flex items-center space-x-2">
@@ -216,13 +210,12 @@
               </h3>
             </div>
 
-            <!-- CARDS CONTAINER -->
             <div id="cards-container" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <!-- Cards rendered dynamically -->
+              <!-- Dynamically populated -->
             </div>
           </div>
 
-          <!-- ZUSATZFRAGE BOX -->
+          <!-- ZUSATZFRAGE -->
           <div class="comic-box bg-pink-100 p-5">
             <div class="flex items-center space-x-3 mb-2">
               <div class="w-8 h-8 bg-pink-500 rounded-lg border-2 border-black flex items-center justify-center text-white font-bold text-sm shadow-[2px_2px_0px_#000]">
@@ -239,10 +232,9 @@
 
         </div>
 
-        <!-- RIGHT COLUMN: CLUES & TIPP ACTION -->
         <div class="space-y-6">
 
-          <!-- 3. HINWEIS-SPUREN -->
+          <!-- 3. HINWEISE -->
           <div class="comic-box bg-white p-5">
             <h3 class="text-lg font-black font-comic text-slate-900 flex items-center space-x-2 pb-3 border-b-2 border-black/10">
               <i class="fa-solid fa-mask text-purple-600"></i>
@@ -251,7 +243,6 @@
 
             <div class="space-y-4 mt-4">
               
-              <!-- HINWEIS 1 -->
               <div id="clue1-box" class="p-4 rounded-xl border-2 border-black bg-slate-100 transition-all">
                 <div class="flex items-center justify-between mb-1">
                   <span class="font-bold text-xs uppercase text-slate-600">Hinweis 1 (Mittwoch)</span>
@@ -262,7 +253,6 @@
                 </div>
               </div>
 
-              <!-- HINWEIS 2 -->
               <div id="clue2-box" class="p-4 rounded-xl border-2 border-black bg-slate-100 transition-all">
                 <div class="flex items-center justify-between mb-1">
                   <span class="font-bold text-xs uppercase text-slate-600">Hinweis 2 (Donnerstag)</span>
@@ -276,7 +266,7 @@
             </div>
           </div>
 
-          <!-- TIP SUBMISSION PROMPT -->
+          <!-- TIPP CALLOUT -->
           <div class="comic-box bg-purple-300 p-6 text-center space-y-4">
             <div class="w-12 h-12 bg-amber-400 rounded-2xl border-3 border-black mx-auto flex items-center justify-center text-xl shadow-[3px_3px_0px_#000]">
               ✏️
@@ -298,7 +288,7 @@
 
     </div>
 
-    <!-- TAB 2: TIPPEN (NUR 1 TIPP PRO WOCHE) -->
+    <!-- TAB 2: TIPPEN -->
     <div id="tab-tippen" class="hidden space-y-6">
 
       <div class="comic-box bg-white p-6 max-w-2xl mx-auto">
@@ -313,7 +303,6 @@
             Wähle deinen Namen aus, um deinen Wochen-Tipp einzureichen oder einzusehen.
           </p>
 
-          <!-- EARLY BIRD BONUS BADGE -->
           <div id="early-bonus-banner" class="mt-3 bg-emerald-100 border-2 border-emerald-500 text-emerald-800 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2">
             <span>⚡</span>
             <span><strong>Schnellabgabe aktiv (Mo/Di):</strong> +2 Extra-Punkte bei richtigem Täter!</span>
@@ -322,7 +311,6 @@
 
         <form id="tip-form" onsubmit="handleTipSubmit(event)" class="mt-6 space-y-5">
           
-          <!-- ERMITTLER WAHL -->
           <div>
             <label class="block font-black text-sm uppercase text-slate-900 mb-1">
               1. Wer bist du? (Ermittler-Name)
@@ -332,10 +320,8 @@
             </select>
           </div>
 
-          <!-- DYNAMIC CONTENT AREA FOR LOCK STATUS OR FORM -->
           <div id="tip-lock-container" class="space-y-5">
             
-            <!-- SUSPECT SELECTION -->
             <div>
               <label class="block font-black text-sm uppercase text-slate-900 mb-1">
                 2. Welcher Verdächtige ist der Täter?
@@ -345,7 +331,6 @@
               </select>
             </div>
 
-            <!-- BONUS QUESTION -->
             <div>
               <label class="block font-black text-sm uppercase text-slate-900 mb-1">
                 3. Zusatzfrage (+1 Punkt):
@@ -354,7 +339,6 @@
               <input type="text" id="tip-bonus-answer" placeholder="Deine Antwort hier eingeben..." required class="w-full p-3 rounded-xl border-3 border-black font-semibold bg-white focus:outline-none focus:ring-2 focus:ring-pink-500">
             </div>
 
-            <!-- SUBMIT BUTTON -->
             <button type="submit" id="submit-tip-btn" class="comic-btn w-full bg-emerald-400 hover:bg-emerald-500 text-black font-black py-3.5 rounded-xl text-base uppercase tracking-wider flex items-center justify-center space-x-2">
               <i class="fa-solid fa-lock"></i>
               <span>TIPP VERBINDLICH EINREICHEN</span>
@@ -402,7 +386,7 @@
               </tr>
             </thead>
             <tbody id="leaderboard-body" class="divide-y-2 divide-slate-200 font-bold text-slate-800">
-              <!-- Leaderboard rows dynamically rendered -->
+              <!-- Rows -->
             </tbody>
           </table>
         </div>
@@ -429,7 +413,7 @@
         </div>
       </div>
 
-      <!-- PIN AUTHENTICATION -->
+      <!-- PIN SECTION -->
       <div id="admin-auth-sec" class="space-y-3">
         <p class="text-xs font-bold text-slate-600">Bitte Admin-PIN eingeben:</p>
         <div class="flex space-x-2">
@@ -438,18 +422,15 @@
         </div>
       </div>
 
-      <!-- ADMIN CONTROLS (HIDDEN UNTIL UNLOCKED) -->
+      <!-- ADMIN CONTROLS -->
       <div id="admin-controls" class="hidden space-y-6">
         
-        <!-- 1. KW SELECTION & AUTO-EVALUATION -->
         <div class="bg-amber-50 p-4 rounded-xl border-2 border-black space-y-3">
-          <div class="flex items-center justify-between">
-            <h4 class="font-black text-sm uppercase text-slate-900">1. Spielwoche & Auflösung</h4>
-          </div>
+          <h4 class="font-black text-sm uppercase text-slate-900">1. Spielwoche & Auflösung</h4>
           
           <div class="flex flex-wrap items-center gap-2">
             <select id="admin-week-select" onchange="changeAdminWeek()" class="p-2 border-2 border-black rounded-xl font-bold bg-white text-sm flex-1">
-              <!-- 52 weeks options -->
+              <!-- Weeks -->
             </select>
             <button onclick="resetToAutoWeek()" class="comic-btn bg-cyan-300 text-black font-bold px-3 py-2 rounded-xl text-xs uppercase">
               ➔ Aktuelle KW laden
@@ -468,7 +449,6 @@
           </div>
         </div>
 
-        <!-- 2. MANAGE INVESTIGATORS & DIRECT POINT ASSIGNMENT -->
         <div class="bg-cyan-50 p-4 rounded-xl border-2 border-black space-y-3">
           <h4 class="font-black text-sm uppercase text-slate-900">2. Ermittler verwalten & Punkte zuweisen</h4>
           
@@ -478,7 +458,7 @@
           </div>
 
           <div id="admin-player-list" class="max-h-60 overflow-y-auto space-y-2 pt-2 border-t border-black/10">
-            <!-- Player list for score edits and direct point assignment -->
+            <!-- List -->
           </div>
 
           <button onclick="resetDefaultPlayers()" class="comic-btn bg-amber-200 text-slate-800 font-bold px-3 py-1.5 rounded-lg text-xs w-full text-center mt-2">
@@ -486,11 +466,10 @@
           </button>
         </div>
 
-        <!-- 3. SUBMITTED TIPS OVERVIEW & UNLOCK -->
         <div class="bg-purple-50 p-4 rounded-xl border-2 border-black space-y-3">
           <h4 class="font-black text-sm uppercase text-slate-900">3. Eingereichte Tipps dieser Woche (Freigabe/Reset)</h4>
           <div id="admin-tips-overview" class="max-h-48 overflow-y-auto space-y-2 text-xs font-semibold">
-            <!-- Submitted tips listed here -->
+            <!-- Tips -->
           </div>
         </div>
 
@@ -499,7 +478,7 @@
     </div>
   </div>
 
-  <!-- CONFIRMATION MODAL FOR TIP LOCK -->
+  <!-- CONFIRMATION MODAL -->
   <div id="confirm-tip-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="comic-box bg-white max-w-md w-full p-6 text-center space-y-4">
       <div class="w-14 h-14 bg-amber-400 border-3 border-black rounded-2xl mx-auto flex items-center justify-center text-2xl shadow-[3px_3px_0px_#000]">
@@ -528,12 +507,11 @@
     </div>
   </div>
 
-  <!-- FIREBASE & APPLICATION LOGIC -->
+  <!-- JAVASCRIPT & LOGIC -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
   <script>
-    // --- 19 DEFAULT INVESTIGATORS ---
     const DEFAULT_PLAYERS = [
       "Guiseppe", "Nikolaos", "Sandy", "Susi K.", 
       "Tatjana", "Thorsten", "Uwe", "Susi H.", 
@@ -542,7 +520,6 @@
       "Gerd", "Jörg"
     ];
 
-    // --- SUSPECT POOL WITH EXACT SHEET AND QUADRANT CROPPING ---
     const suspectPool = [
       { name: "Guiseppe", role: "Spion", image: "karten1.jpg", crop: "crop-top-left", desc: "Sammelt vertrauliche Infos" },
       { name: "Nikolaos", role: "Gefährder", image: "karten1.jpg", crop: "crop-top-right", desc: "Provoziert Störungen" },
@@ -568,12 +545,10 @@
       { name: "Jörg", role: "Stratege", image: "karten5.jpg", crop: "crop-top-right", desc: "Planierte Ablauf" }
     ];
 
-    // Helper to pick suspects deterministically
     function getSuspect(name) {
       return suspectPool.find(s => s.name === name) || suspectPool[0];
     }
 
-    // --- 52 UNIQUE CASES FOR ALL WEEKS WITH SEASONS & HOLIDAYS ---
     const CASES_DATA = {
       1: {
         title: "KW 1: Der Raub der Neujahrs-Glocke",
@@ -698,7 +673,7 @@
       13: {
         title: "KW 13: Der Aprilscherz-Testlauf",
         description: "Alle Computer-Mäuse wurden mit kleinen Klebezetteln an der Unterseite lahmgelegt!",
-        suspects: [getSuspect("Matthias"), getSuspect("Sandy"), getSuspect("Andreas")],
+        suspects: [getSuspect("Matthias"), getSuspect("Sandy"), getAndreas = getSuspect("Andreas")],
         clue1: "Hinweis 1: Die Klebezettel waren alle mit einem lachenden Smiley versehen.",
         clue2: "Hinweis 2: Der Täter war schon vor Dienstbeginn im Gebäude.",
         correctSuspect: "Matthias",
@@ -918,7 +893,7 @@
       35: {
         title: "KW 35: Der Aktenvernichter-Stau",
         description: "Der Hochleistungs-Schredder wurde mit 50 Blatt Glanzpapier auf einmal gefüttert und blockiert.",
-        suspects: [getSuspect("Susi H."), getSuspect("Marcel"), getSuspect("Thorsten")],
+        suspects: [getSuspect("Susi H."), getMarcel = getSuspect("Marcel"), getThorsten = getSuspect("Thorsten")],
         clue1: "Hinweis 1: Reste von laminiertem Papier ragten heraus.",
         clue2: "Hinweis 2: Eine Schere lag neben dem Gerät.",
         correctSuspect: "Susi H.",
@@ -1097,7 +1072,6 @@
       }
     };
 
-    // --- ISO WEEK CALCULATOR ---
     function getAutoKW() {
       const now = new Date();
       const target = new Date(now.valueOf());
@@ -1111,19 +1085,16 @@
       return 1 + Math.round((firstThursday - target) / 604800000);
     }
 
-    // --- GAME STATE ---
     let currentWeek = getAutoKW();
     let playersState = {};
-    let tipsState = {}; // Structure: tipsState[week][playerName] = { suspect, answer, timestamp, evaluated, pointsEarned }
+    let tipsState = {};
     let isAdminUnlocked = false;
     let pendingTip = null;
 
-    // Initialize Default Players
     DEFAULT_PLAYERS.forEach(p => {
       playersState[p] = { points: 0, tipsCount: 0 };
     });
 
-    // --- FIREBASE SYNC WITH LOCAL FALLBACK ---
     const firebaseConfig = {
       apiKey: "",
       authDomain: "krimitime2026.firebaseapp.com",
@@ -1140,7 +1111,7 @@
       
       const appIdStr = typeof __app_id !== 'undefined' ? __app_id : 'krimitime-2026-prod';
       db.collection('artifacts').doc(appIdStr).collection('public').doc('data').onSnapshot((doc) => {
-        if (doc.exists) {
+        if (doc && doc.exists) {
           const data = doc.data();
           if (data.players) mergePlayers(data.players);
           if (data.tips) tipsState = data.tips;
@@ -1154,7 +1125,6 @@
       console.log("Offline mode initialized");
     }
 
-    // Merge Helper
     function mergePlayers(incoming) {
       DEFAULT_PLAYERS.forEach(p => {
         if (!playersState[p]) playersState[p] = { points: 0, tipsCount: 0 };
@@ -1165,11 +1135,9 @@
     }
 
     function saveState() {
-      // Local Backup
       localStorage.setItem('krimitime_players', JSON.stringify(playersState));
       localStorage.setItem('krimitime_tips', JSON.stringify(tipsState));
 
-      // Cloud Sync
       if (db) {
         const appIdStr = typeof __app_id !== 'undefined' ? __app_id : 'krimitime-2026-prod';
         db.collection('artifacts').doc(appIdStr).collection('public').doc('data').set({
@@ -1181,7 +1149,6 @@
       }
     }
 
-    // Load local storage immediately
     try {
       const locP = localStorage.getItem('krimitime_players');
       const locT = localStorage.getItem('krimitime_tips');
@@ -1189,7 +1156,6 @@
       if (locT) tipsState = JSON.parse(locT);
     } catch(e) {}
 
-    // --- RENDER ALL VIEWS ---
     function renderAll() {
       renderHeaderAndHero();
       renderCaseTab();
@@ -1206,7 +1172,6 @@
       document.getElementById('weeks-left-count').innerText = `${Math.max(0, 52 - currentWeek)}`;
       document.getElementById('kw-badge').innerText = `Kalenderwoche #${currentWeek}`;
       
-      // Update Seasonal Badge
       const sBadge = document.getElementById('special-badge');
       if (currentWeek >= 1 && currentWeek <= 8) sBadge.innerText = "❄️ Winter-Special";
       else if (currentWeek >= 9 && currentWeek <= 20) sBadge.innerText = "🌸 Frühlings-Special";
@@ -1214,7 +1179,6 @@
       else if (currentWeek >= 36 && currentWeek <= 47) sBadge.innerText = "🍂 Herbst-Special";
       else sBadge.innerText = "🎄 Weihnachts-Finale";
 
-      // Early bonus banner visibility
       const day = now.getDay();
       const earlyBanner = document.getElementById('early-bonus-banner');
       if (earlyBanner) {
@@ -1227,14 +1191,14 @@
     }
 
     function renderCaseTab() {
-      const c = CASES_DATA[currentWeek] || CASES_DATA[33];
+      const c = CASES_DATA[currentWeek] || CASES_DATA[34] || CASES_DATA[33];
       document.getElementById('case-title').innerText = c.title;
       document.getElementById('case-description').innerText = c.description;
       document.getElementById('bonus-question-text').innerText = c.question;
       document.getElementById('tip-bonus-q-label').innerText = c.question;
 
-      // Unlock Clues based on weekday (Wed=3, Thu=4, Fri=5, Sat=6, Sun=0)
       const day = new Date().getDay();
+      
       const clue1Box = document.getElementById('clue1-box');
       const clue1Text = document.getElementById('clue1-text');
       const clue1Icon = document.getElementById('clue1-icon');
@@ -1267,20 +1231,17 @@
         clue2Icon.className = "fa-solid fa-lock text-slate-400";
       }
 
-      // Render Suspect Cards with Cropping Logic
       const container = document.getElementById('cards-container');
       const suspectSelect = document.getElementById('tip-suspect');
       container.innerHTML = '';
       suspectSelect.innerHTML = '<option value="">-- Verdächtigen wählen --</option>';
 
       c.suspects.forEach((s) => {
-        // Dropdown option
         const opt = document.createElement('option');
         opt.value = s.name;
         opt.innerText = `${s.name} (${s.role})`;
         suspectSelect.appendChild(opt);
 
-        // Card HTML with Cropping Engine
         const cardDiv = document.createElement('div');
         cardDiv.className = "comic-box bg-white p-3 card-zoom flex flex-col items-center text-center space-y-2";
         
@@ -1318,7 +1279,6 @@
       });
     }
 
-    // --- STRICT 1-TIP PER WEEK LOCK CHECK ---
     function checkExistingTipStatus() {
       const name = document.getElementById('tip-investigator').value;
       const container = document.getElementById('tip-lock-container');
@@ -1332,7 +1292,6 @@
       const existingTip = weekTips[name];
 
       if (existingTip) {
-        // Locked State UI
         let pointsInfo = '';
         if (existingTip.evaluated) {
           pointsInfo = `<div class="bg-amber-200 text-black text-xs font-black p-2 rounded-lg border border-black mt-2">
@@ -1364,8 +1323,7 @@
           </div>
         `;
       } else {
-        // Re-render Form
-        const c = CASES_DATA[currentWeek] || CASES_DATA[33];
+        const c = CASES_DATA[currentWeek] || CASES_DATA[34] || CASES_DATA[33];
         let optionsHtml = '<option value="">-- Verdächtigen wählen --</option>';
         c.suspects.forEach(s => {
           optionsHtml += `<option value="${s.name}">${s.name} (${s.role})</option>`;
@@ -1397,7 +1355,6 @@
       }
     }
 
-    // --- SUBMISSION CONFIRMATION HANDLERS ---
     function handleTipSubmit(e) {
       e.preventDefault();
       const investigator = document.getElementById('tip-investigator').value;
@@ -1456,7 +1413,6 @@
       renderLeaderboard();
     }
 
-    // --- LEADERBOARD RENDER ---
     function renderLeaderboard() {
       const tbody = document.getElementById('leaderboard-body');
       tbody.innerHTML = '';
@@ -1486,7 +1442,6 @@
       });
     }
 
-    // --- TAB SWITCHING ---
     function switchTab(tabId) {
       ['fallakte', 'tippen', 'rangliste'].forEach(t => {
         document.getElementById(`tab-${t}`).classList.add('hidden');
@@ -1497,7 +1452,6 @@
       document.getElementById(`tab-btn-${tabId}`).className = "comic-btn bg-cyan-400 text-black font-bold px-3 py-1.5 rounded-xl text-sm flex items-center space-x-1.5";
     }
 
-    // --- ADMIN CONTROLS (PIN: 2121) ---
     function openAdminModal() {
       document.getElementById('admin-modal').classList.remove('hidden');
     }
@@ -1515,7 +1469,7 @@
         document.getElementById('admin-relock-btn').classList.remove('hidden');
         document.getElementById('admin-pin').value = '';
         renderAdminPanel();
-        renderCaseTab(); // Instantly show clues for admin inspection
+        renderCaseTab();
       } else {
         alert("Falscher Admin-Code!");
       }
@@ -1530,9 +1484,8 @@
     }
 
     function renderAdminPanel() {
-      const c = CASES_DATA[currentWeek] || CASES_DATA[33];
+      const c = CASES_DATA[currentWeek] || CASES_DATA[34] || CASES_DATA[33];
 
-      // 1. Week Select
       const weekSel = document.getElementById('admin-week-select');
       weekSel.innerHTML = '';
       for (let w = 1; w <= 52; w++) {
@@ -1547,7 +1500,6 @@
       document.getElementById('admin-correct-suspect-label').innerText = c.correctSuspect;
       document.getElementById('admin-correct-bonus-label').innerText = c.bonusAnswer;
 
-      // 2. Direct Points & Player Management
       const playerList = document.getElementById('admin-player-list');
       playerList.innerHTML = '';
       Object.keys(playersState).sort().forEach(p => {
@@ -1567,7 +1519,6 @@
         playerList.appendChild(div);
       });
 
-      // 3. Submitted Tips Overview & Reset
       const tipsOverview = document.getElementById('admin-tips-overview');
       tipsOverview.innerHTML = '';
       const currentWeekTips = tipsState[currentWeek] || {};
@@ -1594,7 +1545,6 @@
       }
     }
 
-    // --- AUTOMATIC CASE EVALUATION ---
     function evaluateCurrentWeek() {
       const c = CASES_DATA[currentWeek];
       if (!c) return;
@@ -1614,18 +1564,15 @@
 
         let earnedPoints = 0;
 
-        // 1. Correct Suspect (+3 points)
         if (tip.suspect === c.correctSuspect) {
           earnedPoints += 3;
 
-          // 2. Early Bird Bonus (+2 points on Mon/Tue)
           const tipDay = tip.timestamp ? new Date(tip.timestamp).getDay() : 0;
           if (tipDay === 1 || tipDay === 2) {
             earnedPoints += 2;
           }
         }
 
-        // 3. Bonus Question (+1 point)
         if (tip.answer && tip.answer.trim().toLowerCase() === c.bonusAnswer.trim().toLowerCase()) {
           earnedPoints += 1;
         }
@@ -1643,9 +1590,7 @@
       saveState();
       renderLeaderboard();
       renderAdminPanel();
-      alert(`Auswertung für KW ${currentWeek} abgeschlossen!
-
-${awardedCount} Tipps wurden ausgewertet und die Rangliste aktualisiert.`);
+      alert(`Auswertung für KW ${currentWeek} abgeschlossen!\n\n${awardedCount} Tipps wurden ausgewertet und die Rangliste aktualisiert.`);
     }
 
     function changeAdminWeek() {
@@ -1718,7 +1663,6 @@ ${awardedCount} Tipps wurden ausgewertet und die Rangliste aktualisiert.`);
       }
     }
 
-    // --- INITIAL BOOTSTRAP ---
     window.onload = function() {
       renderAll();
     };
