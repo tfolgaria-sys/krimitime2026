@@ -41,7 +41,6 @@
       border: 3px solid #000000;
       box-shadow: 3.5px 3.5px 0px #000000;
       transition: all 0.1s ease-in-out;
-      cursor: pointer;
     }
 
     .comic-btn:hover {
@@ -62,32 +61,30 @@
       box-shadow: 7px 7px 0px #000000;
     }
 
-    /* CARD CROPPING ENGINE FOR INDIVIDUAL SUSPECTS */
-    .card-crop-wrap {
-      position: relative;
+    /* CARD CROPPING ENGINE FOR SAMMELKARTEN (2x2 GRID PER SHEET) */
+    .card-img-container {
       width: 100%;
-      padding-top: 120%; /* ~3:4 Aspect Ratio */
+      height: 220px;
+      position: relative;
       overflow: hidden;
-      border: 2.5px solid #000;
       border-radius: 12px;
-      background-color: #1e293b;
+      border: 2px solid #000;
+      background-color: #f1f5f9;
     }
+
     .card-crop-img {
       position: absolute;
       width: 200%;
       height: 200%;
-      max-width: none;
       object-fit: cover;
+      max-width: none;
     }
 
-    .crop-top-left { left: 0%; top: 0%; }
-    .crop-top-right { left: -100%; top: 0%; }
-    .crop-bottom-left { left: 0%; top: -100%; }
-    .crop-bottom-right { left: -100%; top: -100%; }
-
-    /* Gerd & Jörg 2-card side-by-side cropping */
-    .crop-half-left { position: absolute; width: 200%; height: 100%; left: 0%; top: 0%; max-width: none; object-fit: cover; }
-    .crop-half-right { position: absolute; width: 200%; height: 100%; left: -100%; top: 0%; max-width: none; object-fit: cover; }
+    /* 4 Quadrants for 2x2 cards */
+    .crop-top-left     { top: 0; left: 0; }
+    .crop-top-right    { top: 0; left: -100%; }
+    .crop-bottom-left  { top: -100%; left: 0; }
+    .crop-bottom-right { top: -100%; left: -100%; }
   </style>
 </head>
 <body class="min-h-screen text-slate-900 pb-12 select-none">
@@ -97,7 +94,7 @@
     <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
       
       <!-- LOGO & SUBTITLE -->
-      <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('fallakte')">
+      <div class="flex items-center space-x-3">
         <div class="w-12 h-12 bg-pink-500 rounded-2xl border-3 border-black flex items-center justify-center text-white text-2xl font-black shadow-[3px_3px_0px_#000]">
           ⚡
         </div>
@@ -174,10 +171,10 @@
             <span id="kw-badge" class="bg-pink-500 text-white font-black text-xs px-3 py-1 rounded-full border-2 border-black uppercase shadow-[2px_2px_0px_#000]">
               Kalenderwoche #--
             </span>
-            <span id="season-tag" class="bg-amber-300 text-black text-xs font-bold px-2.5 py-1 rounded-full border border-black flex items-center gap-1">
-              🏷️ Saison
+            <span id="special-badge" class="bg-amber-300 text-black text-xs font-bold px-2.5 py-1 rounded-full border border-black flex items-center gap-1">
+              🪙 Sommer-Special
             </span>
-            <span id="case-status-badge" class="bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded border border-red-300 uppercase tracking-wider animate-pulse">
+            <span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded border border-red-300 uppercase tracking-wider animate-pulse">
               Ermittlung läuft!
             </span>
           </div>
@@ -279,24 +276,6 @@
             </div>
           </div>
 
-          <!-- SOLUTION BOX (FREITAG/WOCHENENDE) -->
-          <div id="solution-box" class="comic-box bg-emerald-200 p-5 hidden">
-            <h3 class="text-lg font-black font-comic text-slate-900 flex items-center space-x-2 pb-2 border-b-2 border-black/20">
-              <i class="fa-solid fa-check-circle text-emerald-700"></i>
-              <span>4. AUFLÖSUNG (FREITAG)</span>
-            </h3>
-            <div class="mt-3 bg-white p-3 rounded-xl border-2 border-black space-y-2">
-              <div>
-                <span class="text-[10px] font-bold uppercase text-slate-500 block">Überführter Täter:</span>
-                <span id="solution-culprit" class="font-black font-comic text-2xl text-emerald-600">--</span>
-              </div>
-              <div>
-                <span class="text-[10px] font-bold uppercase text-slate-500 block">Auflösung & Motiv:</span>
-                <p id="solution-text" class="text-xs font-semibold text-slate-800 leading-relaxed mt-0.5">--</p>
-              </div>
-            </div>
-          </div>
-
           <!-- TIP SUBMISSION PROMPT -->
           <div class="comic-box bg-purple-300 p-6 text-center space-y-4">
             <div class="w-12 h-12 bg-amber-400 rounded-2xl border-3 border-black mx-auto flex items-center justify-center text-xl shadow-[3px_3px_0px_#000]">
@@ -333,8 +312,11 @@
           <p class="text-xs font-semibold text-slate-600 mt-1">
             Wähle deinen Namen aus, um deinen Wochen-Tipp einzureichen oder einzusehen.
           </p>
-          <div id="early-bonus-banner" class="mt-3 bg-pink-100 border-2 border-black text-pink-700 font-bold text-xs p-2 rounded-xl flex items-center justify-center space-x-1.5 shadow-[2px_2px_0px_#000]">
-            <span>⚡ SCHNELLABGABE-BONUS: Tippe am Montag oder Dienstag für +2 EXTRA-PUNKTE!</span>
+
+          <!-- EARLY BIRD BONUS BADGE -->
+          <div id="early-bonus-banner" class="mt-3 bg-emerald-100 border-2 border-emerald-500 text-emerald-800 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2">
+            <span>⚡</span>
+            <span><strong>Schnellabgabe aktiv (Mo/Di):</strong> +2 Extra-Punkte bei richtigem Täter!</span>
           </div>
         </div>
 
@@ -397,9 +379,15 @@
               Punktestand aller Kollegen im Saisonverlauf
             </p>
           </div>
-          <div class="bg-amber-100 border-2 border-black rounded-xl px-4 py-2 flex items-center space-x-2">
-            <i class="fa-solid fa-award text-amber-600 text-xl"></i>
-            <span class="text-xs font-bold text-slate-800">🎯 Täter: 3 Pkt. | ⚡ Schnellabgabe (Mo/Di): +2 Pkt. | ❓ Zusatzfrage: 1 Pkt.</span>
+          <div class="flex items-center gap-3">
+            <button onclick="renderLeaderboard()" class="comic-btn bg-cyan-300 hover:bg-cyan-400 text-black font-bold px-3 py-1.5 rounded-xl text-xs flex items-center space-x-1.5">
+              <i class="fa-solid fa-rotate"></i>
+              <span>Aktualisieren</span>
+            </button>
+            <div class="bg-amber-100 border-2 border-black rounded-xl px-4 py-2 flex items-center space-x-2">
+              <i class="fa-solid fa-award text-amber-600 text-xl"></i>
+              <span class="text-xs font-bold text-slate-800">Täter: +3 Pkt. | Mo/Di-Bonus: +2 Pkt. | Zusatz: +1 Pkt.</span>
+            </div>
           </div>
         </div>
 
@@ -433,14 +421,19 @@
           <i class="fa-solid fa-user-shield text-pink-500"></i>
           <span>ADMIN-ZENTRALE</span>
         </h3>
-        <button onclick="closeAdminModal()" class="w-8 h-8 rounded-full border-2 border-black bg-slate-100 hover:bg-slate-200 font-black">✕</button>
+        <div class="flex items-center space-x-2">
+          <button id="admin-relock-btn" onclick="lockAdmin()" class="comic-btn bg-slate-200 hover:bg-slate-300 text-black text-xs font-bold px-2.5 py-1 rounded-lg hidden">
+            🔒 Admin sperren
+          </button>
+          <button onclick="closeAdminModal()" class="w-8 h-8 rounded-full border-2 border-black bg-slate-100 hover:bg-slate-200 font-black">✕</button>
+        </div>
       </div>
 
       <!-- PIN AUTHENTICATION -->
       <div id="admin-auth-sec" class="space-y-3">
-        <p class="text-xs font-bold text-slate-600">Bitte den Admin-Code eingeben:</p>
+        <p class="text-xs font-bold text-slate-600">Bitte Admin-PIN eingeben:</p>
         <div class="flex space-x-2">
-          <input type="password" id="admin-pin" placeholder="PIN" class="p-2.5 border-2 border-black rounded-xl font-bold w-full">
+          <input type="password" id="admin-pin" placeholder="PIN eingeben..." class="p-2.5 border-2 border-black rounded-xl font-bold w-full" onkeydown="if(event.key==='Enter') unlockAdmin()">
           <button onclick="unlockAdmin()" class="comic-btn bg-pink-500 text-white font-bold px-4 py-2 rounded-xl text-sm uppercase">Freischalten</button>
         </div>
       </div>
@@ -448,36 +441,39 @@
       <!-- ADMIN CONTROLS (HIDDEN UNTIL UNLOCKED) -->
       <div id="admin-controls" class="hidden space-y-6">
         
-        <!-- STATUS & RE-LOCK BUTTON -->
-        <div class="flex items-center justify-between pb-2 border-b-2 border-black/10">
-          <span class="text-xs font-bold text-emerald-600 flex items-center gap-1.5">
-            <i class="fa-solid fa-circle-check"></i> Admin-Modus aktiv
-          </span>
-          <button onclick="lockAdmin()" class="comic-btn bg-red-500 hover:bg-red-600 text-white font-bold px-3 py-1.5 rounded-xl text-xs uppercase flex items-center space-x-1.5">
-            <i class="fa-solid fa-lock"></i>
-            <span>Admin-Modus sperren</span>
-          </button>
-        </div>
-
-        <!-- KW SELECTION -->
+        <!-- 1. KW SELECTION & AUTO-EVALUATION -->
         <div class="bg-amber-50 p-4 rounded-xl border-2 border-black space-y-3">
-          <h4 class="font-black text-sm uppercase text-slate-900">1. Spielwoche wählen</h4>
-          <div class="flex items-center space-x-2">
-            <select id="admin-week-select" onchange="changeAdminWeek()" class="p-2 border-2 border-black rounded-xl font-bold bg-white text-sm">
+          <div class="flex items-center justify-between">
+            <h4 class="font-black text-sm uppercase text-slate-900">1. Spielwoche & Auflösung</h4>
+          </div>
+          
+          <div class="flex flex-wrap items-center gap-2">
+            <select id="admin-week-select" onchange="changeAdminWeek()" class="p-2 border-2 border-black rounded-xl font-bold bg-white text-sm flex-1">
               <!-- 52 weeks options -->
             </select>
             <button onclick="resetToAutoWeek()" class="comic-btn bg-cyan-300 text-black font-bold px-3 py-2 rounded-xl text-xs uppercase">
               ➔ Aktuelle KW laden
             </button>
           </div>
+
+          <div class="bg-white p-3 rounded-xl border border-black text-xs font-bold flex items-center justify-between gap-2 mt-2">
+            <div>
+              <span class="text-slate-600">Lösung KW <span id="admin-curr-kw-label">--</span>:</span>
+              <span id="admin-correct-suspect-label" class="text-pink-600 ml-1">--</span>
+              <span class="text-slate-400 ml-1">(Zusatz: <span id="admin-correct-bonus-label">--</span>)</span>
+            </div>
+            <button onclick="evaluateCurrentWeek()" class="comic-btn bg-emerald-400 hover:bg-emerald-500 text-black font-black px-3 py-1.5 rounded-lg text-xs uppercase shadow-sm">
+              ⚡ Woche auswerten & Punkte vergeben
+            </button>
+          </div>
         </div>
 
-        <!-- MANAGE INVESTIGATORS & DIRECT POINT ASSIGNMENT -->
+        <!-- 2. MANAGE INVESTIGATORS & DIRECT POINT ASSIGNMENT -->
         <div class="bg-cyan-50 p-4 rounded-xl border-2 border-black space-y-3">
           <h4 class="font-black text-sm uppercase text-slate-900">2. Ermittler verwalten & Punkte zuweisen</h4>
           
           <div class="flex space-x-2">
-            <input type="text" id="new-player-name" placeholder="Neuer Ermittler Name" class="p-2 border-2 border-black rounded-xl font-bold text-sm flex-1">
+            <input type="text" id="new-player-name" placeholder="Neuer Ermittler Name" class="p-2 border-2 border-black rounded-xl font-bold text-sm flex-1" onkeydown="if(event.key==='Enter') addNewPlayer()">
             <button onclick="addNewPlayer()" class="comic-btn bg-emerald-400 text-black font-bold px-3 py-2 rounded-xl text-xs uppercase">+ Hinzufügen</button>
           </div>
 
@@ -490,7 +486,7 @@
           </button>
         </div>
 
-        <!-- SUBMITTED TIPS OVERVIEW & UNLOCK -->
+        <!-- 3. SUBMITTED TIPS OVERVIEW & UNLOCK -->
         <div class="bg-purple-50 p-4 rounded-xl border-2 border-black space-y-3">
           <h4 class="font-black text-sm uppercase text-slate-900">3. Eingereichte Tipps dieser Woche (Freigabe/Reset)</h4>
           <div id="admin-tips-overview" class="max-h-48 overflow-y-auto space-y-2 text-xs font-semibold">
@@ -515,9 +511,10 @@
       </p>
 
       <div class="bg-amber-50 p-3 rounded-xl border-2 border-black text-left text-xs font-bold space-y-1">
-        <div>Ermittler: <span id="confirm-investigator" class="text-slate-900">--</span></div>
-        <div>Täter-Verdacht: <span id="confirm-suspect" class="text-pink-600">--</span></div>
-        <div>Zusatzantwort: <span id="confirm-answer" class="text-slate-800">--</span></div>
+        <div>Ermittler: <span id="confirm-investigator" class="text-slate-900 font-black">--</span></div>
+        <div>Täter-Verdacht: <span id="confirm-suspect" class="text-pink-600 font-black">--</span></div>
+        <div>Zusatzantwort: <span id="confirm-answer" class="text-slate-800 font-black">--</span></div>
+        <div id="confirm-bonus-notice" class="text-emerald-700 font-black text-[11px] pt-1"></div>
       </div>
 
       <div class="flex space-x-3 pt-2">
@@ -545,864 +542,558 @@
       "Gerd", "Jörg"
     ];
 
-    // --- INDIVIDUAL PLAYER CARD CROPPING MAPPINGS ---
-    const PLAYER_CARDS = {
-      "Guiseppe": { src: "karten1.jpg", cropClass: "crop-top-left" },
-      "Nikolaos": { src: "karten1.jpg", cropClass: "crop-top-right" },
-      "Sandy": { src: "karten1.jpg", cropClass: "crop-bottom-left" },
-      "Susi K.": { src: "karten1.jpg", cropClass: "crop-bottom-right" },
+    // --- SUSPECT POOL WITH EXACT SHEET AND QUADRANT CROPPING ---
+    const suspectPool = [
+      { name: "Guiseppe", role: "Spion", image: "karten1.jpg", crop: "crop-top-left", desc: "Sammelt vertrauliche Infos" },
+      { name: "Nikolaos", role: "Gefährder", image: "karten1.jpg", crop: "crop-top-right", desc: "Provoziert Störungen" },
+      { name: "Sandy", role: "Verdächtige", image: "karten1.jpg", crop: "crop-bottom-left", desc: "War zur Tatzeit vor Ort" },
+      { name: "Susi K.", role: "Agentin", image: "karten1.jpg", crop: "crop-bottom-right", desc: "Überwacht Flure" },
+      
+      { name: "Tatjana", role: "Spionin", image: "karten2.jpg", crop: "crop-top-left", desc: "Hört Gespräche ab" },
+      { name: "Thorsten", role: "Verdächtiger", image: "karten2.jpg", crop: "crop-top-right", desc: "Suchte nach Schlüsseln" },
+      { name: "Uwe", role: "Drucker", image: "karten2.jpg", crop: "crop-bottom-left", desc: "Braucht Karton" },
+      { name: "Susi H.", role: "Ordnungsfan", image: "karten2.jpg", crop: "crop-bottom-right", desc: "Räumt um" },
+      
+      { name: "Mary", role: "Zeugin", image: "karten3.jpg", crop: "crop-top-left", desc: "Sah verdächtigen Schatten" },
+      { name: "Matthias", role: "IT-Guru", image: "karten3.jpg", crop: "crop-top-right", desc: "Loggte Daten um" },
+      { name: "Hendrik", role: "Kaffeegenießer", image: "karten3.jpg", crop: "crop-bottom-left", desc: "War spät in der Küche" },
+      { name: "Marcel", role: "Archivar", image: "karten3.jpg", crop: "crop-bottom-right", desc: "Sortiert Unterlagen" },
+      
+      { name: "Albert", role: "Leiter", image: "karten4.jpg", crop: "crop-top-left", desc: "Verstreut Akten" },
+      { name: "Alexander", role: "Analyst", image: "karten4.jpg", crop: "crop-top-right", desc: "Prüft Zeitstempel" },
+      { name: "Andreas", role: "Prüfer", image: "karten4.jpg", crop: "crop-bottom-left", desc: "Kontrolliert Inventar" },
+      { name: "Evangelos", role: "Techniker", image: "karten4.jpg", crop: "crop-bottom-right", desc: "Repariert Kabel" },
+      
+      { name: "Gerd", role: "Meister", image: "karten5.jpg", crop: "crop-top-left", desc: "Hat den Generalschlüssel" },
+      { name: "Jörg", role: "Stratege", image: "karten5.jpg", crop: "crop-top-right", desc: "Planierte Ablauf" }
+    ];
 
-      "Tatjana": { src: "karten2.jpg", cropClass: "crop-top-left" },
-      "Thorsten": { src: "karten2.jpg", cropClass: "crop-top-right" },
-      "Uwe": { src: "karten2.jpg", cropClass: "crop-bottom-left" },
-      "Susi H.": { src: "karten2.jpg", cropClass: "crop-bottom-right" },
+    // Helper to pick suspects deterministically
+    function getSuspect(name) {
+      return suspectPool.find(s => s.name === name) || suspectPool[0];
+    }
 
-      "Mary": { src: "karten3.jpg", cropClass: "crop-top-left" },
-      "Matthias": { src: "karten3.jpg", cropClass: "crop-top-right" },
-      "Hendrik": { src: "karten3.jpg", cropClass: "crop-bottom-left" },
-      "Marcel": { src: "karten3.jpg", cropClass: "crop-bottom-right" },
-
-      "Albert": { src: "karten4.jpg", cropClass: "crop-top-left" },
-      "Alexander": { src: "karten4.jpg", cropClass: "crop-top-right" },
-      "Andreas": { src: "karten4.jpg", cropClass: "crop-bottom-left" },
-      "Evangelos": { src: "karten4.jpg", cropClass: "crop-bottom-right" },
-
-      "Gerd": { src: "karten5.jpg", cropClass: "crop-half-left" },
-      "Jörg": { src: "karten5.jpg", cropClass: "crop-half-right" }
-    };
-
-    // --- FULL 52 HANDCRAFTED SEASONAL & HOLIDAY CASES FOR 2026 ---
+    // --- 52 UNIQUE CASES FOR ALL WEEKS WITH SEASONS & HOLIDAYS ---
     const CASES_DATA = {
       1: {
-        tag: "❄️ Neujahr",
-        title: "Der Raub der Neujahrs-Glocke",
-        description: "In der Silvesternacht wurde die goldene Neujahrsglocke aus der Empfangshalle gestohlen! Wer steckt dahinter?",
-        suspects: [
-          { name: "Evangelos", role: "Techniker", desc: "War bis spät an der Kaffeemaschine" },
-          { name: "Susi K.", role: "Agentin", desc: "Machte Fotos im Festsaal" },
-          { name: "Gerd", role: "Meister", desc: "Schenkte Sekt am Buffet ein" }
-        ],
-        clue1: "Susi K. trug braune Lederhandschuhe ohne Glitzer.",
-        clue2: "Gerd war bis 02:00 Uhr nachweislich hinter der Bar.",
-        correctSuspect: "Evangelos",
-        question: "Welches Konfetti klebte am Safe?",
-        bonusAnswer: "Silbernes Sternenkonfetti",
-        solutionText: "Evangelos wollte die Glocke für seine private Neujahrs-Show nutzen."
+        title: "KW 1: Der Raub der Neujahrs-Glocke",
+        description: "Direkt nach dem Jahreswechsel fehlte die goldene Glocke vom Empfangstresen. Wer hat sie zum Neujahrsanstoßen entführt?",
+        suspects: [getSuspect("Guiseppe"), getSuspect("Albert"), getSuspect("Tatjana")],
+        clue1: "Hinweis 1: Am Empfang lagen Reste von Wunderkerzen.",
+        clue2: "Hinweis 2: Der Verdächtige trug eine festliche Krawatte.",
+        correctSuspect: "Guiseppe",
+        question: "Wie viele Glöckchen hingen am Kranz?",
+        bonusAnswer: "3"
       },
       2: {
-        tag: "❄️ Winter",
-        title: "Der verschwundene Möhren-Snack",
-        description: "Der Möhren-Räuber hat dem Riesenschneemann im Hof die Nase geklaut!",
-        suspects: [
-          { name: "Uwe", role: "Drucker", desc: "Liebt Möhrensaft" },
-          { name: "Thorsten", role: "Verdächtiger", desc: "Sucht Vitamine nach dem Lauf" },
-          { name: "Tatjana", role: "Spionin", desc: "Brauchte Gemüsedeko" }
-        ],
-        clue1: "Uwe verbrachte den Morgen im Gewächshaus.",
-        clue2: "Es wurden Frischespuren von Thorstens Laufschuhen gefunden.",
-        correctSuspect: "Thorsten",
-        question: "Aus welchem Gemüse war die Ersatznase?",
-        bonusAnswer: "Gewürzgurke",
-        solutionText: "Thorsten konnte dem Knusper-Snack nach dem Morgenlauf nicht widerstehen!"
+        title: "KW 2: Die gefrorenen Stempelkarten",
+        description: "Jemand hat das Stempelkarten-Fach in das Gefrierfach der Teeküche gelegt! Ein böser Scherz am kältesten Januartag.",
+        suspects: [getSuspect("Hendrik"), getSuspect("Thorsten"), getSuspect("Sandy")],
+        clue1: "Hinweis 1: In der Teeküche roch es verdächtig nach Pfefferminztee.",
+        clue2: "Hinweis 2: Auf dem Gefrierfach waren Handschuh-Abdrücke zu sehen.",
+        correctSuspect: "Hendrik",
+        question: "Auf wie viel Grad war das Fach eingestellt?",
+        bonusAnswer: "-18"
       },
       3: {
-        tag: "❄️ Winter",
-        title: "Die Eiszapfen-Sabotage",
-        description: "Die Heizung fiel aus. Jemand hat Eisblöcke im Thermostat vom Albert-Büro platziert!",
-        suspects: [
-          { name: "Albert", role: "Leiter", desc: "Beschwert sich ständig über Hitze" },
-          { name: "Mary", role: "Zeugin", desc: "Friert extrem selten" },
-          { name: "Jörg", role: "Strategist", desc: "Spielt gerne Streiche" }
-        ],
-        clue1: "Mary hat ein lückenloses Alibi in der Kantine.",
-        clue2: "Albert hatte dicke Fäustlinge mit Eisspuren an.",
-        correctSuspect: "Albert",
-        question: "Welches Werkzeug lag am Thermostat?",
-        bonusAnswer: "Eiskratzer",
-        solutionText: "Albert wollte es unbedingt erfrischend kühl beim Denken haben."
+        title: "KW 3: Das Etiketten-Chaos im Lager",
+        description: "Hunderte Paketaufkleber wurden mit lustigen Smiley-Stickern überklebt. Wer hat den Scanner verwirrt?",
+        suspects: [getSuspect("Uwe"), getSuspect("Susi H."), getSuspect("Marcel")],
+        clue1: "Hinweis 1: In der Nähe des Druckers lag eine leere Sticker-Packung.",
+        clue2: "Hinweis 2: Der Täter hatte gelbe Farbe an den Fingern.",
+        correctSuspect: "Uwe",
+        question: "Wie viele Smileys waren auf einem Bogen?",
+        bonusAnswer: "24"
       },
       4: {
-        tag: "❄️ Winter",
-        title: "Der Krapfen-Senf-Attentäter",
-        description: "Sämtliche Krapfen wurden heimlich mit Scharfsenf statt Marmelade gefüllt!",
-        suspects: [
-          { name: "Guiseppe", role: "Spion", desc: "Hat Senf im Fach" },
-          { name: "Marcel", role: "Archivar", desc: "Liebt Faschingsstreiche" },
-          { name: "Sandy", role: "Verdächtige", desc: "Verwechselt oft Dosen" }
-        ],
-        clue1: "Marcel war zur Tatzeit nachweislich im Meeting.",
-        clue2: "Auf dem Senfeimer klebten Fingerspuren von Sandy.",
-        correctSuspect: "Sandy",
-        question: "Welcher Senf wurde verwendet?",
-        bonusAnswer: "Dijon-Senf",
-        solutionText: "Sandy hat im Dämmerschein versehentlich den Senfeimer gegriffen."
+        title: "KW 4: Der verschwundene USB-Schlüssel",
+        description: "Der USB-Stick mit den Monatsberichten lag nicht mehr in der Schreibtischschublade.",
+        suspects: [getSuspect("Matthias"), getSuspect("Alexander"), getSuspect("Susi K.")],
+        clue1: "Hinweis 1: Das IT-Logbuch verzeichnete einen Zugriff um 07:15 Uhr.",
+        clue2: "Hinweis 2: Der Täter trug eine blaue Laptoptasche.",
+        correctSuspect: "Matthias",
+        question: "Welche Speicherkapazität hatte der Stick?",
+        bonusAnswer: "64GB"
       },
       5: {
-        tag: "🎭 Karneval",
-        title: "Der Raub der Narrenkappe",
-        description: "Der goldene Faschingsorden ist kurz vor der Feier verschwunden!",
-        suspects: [
-          { name: "Nikolaos", role: "Gefährder", desc: "Vergisst oft Requisiten" },
-          { name: "Susi H.", role: "Ordnungsfan", desc: "Sucht den Orden" },
-          { name: "Gerd", role: "Meister", desc: "Sucht Luftballons für Zaubershow" }
-        ],
-        clue1: "Susi H. war den ganzen Abend am Büfett beschäftigt.",
-        clue2: "Gerd hat bunte Schminke an der Schatulle hinterlassen.",
-        correctSuspect: "Gerd",
-        question: "Welches Konfetti lag in der Schatulle?",
-        bonusAnswer: "Buntglas-Konfetti",
-        solutionText: "Gerd wollte den Orden für seine Zaubershow ausleihen."
+        title: "KW 5: Der Raub der Faschings-Narrenkappe",
+        description: "Zur Faschingswoche wurde die legendäre bunte Narrenkappe aus der Vitrine entwendet!",
+        suspects: [getSuspect("Nikolaos"), getSuspect("Gerd"), getSuspect("Mary")],
+        clue1: "Hinweis 1: Am Tatort lag buntes Konfetti auf dem Boden.",
+        clue2: "Hinweis 2: Eine Schreibtisch-Schublade stand noch weit offen.",
+        correctSuspect: "Nikolaos",
+        question: "Wie viele Glöckchen hatte die Narrenkappe?",
+        bonusAnswer: "6"
       },
       6: {
-        tag: "❄️ Winter",
-        title: "Die vertauschten Schlittschuhe",
-        description: "Vor dem Firmen-Eislaufen wurden die Schlittschuhe von Andreas vertauscht!",
-        suspects: [
-          { name: "Andreas", role: "Prüfer", desc: "Sucht seine Kufen" },
-          { name: "Matthias", role: "IT-Guru", desc: "Will das Rennen gewinnen" },
-          { name: "Thorsten", role: "Verdächtiger", desc: "Ärgert sich über Spätstarter" }
-        ],
-        clue1: "Thorsten hat die Halle um 18:00 Uhr zugesperrt.",
-        clue2: "In Matthias' Tasche wurde ein passender Schlüssel gefunden.",
-        correctSuspect: "Matthias",
-        question: "Wo wurden die echten Schuhe versteckt?",
-        bonusAnswer: "Geräteschuppen",
-        solutionText: "Matthias wollte sich ohne Konkurrenz den 1. Platz sichern."
+        title: "KW 6: Der Krapfen-Marmeladen-Tausch",
+        description: "Jemand hat in der Pause heimlich die Himbeermarmelade der Berliner gegen Senf ausgetauscht!",
+        suspects: [getSuspect("Andreas"), getSuspect("Evangelos"), getSuspect("Tatjana")],
+        clue1: "Hinweis 1: In der Spüle stand ein leerer Senfbecher.",
+        clue2: "Hinweis 2: Der Täter wurde lachend im Treppenhaus gesehen.",
+        correctSuspect: "Andreas",
+        question: "Wie viele Krapfen waren in der Schachtel?",
+        bonusAnswer: "12"
       },
       7: {
-        tag: "💘 Valentinstag",
-        title: "Die verschwundenen Riesen-Pralinen", description: "Eine 5-Kilo-Schokoherz-Packung ist spurlos aus dem Aufenthaltsraum verschwunden!",
-        suspects: [
-          { name: "Tatjana", role: "Spionin", desc: "Nascht gerne zum Kaffee" },
-          { name: "Albert", role: "Leiter", desc: "Sucht ein Geschenk" },
-          { name: "Evangelos", role: "Techniker", desc: "Liebt Kakao" }
-        ],
-        clue1: "Albert kaufte Blumen im Laden gegenüber.",
-        clue2: "Tatjana hinterließ braune Fingerspuren am Tisch.",
-        correctSuspect: "Tatjana",
-        question: "An welchem Stuhl klebten Schokoflecken?",
-        bonusAnswer: "Empfangsstuhl",
-        solutionText: "Tatjana konnte beim Anblick des Schokoherzens einfach nicht widerstehen."
+        title: "KW 7: Die verschwundenen Valentins-Pralinen",
+        description: "Zum Valentinstag stand eine riesige Schachtel Pralinen für das Team bereit – plötzlich war sie spurlos leer!",
+        suspects: [getSuspect("Susi K."), getSuspect("Albert"), getSuspect("Jörg")],
+        clue1: "Hinweis 1: Eine glitzernde rote Schleife lag unter dem Tisch.",
+        clue2: "Hinweis 2: Der Täter hatte verdächtige Schokoflecken am Ärmel.",
+        correctSuspect: "Susi K.",
+        question: "Welche Form hatte die Schachtel?",
+        bonusAnswer: "Herz"
       },
       8: {
-        tag: "❄️ Winter",
-        title: "Der Thermoskannen-Dieb",
-        description: "In der eisigen Woche wurden alle Thermoskannen aus der Teeküche entwendet.",
-        suspects: [
-          { name: "Uwe", role: "Drucker", desc: "Brauchte Warmgetränke" },
-          { name: "Mary", role: "Zeugin", desc: "Räumt extrem gründlich auf" },
-          { name: "Marcel", role: "Archivar", desc: "Lernt die ganze Nacht" }
-        ],
-        clue1: "Mary schließt die Teeküche nie ab.",
-        clue2: "In Marcels Rucksack klapperten metallische Kannen.",
-        correctSuspect: "Marcel",
-        question: "Welches Getränk war noch heiß?",
-        bonusAnswer: "Kräutertee",
-        solutionText: "Marcel brauchte Dauerkaffee für seine Spätschicht."
+        title: "KW 8: Die vertauschten Dienstpläne",
+        description: "Die Schichtpläne für die Folgewoche wurden heimlich am Aushang vertauscht!",
+        suspects: [getSuspect("Albert"), getSuspect("Marcel"), getSuspect("Sandy")],
+        clue1: "Hinweis 1: Der verwendete Magnet war neongrün.",
+        clue2: "Hinweis 2: Die Handschrift auf der Notiz war auffallend schwungvoll.",
+        correctSuspect: "Albert",
+        question: "Für welche Kalenderwoche galt der Plan?",
+        bonusAnswer: "KW 9"
       },
       9: {
-        tag: "❄️ Winter",
-        title: "Der Yeti-Footprint im Schnee",
-        description: "Riesige 'Yeti-Abdrücke' führten direkt zum Pausenraum-Tresor!",
-        suspects: [
-          { name: "Alexander", role: "Analyst", desc: "War draußen im Schnee" },
-          { name: "Susi K.", role: "Agentin", desc: "Sucht Motive" },
-          { name: "Jörg", role: "Strategist", desc: "Macht gerne Pranks" }
-        ],
-        clue1: "Alexander war beim Vortrag in der Stadt.",
-        clue2: "Jörg besaß riesige Kostümschuhe im Spind.",
-        correctSuspect: "Jörg",
-        question: "Welche Schuhgröße hatte der Yeti?",
-        bonusAnswer: "Größe 52",
-        solutionText: "Jörg wollte Susi K. erschrecken und für Aufsehen sorgen."
+        title: "KW 9: Der Kaffee-Vorrat-Schwund",
+        description: "Drei frische Packungen Espresso-Bohnen sind aus dem Vorratsschrank verschwunden.",
+        suspects: [getSuspect("Hendrik"), getSuspect("Guiseppe"), getSuspect("Alexander")],
+        clue1: "Hinweis 1: Auf dem Küchenboden lagen 5 einzelne Kaffeebohnen verstreut.",
+        clue2: "Hinweis 2: Der Täter roch intensiv nach frisch gemahlenem Kaffee.",
+        correctSuspect: "Hendrik",
+        question: "Wie viel Gramm wog eine Packung?",
+        bonusAnswer: "1000"
       },
       10: {
-        tag: "🌱 Frühling",
-        title: "Der Anschlag auf das Blumenbeet",
-        description: "Das Frühlingsbeet am Eingang wurde mit blauer Sprühfarbe verschandelt!",
-        suspects: [
-          { name: "Gerd", role: "Meister", desc: "Liebt blaue Farbe" },
-          { name: "Susi H.", role: "Ordnungsfan", desc: "Ärgert sich über Pollen" },
-          { name: "Nikolaos", role: "Gefährder", desc: "Bastelte Schilder" }
-        ],
-        clue1: "Susi H. war den ganzen Vormittag beim Termin.",
-        clue2: "An Gerds Händen klebte 'Himmelblau' Sprühfarbe.",
-        correctSuspect: "Gerd",
-        question: "Welcher Farbton wurde genutzt?",
-        bonusAnswer: "Himmelblau",
-        solutionText: "Gerd wollte ein modernes Kunstwerk für das Büro gestalten."
+        title: "KW 10: Der verschwundene Textmarker-Koffer",
+        description: "Ein ganzer Koffer mit neongelben und pinken Textmarkern ist am Montag unauffindbar.",
+        suspects: [getSuspect("Susi H."), getSuspect("Uwe"), getSuspect("Gerd")],
+        clue1: "Hinweis 1: Auf dem Flur fand man eine neongelbe Verschlusskappe.",
+        clue2: "Hinweis 2: Der Täter liebt farblich sortierte Aktenordner.",
+        correctSuspect: "Susi H.",
+        question: "Wie viele Farben waren im Koffer?",
+        bonusAnswer: "6"
       },
       11: {
-        tag: "🌱 Frühling",
-        title: "Das Rätsel der 50 Tulpen",
-        description: "50 gelbe Tulpen wurden über Nacht aus dem Beet ausgegraben!",
-        suspects: [
-          { name: "Sandy", role: "Verdächtige", desc: "Brauchte Blumendoku" },
-          { name: "Andreas", role: "Prüfer", desc: "Stolz auf Tulpen" },
-          { name: "Guiseppe", role: "Spion", desc: "Brauchte Tischdeko" }
-        ],
-        clue1: "Sandy kaufte Tulpen auf dem Großmarkt mit Quittung.",
-        clue2: "In Andreas' Vorgarten blühten plötzlich genau 50 gelbe Tulpen.",
-        correctSuspect: "Andreas",
-        question: "Wo wurden die Tulpen wiedergefunden?",
-        bonusAnswer: "Vorgarten",
-        solutionText: "Andreas wollte den Nachbarschafts-Gartenwettbewerb gewinnen."
+        title: "KW 11: Der Frühlingsblumen-Entführer",
+        description: "Die bunten Narzissen vom Fenstersims im Aufenthaltsraum sind über Nacht umgezogen!",
+        suspects: [getSuspect("Mary"), getSuspect("Tatjana"), getSuspect("Thorsten")],
+        clue1: "Hinweis 1: Ein wenig Blumenerde führte in Richtung Büro 2.",
+        clue2: "Hinweis 2: Der Täter hatte eine kleine Gießkanne dabei.",
+        correctSuspect: "Mary",
+        question: "Welche Farbe hatte der Blumentopf?",
+        bonusAnswer: "Gelb"
       },
       12: {
-        tag: "🌱 Frühling",
-        title: "Der Frühjahrsputz-Saboteur",
-        description: "Sämtliche Fensterputzmittel wurden durch Seifenblasen-Flüssigkeit ersetzt!",
-        suspects: [
-          { name: "Hendrik", role: "Kaffeegenießer", desc: "Wollte Pause" },
-          { name: "Thorsten", role: "Verdächtiger", desc: "Liebt Seifenblasen" },
-          { name: "Mary", role: "Zeugin", desc: "Sparsam beim Einkauf" }
-        ],
-        clue1: "Mary war auf Geschäftsreise.",
-        clue2: "Thorsten hatte eine Seifenblasen-Pistole in der Tasche.",
-        correctSuspect: "Thorsten",
-        question: "Welches Motiv hatte die Seifenblasen-Dose?",
-        bonusAnswer: "Smiley",
-        solutionText: "Thorsten wollte für gute Laune beim Putzen sorgen."
+        title: "KW 12: Die verstellte Hallenuhr",
+        description: "Die große Funkuhr in der Halle ging am Freitagmorgen exakt 45 Minuten vor.",
+        suspects: [getSuspect("Evangelos"), getSuspect("Nikolaos"), getSuspect("Jörg")],
+        clue1: "Hinweis 1: Neben der Leiter lag ein kleiner Schraubenzieher.",
+        clue2: "Hinweis 2: Der Täter trug eine Techniker-Weste.",
+        correctSuspect: "Evangelos",
+        question: "Um wie viele Minuten ging die Uhr falsch?",
+        bonusAnswer: "45"
       },
       13: {
-        tag: "🌱 Frühling",
-        title: "Der Diebstahl der Sonnenuhr",
-        description: "Die historische Bronze-Sonnenuhr wurde vom Sockel im Garten geschraubt.",
-        suspects: [
-          { name: "Matthias", role: "IT-Guru", desc: "Bewundert Antikes" },
-          { name: "Uwe", role: "Drucker", desc: "Sucht Altmetall" },
-          { name: "Albert", role: "Leiter", desc: "Wollte die Uhr umstellen" }
-        ],
-        clue1: "Uwe war nachweislich im Baumarkt.",
-        clue2: "Matthias hatte Bronze-Politur am Ärmel.",
+        title: "KW 13: Der Aprilscherz-Testlauf",
+        description: "Alle Computer-Mäuse wurden mit kleinen Klebezetteln an der Unterseite lahmgelegt!",
+        suspects: [getSuspect("Matthias"), getSuspect("Sandy"), getSuspect("Andreas")],
+        clue1: "Hinweis 1: Die Klebezettel waren alle mit einem lachenden Smiley versehen.",
+        clue2: "Hinweis 2: Der Täter war schon vor Dienstbeginn im Gebäude.",
         correctSuspect: "Matthias",
-        question: "Welcher Schraubenzieher lag am Boden?",
-        bonusAnswer: "Kreuzschlitz",
-        solutionText: "Matthias wollte die Uhr reinigen und in seinem Büro ausstellen."
+        question: "Welche Farbe hatten die Post-its?",
+        bonusAnswer: "Pink"
       },
       14: {
-        tag: "🐰 Ostern",
-        title: "Der Raub der goldenen Ostereier",
-        description: "Die riesige Schoko-Eier-Lieferung für das Team ist spurlos verschwunden!",
-        suspects: [
-          { name: "Evangelos", role: "Techniker", desc: "Versteckt gerne Dinge" },
-          { name: "Susi K.", role: "Agentin", desc: "Liebt Vollmilch" },
-          { name: "Hendrik", role: "Kaffeegenießer", desc: "Hatte den Schlüssel" }
-        ],
-        clue1: "Evangelos war beim Fest im Nachbardorf.",
-        clue2: "Hendrik hatte Schokoflecken am Lieferschein.",
-        correctSuspect: "Hendrik",
-        question: "In welchem Versteck lagen die Eier?",
-        bonusAnswer: "Heizungskeller",
-        solutionText: "Hendrik wollte die Eier vorab für sich sichern."
+        title: "KW 14: Das Osterhasen-Schoko-Versteck",
+        description: "Die für das Oster-Event bereitgestellten Goldhasen wurden vorab im Archiv versteckt!",
+        suspects: [getSuspect("Marcel"), getSuspect("Albert"), getSuspect("Susi K.")],
+        clue1: "Hinweis 1: Rotes Glöckchen-Band lag im Regal 4.",
+        clue2: "Hinweis 2: Der Täter hatte den Archivschlüssel am Bund.",
+        correctSuspect: "Marcel",
+        question: "Wie viele Goldhasen waren versteckt?",
+        bonusAnswer: "15"
       },
       15: {
-        tag: "🐰 Ostern",
-        title: "Die vertauschten Ostereier-Farben",
-        description: "Alle Ostereier wurden mit wasserlöslicher Tinte statt echter Farbe bemalt!",
-        suspects: [
-          { name: "Tatjana", role: "Spionin", desc: "Nimmt Wasserfarben" },
-          { name: "Marcel", role: "Archivar", desc: "Hatte Tuschkasten dabei" },
-          { name: "Susi H.", role: "Ordnungsfan", desc: "Planerin" }
-        ],
-        clue1: "Susi H. kaufte Eierfarbe im Supermarkt.",
-        clue2: "Marcels Tuschkasten fehlte die blaue Tuschschale.",
-        correctSuspect: "Marcel",
-        question: "Welche Farbe färbte am stärksten ab?",
-        bonusAnswer: "Preußisch-Blau",
-        solutionText: "Marcel wollte die Malarbeit abkürzen und nahm seinen Tuschkasten."
+        title: "KW 15: Die vertauschten Ostereier-Farben",
+        description: "Statt bunt gefärbter Ostereier lagen montags nur bemalte Holzeier im Korb!",
+        suspects: [getSuspect("Thorsten"), getSuspect("Uwe"), getSuspect("Mary")],
+        clue1: "Hinweis 1: Im Papierkorb lagen Holzspäne.",
+        clue2: "Hinweis 2: Der Täter hatte Pinselhaare an der Jacke.",
+        correctSuspect: "Thorsten",
+        question: "Wie viele Eier waren im Korb?",
+        bonusAnswer: "10"
       },
       16: {
-        tag: "🌱 Frühling",
-        title: "Der Anschlag auf das Vogelhaus",
-        description: "Das frisch gebaute Vogelhaus wurde mit Kaugummi komplett verklebt!",
-        suspects: [
-          { name: "Jörg", role: "Strategist", desc: "Kaut den ganzen Tag Kaugummi" },
-          { name: "Gerd", role: "Meister", desc: "Kritisiert den Bau" },
-          { name: "Nikolaos", role: "Gefährder", desc: "Beobachtet Vögel" }
-        ],
-        clue1: "Jörg hatte eine leere Packung 'Erdbeer-Bubble' in der Tasche.",
-        clue2: "Gerd nutzte Holzleim, keinen Kaugummi.",
-        correctSuspect: "Jörg",
-        question: "Welche Kaugummi-Sorte war es?",
-        bonusAnswer: "Erdbeer",
-        solutionText: "Jörg wollte das wackelnde Dach 'spontan' mit Kaugummi reparieren."
+        title: "KW 16: Der Streich mit dem Rollband",
+        description: "Das Förderband lief am Dienstagmorgen rückwärts statt vorwärts.",
+        suspects: [getSuspect("Gerd"), getSuspect("Evangelos"), getSuspect("Guiseppe")],
+        clue1: "Hinweis 1: Der Schaltschrank war mit einem Vorhängeschloss gesichert.",
+        clue2: "Hinweis 2: Der Täter kennt den Notaus-Schalter auswendig.",
+        correctSuspect: "Gerd",
+        question: "Welche Nummer hat das Band?",
+        bonusAnswer: "3"
       },
       17: {
-        tag: "🌱 Frühling",
-        title: "Der entführte Mähroboter",
-        description: "Der Roboter-Rasenmäher fuhr um 03:00 Uhr nachts einfach von alleine davon!",
-        suspects: [
-          { name: "Thorsten", role: "Verdächtiger", desc: "Liebt Fernsteuerungen" },
-          { name: "Andreas", role: "Prüfer", desc: "Hasst Motorenlärm" },
-          { name: "Albert", role: "Leiter", desc: "Wartete das Gerät" }
-        ],
-        clue1: "Andreas schlief um 03:00 Uhr tief und fest.",
-        clue2: "Thorsten prahlte mit seiner neuen Roboter-App.",
-        correctSuspect: "Thorsten",
-        question: "Auf welcher Frequenz steuerte der Täter?",
-        bonusAnswer: "433 MHz",
-        solutionText: "Thorsten wollte testen, ob er den Mäher bis zu seiner Garage steuern kann."
+        title: "KW 17: Die entführten Postkisten",
+        description: "Ein ganzer Turm blauer Kisten stand plötzlich ordentlich gestapelt im Garten!",
+        suspects: [getSuspect("Jörg"), getSuspect("Susi H."), getSuspect("Nikolaos")],
+        clue1: "Hinweis 1: Reifenspuren einer Sackkarre führten zur Terrasse.",
+        clue2: "Hinweis 2: Der Turm war millimetergenau ausgerichtet.",
+        correctSuspect: "Jörg",
+        question: "Wie viele Kisten waren gestapelt?",
+        bonusAnswer: "8"
       },
       18: {
-        tag: "🌱 Frühling",
-        title: "Die Blütenstaub-Bombe",
-        description: "Eine Blütenstaub-Bombe wurde im Wintergarten gezündet – Niesanfall für alle!",
-        suspects: [
-          { name: "Sandy", role: "Verdächtige", desc: "Sucht Internet-Klicks" },
-          { name: "Guiseppe", role: "Spion", desc: "Hat Bienenstöcke" },
-          { name: "Mary", role: "Zeugin", desc: "Niest ständig" }
-        ],
-        clue1: "Guiseppe war bei seinen Bienenstöcken draußen.",
-        clue2: "Sandy hatte eine gelbe Pulver-Dose in ihrer Prank-Tasche.",
-        correctSuspect: "Sandy",
-        question: "Welche Blumenpollen wurden genutzt?",
-        bonusAnswer: "Rapsblüten",
-        solutionText: "Sandy wollte ein lustiges Prank-Video für die Gruppe drehen."
+        title: "KW 18: Das Rätsel um die Mai-Bowle",
+        description: "Die Waldmeister-Zutaten für das Frühlingsfest sind vorzeitig verschwunden.",
+        suspects: [getSuspect("Tatjana"), getSuspect("Sandy"), getSuspect("Alexander")],
+        clue1: "Hinweis 1: Im Treppenhaus duftete es intensiv nach Waldmeister.",
+        clue2: "Hinweis 2: Ein grünes Band lag am Boden.",
+        correctSuspect: "Tatjana",
+        question: "Wie viele Flaschen fehlten?",
+        bonusAnswer: "2"
       },
       19: {
-        tag: "🧹 Mai-Feiertag",
-        title: "Der entwendete Maibaum",
-        description: "Der traditionelle 5-Meter-Maibaum verschwand spurlos in der Walpurgisnacht!",
-        suspects: [
-          { name: "Uwe", role: "Drucker", desc: "Traditions-Fan" },
-          { name: "Alexander", role: "Analyst", desc: "Sägt gerne Holz" },
-          { name: "Susi K.", role: "Agentin", desc: "Brauchte Platz" }
-        ],
-        clue1: "Alexander war beim Sägewerk-Einsatz.",
-        clue2: "Uwes Traktor hinterließ frische Reifenspuren am Tor.",
-        correctSuspect: "Uwe",
-        question: "Womit wurde der Baum abtransportiert?",
-        bonusAnswer: "Traktor",
-        solutionText: "Uwe wollte den Baum nach alter Tradition entführen und Auslöse fordern."
+        title: "KW 19: Der entwendete Mini-Maibaum",
+        description: "Der geschmückte Miniatur-Maibaum vom Eingangsbereich wurde nachts entführt!",
+        suspects: [getSuspect("Andreas"), getSuspect("Albert"), getSuspect("Hendrik")],
+        clue1: "Hinweis 1: Kreidespuren zeigten Pfeile in Richtung Werkstatt.",
+        clue2: "Hinweis 2: Am Tatort lag eine weiß-blaue Schleife.",
+        correctSuspect: "Andreas",
+        question: "Wie hoch war das Bäumchen in cm?",
+        bonusAnswer: "80"
       },
       20: {
-        tag: "🌱 Frühling",
-        title: "Der Schreck im Gewächshaus",
-        description: "Alle Pflanzentöpfe wurden heimlich mit blauen Schleifen verziert!",
-        suspects: [
-          { name: "Mary", role: "Zeugin", desc: "Liebt Schleifendeko" },
-          { name: "Nikolaos", role: "Gefährder", desc: "Sehr kreativ" },
-          { name: "Gerd", role: "Meister", desc: "Wollte helfen" }
-        ],
-        clue1: "Gerd hat keine blauen Bänder.",
-        clue2: "Mary vermisste ihr blaues Geschenkband-Set.",
-        correctSuspect: "Mary",
-        question: "Wie viele Schleifen wurden gezählt?",
-        bonusAnswer: "24",
-        solutionText: "Mary fand die grünen Töpfe einfach 'zu eintönig'."
+        title: "KW 20: Die vertauschten Schlüsselanhänger",
+        description: "Alle 10 Schlüssel für die Lager-Rollgitter trugen plötzlich falsche Nummern!",
+        suspects: [getSuspect("Alexander"), getSuspect("Uwe"), getSuspect("Matthias")],
+        clue1: "Hinweis 1: Ein feiner Permanentmarker lag auf dem Schlüsselbrett.",
+        clue2: "Hinweis 2: Der Täter hatte Tabellen mit Zahlen im Notizbuch.",
+        correctSuspect: "Alexander",
+        question: "Wie viele Schlüssel waren betroffen?",
+        bonusAnswer: "10"
       },
       21: {
-        tag: "☀️ Sommer",
-        title: "Der Grillfeuer-Löscher-Prank",
-        description: "Mitten beim Sommerfest wurde der heiße Grill mit einem Schaumlöscher gelöscht!",
-        suspects: [
-          { name: "Susi H.", role: "Ordnungsfan", desc: "Übervorsichtig" },
-          { name: "Albert", role: "Leiter", desc: "Sauer über Fleischverlust" },
-          { name: "Marcel", role: "Archivar", desc: "Panik vor Rauch" }
-        ],
-        clue1: "Albert stand geduldig am Wurstteller.",
-        clue2: "Susi H. hielt den leeren Löscher noch in der Hand.",
-        correctSuspect: "Susi H.",
-        question: "Welcher Schaum bedeckte die Würstchen?",
-        bonusAnswer: "Löschschaum",
-        solutionText: "Susi H. sah kleine Funken und geriet in übereifrige Panik."
+        title: "KW 21: Der Eiscreme-Truhen-Überfall",
+        description: "Bei 28 Grad Außentemperatur war das Eisfach im Pausenraum plötzlich leergegessen!",
+        suspects: [getSuspect("Sandy"), getSuspect("Guiseppe"), getSuspect("Thorsten")],
+        clue1: "Hinweis 1: Drei Holzstiele lagen im Plastikmüll.",
+        clue2: "Hinweis 2: Der Täter hatte Erdbeereisflecken auf dem T-Shirt.",
+        correctSuspect: "Sandy",
+        question: "Welche Eissorte war am beliebtesten?",
+        bonusAnswer: "Erdbeer"
       },
       22: {
-        tag: "☀️ Sommer",
-        title: "Der Diebstahl der Eiscreme-Truhe",
-        description: "Die komplette Eistruhe mit 200 Stiel-Eisen wurde aus der Küche gerollt!",
-        suspects: [
-          { name: "Evangelos", role: "Techniker", desc: "Liebt Erdbeereis" },
-          { name: "Tatjana", role: "Spionin", desc: "Räumt um" },
-          { name: "Jörg", role: "Strategist", desc: "Wartete das Kühlgerät" }
-        ],
-        clue1: "Tatjana war im Meeting.",
-        clue2: "Jörg hatte Eisstiele und Kühlaggregat im Lieferwagen.",
-        correctSuspect: "Jörg",
-        question: "Welches Eis wurde als Erstes gefuttert?",
-        bonusAnswer: "Erdbeer",
-        solutionText: "Jörg wollte die Truhe 'testen' und nahm sie komplett mit."
+        title: "KW 22: Der Sabotage-Akt am Standventilator",
+        description: "Jemand hat den Ventilator im Büro so eingestellt, dass er nur noch Papiere durch die Luft wirbelte!",
+        suspects: [getSuspect("Nikolaos"), getSuspect("Susi K."), getSuspect("Mary")],
+        clue1: "Hinweis 1: Der Drehknopf war auf Stufe 3 mit Klebeband fixiert.",
+        clue2: "Hinweis 2: Lose Büroklammern flogen quer durchs Zimmer.",
+        correctSuspect: "Nikolaos",
+        question: "Auf welcher Stufe stand das Gerät?",
+        bonusAnswer: "3"
       },
       23: {
-        tag: "☀️ Sommer",
-        title: "Das Loch im Schlauchboot",
-        description: "Vor der Paddeltour wurden alle Schlauchboote mit kleinen Nadelstichen versenkt!",
-        suspects: [
-          { name: "Andreas", role: "Prüfer", desc: "Bleibt lieber an Land" },
-          { name: "Sandy", role: "Verdächtige", desc: "Kapitänin" },
-          { name: "Matthias", role: "IT-Guru", desc: "Angler auf Ruhe-Suche" }
-        ],
-        clue1: "Sandy war beim Steg-Aufbau.",
-        clue2: "Matthias trug eine Ködernadel an seiner Weste.",
-        correctSuspect: "Matthias",
-        question: "Welche Nadel wurde verwendet?",
-        bonusAnswer: "Ködernadel",
-        solutionText: "Matthias wollte keine lauten Paddler an seinem Angelrevier haben."
+        title: "KW 23: Die vertauschte Sonnencreme",
+        description: "In der Sommer-Notfallbox wurde die Sonnencreme gegen Mayonnaise ausgetauscht!",
+        suspects: [getSuspect("Thorsten"), getSuspect("Andreas"), getSuspect("Marcel")],
+        clue1: "Hinweis 1: Am Spender klebte ein kleiner gelber Deckel.",
+        clue2: "Hinweis 2: Der Täter hatte ein Grinsen im Gesicht.",
+        correctSuspect: "Thorsten",
+        question: "Welcher Lichtschutzfaktor stand auf der Tube?",
+        bonusAnswer: "50"
       },
       24: {
-        tag: "☀️ Sommer",
-        title: "Der Flamingo-Klau im Pool",
-        description: "Der 2-Meter-aufblasbare rosa Flamingo ist aus dem Pool verschwunden!",
-        suspects: [
-          { name: "Susi K.", role: "Agentin", desc: "Brauchte Foto-Requisite" },
-          { name: "Alexander", role: "Analyst", desc: "Hasst Plastik im Wasser" },
-          { name: "Thorsten", role: "Verdächtiger", desc: "Nachtschwimmer" }
-        ],
-        clue1: "Alexander war im Kassenhäuschen.",
-        clue2: "Susi K. postete ein Bild mit exakt diesem Flamingo auf dem Dach.",
-        correctSuspect: "Susi K.",
-        question: "Wo tauchte der Flamingo wieder auf?",
-        bonusAnswer: "Dach",
-        solutionText: "Susi K. brauchte das perfekte Foto bei Sonnenuntergang auf dem Dach."
+        title: "KW 24: Der Pool-Flamingo auf dem Dach",
+        description: "Ein riesiger aufblasbarer rosa Flamingo thronte am Montagmorgen auf dem Vordach!",
+        suspects: [getSuspect("Guiseppe"), getSuspect("Jörg"), getSuspect("Albert")],
+        clue1: "Hinweis 1: Eine manuelle Luftpumpe lag hinter der Tür.",
+        clue2: "Hinweis 2: Der Täter trug eine pinke Sonnenbrille.",
+        correctSuspect: "Guiseppe",
+        question: "Welche Farbe hatte das Tier?",
+        bonusAnswer: "Pink"
       },
       25: {
-        tag: "☀️ Sommer",
-        title: "Die Sonnencreme-Mayonnaise-Falle",
-        description: "Die Sonnencreme LSF 50 wurde heimlich mit Mayonnaise aufgefüllt!",
-        suspects: [
-          { name: "Guiseppe", role: "Spion", desc: "Hat Mayo im Kühlschrank" },
-          { name: "Mary", role: "Zeugin", desc: "Strandgast" },
-          { name: "Marcel", role: "Archivar", desc: "Prankster" }
-        ],
-        clue1: "Guiseppe verkaufte den ganzen Tag Pommes.",
-        clue2: "Marcel hatte Mayo-Tube und leere Sonnencreme-Flasche im Rucksack.",
-        correctSuspect: "Marcel",
-        question: "Welche Mayonnaise-Marke war es?",
-        bonusAnswer: "Delikatess",
-        solutionText: "Marcel hielt es für den 'ultimativen Strand-Gag'."
+        title: "KW 25: Das Loch im Planschbecken",
+        description: "Das für das Sommerfest aufgestellte Becken verlor über Nacht das ganze Wasser.",
+        suspects: [getSuspect("Evangelos"), getSuspect("Gerd"), getSuspect("Susi H.")],
+        clue1: "Hinweis 1: Ein nasser Putzlappen lag am Abfluss.",
+        clue2: "Hinweis 2: Ein Reparaturflicken aus Gummi wurde gefunden.",
+        correctSuspect: "Evangelos",
+        question: "Wie viele Liter passten ins Becken?",
+        bonusAnswer: "200"
       },
       26: {
-        tag: "☀️ Sommer",
-        title: "Der Raub der Garten-Hängematte",
-        description: "Die gemütlichste Hängematte des Parks wurde samt Seilen entwendet.",
-        suspects: [
-          { name: "Nikolaos", role: "Gefährder", desc: "Sucht Schlafplatz" },
-          { name: "Gerd", role: "Meister", desc: "Gegen Wildcampen" },
-          { name: "Tatjana", role: "Spionin", desc: "Braucht Tücher" }
-        ],
-        clue1: "Gerd war bei der Fütterung.",
-        clue2: "Nikolaos lag 100 Meter weiter in genau dieser Hängematte.",
-        correctSuspect: "Nikolaos",
-        question: "Welcher Knoten wurde geknüpft?",
-        bonusAnswer: "Palstek",
-        solutionText: "Nikolaos brauchte dringend ein ungestörtes Schläfchen im Schatten."
+        title: "KW 26: Der Grillzangen-Diebstahl",
+        description: "Beim Freitagsgrillen fehlte plötzlich die Premium-Edelstahlzange des Grillmeisters!",
+        suspects: [getSuspect("Gerd"), getSuspect("Hendrik"), getSuspect("Uwe")],
+        clue1: "Hinweis 1: Am Grillplatz roch es nach Holzkohle.",
+        clue2: "Hinweis 2: Der Verdächtige trug eine Schürze.",
+        correctSuspect: "Gerd",
+        question: "Wie lang war die Grillzange in cm?",
+        bonusAnswer: "45"
       },
       27: {
-        tag: "🏝️ Ferien-Zeit",
-        title: "Das Verschwinden der Reisepässe",
-        description: "Aus dem Tresor der Gruppe fehlten kurz vor der Sommerfahrt alle Pässe!",
-        suspects: [
-          { name: "Uwe", role: "Drucker", desc: "Hat Flugangst" },
-          { name: "Susi H.", role: "Ordnungsfan", desc: "Hektisch" },
-          { name: "Albert", role: "Leiter", desc: "Will pünktlich los" }
-        ],
-        clue1: "Susi H. hatte den Tresorschlüssel um den Hals.",
-        clue2: "Uwe gestand, dass er die Pässe ins Handschuhfach gelegt hatte.",
-        correctSuspect: "Uwe",
-        question: "Wo waren die Pässe versteckt?",
-        bonusAnswer: "Handschuhfach",
-        solutionText: "Uwe wollte die Abfahrt um einen Tag verzögern wegen Flugangst."
+        title: "KW 27: Das Sommerfest-Banner-Mysterium",
+        description: "Das große Begrüßungsbanner für das Sommerfest in Mannheim war falsch herum aufgehängt!",
+        suspects: [getSuspect("Albert"), getSuspect("Marcel"), getSuspect("Alexander")],
+        clue1: "Hinweis 1: Zwei Kabelbinder waren verkehrt eingerastet.",
+        clue2: "Hinweis 2: Der Täter stand auf einer gelben Trittleiter.",
+        correctSuspect: "Albert",
+        question: "An welchem Datum fand das Fest statt?",
+        bonusAnswer: "4. Juli"
       },
       28: {
-        tag: "☀️ Sommer",
-        title: "Der Wassermelonen-Mörder",
-        description: "Die 10-Kilo-Preismelone für das Sommerfest wurde im Schuppen zertreten!",
-        suspects: [
-          { name: "Thorsten", role: "Verdächtiger", desc: "Testet seine Muskeln" },
-          { name: "Sandy", role: "Verdächtige", desc: "Brauchte Melone" },
-          { name: "Evangelos", role: "Techniker", desc: "Liebt Melonen" }
-        ],
-        clue1: "Sandy nutzte nur den Mixer in der Küche.",
-        clue2: "Thorstens Sportschuh-Profil passte exakt zum Abdruck im Melonenmatsch.",
-        correctSuspect: "Thorsten",
-        question: "Welcher Schuhabdruck lag im Fruchtfleisch?",
-        bonusAnswer: "Nike",
-        solutionText: "Thorsten wollte demonstrieren, wie stark er zutreten kann – ging schief!"
+        title: "KW 28: Der Mayonnaise-Anschlag am Buffet",
+        description: "Der Kartoffelsalat wurde vor Beginn der Feier heimlich mit Currypulver umgefärbt!",
+        suspects: [getSuspect("Mary"), getSuspect("Tatjana"), getSuspect("Nikolaos")],
+        clue1: "Hinweis 1: Eine Dose Currypulver stand hinter dem Serviettenhalter.",
+        clue2: "Hinweis 2: Gelbe Gewürzspuren am Küchenhandtuch.",
+        correctSuspect: "Mary",
+        question: "Wie viele Schüsseln Salat gab es?",
+        bonusAnswer: "4"
       },
       29: {
-        tag: "☀️ Sommer",
-        title: "Der Stromausfall im Eis-Labor",
-        description: "Die Kühlung fiel aus, weil jemand den Stecker für seine Handy-Ladestation zog!",
-        suspects: [
-          { name: "Mary", role: "Zeugin", desc: "Immer 1% Akku" },
-          { name: "Alexander", role: "Analyst", desc: "Techniker" },
-          { name: "Hendrik", role: "Kaffeegenießer", desc: "Ladekabelsucher" }
-        ],
-        clue1: "Alexander stieg erst nach dem Unfall in den Raum.",
-        clue2: "Marys pinkes Glitzer-Ladekabel steckte genau in der Kühlungs-Dose.",
-        correctSuspect: "Mary",
-        question: "Welches Ladekabel steckte in der Dose?",
-        bonusAnswer: "Glitzerkabel",
-        solutionText: "Mary brauchte dringend Strom für ein Video und zog blind den Stecker."
+        title: "KW 29: Der Hängematten-Knoten",
+        description: "Die Entspannungs-Hängematte im Pausengarten war mit Seemannsknoten unlösbar verknotet.",
+        suspects: [getSuspect("Jörg"), getSuspect("Thorsten"), getSuspect("Sandy")],
+        clue1: "Hinweis 1: Ein Palsteg und zwei Kreuzknoten waren zu sehen.",
+        clue2: "Hinweis 2: Der Täter liebt Segelurlaube.",
+        correctSuspect: "Jörg",
+        question: "Aus welchem Material bestand das Seil?",
+        bonusAnswer: "Hanf"
       },
       30: {
-        tag: "☀️ Sommer",
-        title: "Roter Swimmingpool",
-        description: "Das Poolwasser färbte sich über Nacht knallrot!",
-        suspects: [
-          { name: "Guiseppe", role: "Spion", desc: "Arbeitete mit Kirschsaft" },
-          { name: "Marcel", role: "Archivar", desc: "Hat Lebensmittelfarbe" },
-          { name: "Andreas", role: "Prüfer", desc: "Dosierte Chemie" }
-        ],
-        clue1: "Andreas nutzte nur chlorhaltiges Pulver.",
-        clue2: "Marcel wurde mit roten Lebensmittelfarbe-Händen erwischt.",
+        title: "KW 30: Das Rätsel der leeren Wasserspender-Gallonen",
+        description: "Alle fünf 19-Liter-Wasserflaschen wurden an einem einzigen Vormittag geleert.",
+        suspects: [getSuspect("Marcel"), getSuspect("Hendrik"), getSuspect("Susi K.")],
+        clue1: "Hinweis 1: Am Spender standen viele große Trinkflaschen.",
+        clue2: "Hinweis 2: Der Täter trug Sportkleidung.",
         correctSuspect: "Marcel",
-        question: "Was färbte das Wasser wirklich?",
-        bonusAnswer: "Lebensmittelfarbe",
-        solutionText: "Marcel wollte den Pool wie einen 'Vulkan-See' aussehen lassen."
+        question: "Wie viel Liter fasste eine Gallone?",
+        bonusAnswer: "19"
       },
       31: {
-        tag: "☀️ Sommer",
-        title: "Die vergoldete Grillzange",
-        description: "Die vergoldete Meister-Grillzange wurde direkt vom Rost entwendet!",
-        suspects: [
-          { name: "Gerd", role: "Meister", desc: "Grillmeister" },
-          { name: "Tatjana", role: "Spionin", desc: "Veggie-Fan gegen Fleisch" },
-          { name: "Matthias", role: "IT-Guru", desc: "Sammelt glänzende Stücke" }
-        ],
-        clue1: "Gerd stand dauerhaft am Rost.",
-        clue2: "Tatjana hatte die Zange im Biomüll versteckt.",
-        correctSuspect: "Tatjana",
-        question: "Wo lag die Zange versteckt?",
-        bonusAnswer: "Biomüll",
-        solutionText: "Tatjana wollte das Grillen stoppen und mehr Gemüsespieße durchsetzen."
+        title: "KW 31: Die vertauschten Urlaubskarten",
+        description: "Postkarten aus Mallorca wurden heimlich an die Pinnwand für wichtige Sicherheitswarnungen gepinnt!",
+        suspects: [getSuspect("Susi K."), getSuspect("Guiseppe"), getSuspect("Andreas")],
+        clue1: "Hinweis 1: Eine spanische Briefmarke lag auf dem Tisch.",
+        clue2: "Hinweis 2: Rote Reißzwecken wurden benutzt.",
+        correctSuspect: "Susi K.",
+        question: "Wie viele Postkarten hingen dort?",
+        bonusAnswer: "5"
       },
       32: {
-        tag: "☀️ Sommer-Special",
-        title: "Der Anschlag auf die Hängematte",
-        description: "Die Seile der Hängematte wurden angeritzt – Sturz ins Gras für Albert!",
-        suspects: [
-          { name: "Nikolaos", role: "Gefährder", desc: "Wollte den schattigen Platz" },
-          { name: "Susi K.", role: "Agentin", desc: "Warnte vor mürben Seilen" },
-          { name: "Evangelos", role: "Techniker", desc: "Beobachter" }
-        ],
-        clue1: "Susi K. nutzte nur ihr Klemmbrett.",
-        clue2: "Nikolaos hatte ein Taschenmesser mit Seilfasern in der Tasche.",
+        title: "KW 32: Der Schaumlöscher-Alarm",
+        description: "Ein Übungs-Feuerlöscher wurde im Waschraum ausgelöst – Schaumberge bis zur Decke!",
+        suspects: [getSuspect("Nikolaos"), getSuspect("Evangelos"), getSuspect("Uwe")],
+        clue1: "Hinweis 1: Der Sicherungsstift lag im Waschbecken.",
+        clue2: "Hinweis 2: Weiße Schaumreste an den Schuhen.",
         correctSuspect: "Nikolaos",
-        question: "Welcher Schnitt wurde nachgewiesen?",
-        bonusAnswer: "Messer",
-        solutionText: "Nikolaos war sauer, weil er nie in die Hängematte durfte."
+        question: "Welche Prüfplakette hatte der Löscher?",
+        bonusAnswer: "2026"
       },
       33: {
-        tag: "🍂 Spätsommer",
-        title: "Das Verschwinden der Mappen",
-        description: "100 neue Aktenmappen fehlten plötzlich aus dem zentralen Lagerraum! Spuren führen in den Druckerraum.",
-        suspects: [
-          { name: "Uwe", role: "Drucker", desc: "Braucht Karton" },
-          { name: "Susi H.", role: "Ordnungsfan", desc: "Räumt um" },
-          { name: "Albert", role: "Leiter", desc: "Verstreut Akten" }
-        ],
-        clue1: "Albert war bei der Besprechung im 1. Stock.",
-        clue2: "Susi H. hatte die Mappen im falschen Archiv-Schrank verstaut.",
-        correctSuspect: "Susi H.",
-        question: "Wie viele Mappen waren noch übrig?",
-        bonusAnswer: "10",
-        solutionText: "Susi H. wollte Ordnung schaffen, hat die Mappen aber völlig falsch einsortiert."
+        title: "KW 33: Das Verschwinden der Mappen",
+        description: "100 neue Aktenmappen fehlten plötzlich aus dem Lagerraum! Spuren führen direkt in den Druckerraum.",
+        suspects: [getSuspect("Uwe"), getSuspect("Susi H."), getSuspect("Albert")],
+        clue1: "Hinweis 1: Der Täter brauchte dringend Kartonagen für den Druckbereich.",
+        clue2: "Hinweis 2: Am Tatort wurde ein Notizzettel mit Druckerschwärze gefunden.",
+        correctSuspect: "Uwe",
+        question: "Wie viele Mappen waren noch im Regal?",
+        bonusAnswer: "10"
       },
       34: {
-        tag: "🍂 Spätsommer",
-        title: "Der Limonaden-Raub",
-        description: "Eine Kiste hausgemachte Himbeer-Limonade verschwand vom Balkon.",
-        suspects: [
-          { name: "Thorsten", role: "Verdächtiger", desc: "Überhitzt nach dem Sport" },
-          { name: "Sandy", role: "Verdächtige", desc: "Sucht Zutaten" },
-          { name: "Alexander", role: "Analyst", desc: "Mag Süßes" }
-        ],
-        clue1: "Sandy kaufte Zitronen im Laden.",
-        clue2: "Thorsten hinterließ leere Himbeer-Flaschen unter der Flurbank.",
-        correctSuspect: "Thorsten",
-        question: "Wie viele Flaschen fehlten?",
-        bonusAnswer: "12",
-        solutionText: "Thorsten hatte nach dem Training Bärenhunger und Riesen-Durst."
+        title: "KW 34: Die verstellten Monitor-Helligkeiten",
+        description: "Montagmorgen standen alle Bildschirme im Leitstand auf 100% Kontrast und Blendstufe!",
+        suspects: [getSuspect("Matthias"), getSuspect("Alexander"), getSuspect("Gerd")],
+        clue1: "Hinweis 1: Die Fernbedienung für den Hauptmonitor war versteckt.",
+        clue2: "Hinweis 2: Der Täter trug eine Sonnenbrille im Raum.",
+        correctSuspect: "Matthias",
+        question: "Wie viele Monitore waren betroffen?",
+        bonusAnswer: "6"
       },
       35: {
-        tag: "🍂 Spätsommer",
-        title: "Der Wespennest-Fehlalarm",
-        description: "Alarm wegen eines angebliche Wespennests – das nur aus Pappmaché war!",
-        suspects: [
-          { name: "Mary", role: "Zeugin", desc: "Ängstlich" },
-          { name: "Hendrik", role: "Kaffeegenießer", desc: "Baut Papp-Figuren" },
-          { name: "Marcel", role: "Archivar", desc: "Wollte Feierabend" }
-        ],
-        clue1: "Mary rannte sofort nach draußen.",
-        clue2: "Marcel hatte Zeitungspapier und Kleister-Reste an den Fingern.",
-        correctSuspect: "Marcel",
-        question: "Woraus bestand das Nest?",
-        bonusAnswer: "Zeitungspapier",
-        solutionText: "Marcel wollte früher nach Hause, um das Fußballspiel zu sehen."
+        title: "KW 35: Der Aktenvernichter-Stau",
+        description: "Der Hochleistungs-Schredder wurde mit 50 Blatt Glanzpapier auf einmal gefüttert und blockiert.",
+        suspects: [getSuspect("Susi H."), getSuspect("Marcel"), getSuspect("Thorsten")],
+        clue1: "Hinweis 1: Reste von laminiertem Papier ragten heraus.",
+        clue2: "Hinweis 2: Eine Schere lag neben dem Gerät.",
+        correctSuspect: "Susi H.",
+        question: "Welche Sicherheitsstufe hat das Gerät?",
+        bonusAnswer: "P4"
       },
       36: {
-        tag: "🍺 Oktoberfest",
-        title: "Der Brezel-Klau auf der Wiesn",
-        description: "Die 1-Meter-Riesenbrezel für den Festanstich wurde entwendet!",
-        suspects: [
-          { name: "Andreas", role: "Prüfer", desc: "Hungrig" },
-          { name: "Tatjana", role: "Spionin", desc: "Trägt Maßkrüge" },
-          { name: "Guiseppe", role: "Spion", desc: "Sucht Souvenir" }
-        ],
-        clue1: "Tatjana trug nur Krüge.",
-        clue2: "Guiseppe knupperte im Zelt an der Riesenbrezel-Ecke.",
-        correctSuspect: "Guiseppe",
-        question: "Welches Salz war auf der Brezel?",
-        bonusAnswer: "Hagelsalz",
-        solutionText: "Guiseppe dachte, die Riesenbrezel sei ein kostenloses Deko-Geschenk."
+        title: "KW 36: Der Riesenbrezel-Klau zur Wiesn",
+        description: "Die frischen Riesenbrezeln für die Frühschicht waren vor Schichtbeginn verschwunden.",
+        suspects: [getSuspect("Hendrik"), getSuspect("Andreas"), getSuspect("Tatjana")],
+        clue1: "Hinweis 1: Grobe Salzkörner führten zum Pausensofa.",
+        clue2: "Hinweis 2: Der Täter trug ein kariertes Hemd.",
+        correctSuspect: "Hendrik",
+        question: "Wie viele Brezeln waren in der Kiste?",
+        bonusAnswer: "20"
       },
       37: {
-        tag: "🍺 Oktoberfest",
-        title: "Der Malzbier-Trick",
-        description: "Alle Bierkrüge wurden heimlich gegen alkoholfreies Malzbier ausgetauscht!",
-        suspects: [
-          { name: "Susi K.", role: "Agentin", desc: "Gegen Alkohol" },
-          { name: "Evangelos", role: "Techniker", desc: "Sorgt für Ordnung" },
-          { name: "Gerd", role: "Meister", desc: "Zauberer" }
-        ],
-        clue1: "Gerd war auf der Zauberbühne.",
-        clue2: "Susi K. hatte 5 leere Malzbier-Kästen versteckt.",
-        correctSuspect: "Susi K.",
-        question: "Welche Marke Malzbier wurde genutzt?",
-        bonusAnswer: "Vitamalz",
-        solutionText: "Susi K. wollte einen 'nüchternen und gesunden Festtag' erzwingen."
+        title: "KW 37: Der Malzbier-Fass-Trick",
+        description: "Das alkoholfreie Festbier-Fass wurde heimlich gegen Apfelschorle ausgetauscht.",
+        suspects: [getSuspect("Guiseppe"), getSuspect("Albert"), getSuspect("Mary")],
+        clue1: "Hinweis 1: Ein Zapfhahn-Schlüssel lag auf dem Tisch.",
+        clue2: "Hinweis 2: Apfelsaft-Karton stand im Altpapier.",
+        correctSuspect: "Guiseppe",
+        question: "Wie viel Liter hatte das Fass?",
+        bonusAnswer: "30"
       },
       38: {
-        tag: "🍂 Herbst",
-        title: "Der Laubhaufen-Anschlag",
-        description: "Der zusammengekehrte Laubhaufen wurde mit dem Laubbläser wieder im ganzen Hof verteilt!",
-        suspects: [
-          { name: "Nikolaos", role: "Gefährder", desc: "Liebt laute Geräte" },
-          { name: "Uwe", role: "Drucker", desc: "Putzt ständig" },
-          { name: "Matthias", role: "IT-Guru", desc: "Tobt gerne im Laub" }
-        ],
-        clue1: "Uwe saß entnervt in der Pause.",
-        clue2: "Nikolaos hatte den Laubbläser noch auf 'Stufe Max' eingestellt.",
-        correctSuspect: "Nikolaos",
-        question: "Welches Blatt lag im Flur?",
-        bonusAnswer: "Ahorn",
-        solutionText: "Nikolaos wollte die Saug-Funktion testen, schaltete aber auf 'Pusten'!"
+        title: "KW 38: Die vertauschten Spind-Schlösser",
+        description: "In der Umkleide wurden drei Zahlenschlösser auf 0-0-0 zurückgestellt und verriegelt.",
+        suspects: [getSuspect("Alexander"), getSuspect("Sandy"), getSuspect("Jörg")],
+        clue1: "Hinweis 1: Eine Zahlencode-Tabelle lag im Gang.",
+        clue2: "Hinweis 2: Ein Dietrich aus Draht lag am Boden.",
+        correctSuspect: "Alexander",
+        question: "Welche Nummer hatte Spind 1?",
+        bonusAnswer: "104"
       },
       39: {
-        tag: "🍂 Herbst",
-        title: "Der Kürbiskopf-Räuber",
-        description: "Der 20-Kilo-Riesenkürbis wurde nachts vom Eingangsportal gestohlen!",
-        suspects: [
-          { name: "Alexander", role: "Analyst", desc: "Züchter" },
-          { name: "Susi H.", role: "Ordnungsfan", desc: "Sucht Kürbissuppe" },
-          { name: "Thorsten", role: "Verdächtiger", desc: "Schnitzt Gesichter" }
-        ],
-        clue1: "Susi H. kaufte Hokkaido im Laden.",
-        clue2: "Thorsten hatte Kürbisfleisch-Spuren an seinem Schnitzmesser.",
-        correctSuspect: "Thorsten",
-        question: "Welche Kürbis-Rasse war es?",
-        bonusAnswer: "Atlantic Giant",
-        solutionText: "Thorsten wollte den größten Grusel-Kürbis der Stadt schnitzen."
+        title: "KW 39: Das Herbstlaub-Massaker",
+        description: "Ein riesiger Laubhaufen vom Parkplatz wurde nachts vor das Rolltor 2 geweht – oder geschaufelt?",
+        suspects: [getSuspect("Gerd"), getSuspect("Evangelos"), getSuspect("Nikolaos")],
+        clue1: "Hinweis 1: Eine Laubharke stand an der Wand gelehnt.",
+        clue2: "Hinweis 2: Eichenblätter klebten an den Arbeitsschuhen.",
+        correctSuspect: "Gerd",
+        question: "Welche Farbe hatte der Laubbesen?",
+        bonusAnswer: "Orange"
       },
       40: {
-        tag: "🍂 Herbst",
-        title: "Der Drachen auf dem Dach",
-        description: "Der bunte Herbstdrachen verfing sich in der Antenne auf dem Dach!",
-        suspects: [
-          { name: "Sandy", role: "Verdächtige", desc: "Steuert steil" },
-          { name: "Alexander", role: "Analyst", desc: "Genervt" },
-          { name: "Mary", role: "Zeugin", desc: "Verlor die Schnur" }
-        ],
-        clue1: "Alexander stieg erst nach dem Unfall aufs Dach.",
-        clue2: "Sandys Drachenspule hatte keine Schnur mehr.",
-        correctSuspect: "Sandy",
-        question: "Welche Farbe hatte die Drachenschnur?",
-        bonusAnswer: "Neongelb",
-        solutionText: "Sandy unterschätzte die stürmische Herbstböe völlig."
+        title: "KW 40: Der verschwundene Stempel 'DOKUMENT GEPRÜFT'",
+        description: "Der wichtigste Holzstempel der Qualitätsprüfung war am Tag der Revision nicht auffindbar.",
+        suspects: [getSuspect("Albert"), getSuspect("Susi K."), getSuspect("Marcel")],
+        clue1: "Hinweis 1: Ein rotes Stempelkissen war noch feucht.",
+        clue2: "Hinweis 2: Auf einem Notizblock waren Probe-Abdrücke.",
+        correctSuspect: "Albert",
+        question: "Welche Farbe hatte die Tinte?",
+        bonusAnswer: "Rot"
       },
       41: {
-        tag: "🍂 Herbst",
-        title: "Der Kastanien-Maniak",
-        description: "1000 Kastanien wurden im Treppenhaus verstreut – Rutschgefahr!",
-        suspects: [
-          { name: "Gerd", role: "Meister", desc: "Trägt Eimer" },
-          { name: "Evangelos", role: "Techniker", desc: "Baut Kastanienmännchen" },
-          { name: "Marcel", role: "Archivar", desc: "Versteckt sich" }
-        ],
-        clue1: "Gerd stellte seine Eimer geordnet im Keller ab.",
-        clue2: "Marcel prahlte mit seiner 'Kastanien-Falle'.",
-        correctSuspect: "Marcel",
-        question: "Welche Figur wurde aus den Kastanien gebaut?",
-        bonusAnswer: "Schlange",
-        solutionText: "Marcel wollte eine Rutschbahn bauen – völlig unverantwortlich!"
+        title: "KW 41: Das Thermostat-Kälte-Drama",
+        description: "Die Heizung im Büroflur wurde bei frostigen Außentemperaturen auf Schneeflocke gedreht!",
+        suspects: [getSuspect("Evangelos"), getSuspect("Thorsten"), getSuspect("Uwe")],
+        clue1: "Hinweis 1: Eine Zange lag auf dem Heizkörper.",
+        clue2: "Hinweis 2: Der Täter trug eine dicke Wollmütze.",
+        correctSuspect: "Evangelos",
+        question: "Auf wie viel Grad fiel die Temperatur?",
+        bonusAnswer: "16"
       },
       42: {
-        tag: "🍂 Herbst",
-        title: "Der Apfelmost-Räuber",
-        description: "Das frisch gepresste Fass Apfelmost verschwand aus der Kelterei!",
-        suspects: [
-          { name: "Guiseppe", role: "Spion", desc: "Liebt frischen Most" },
-          { name: "Albert", role: "Leiter", desc: "Sucht das Fass" },
-          { name: "Tatjana", role: "Spionin", desc: "Braucht Apfelessig" }
-        ],
-        clue1: "Albert hatte die Schlüssel im Haus.",
-        clue2: "Guiseppe wurde mit Most-Flecken am Hemd erwischt.",
-        correctSuspect: "Guiseppe",
-        question: "Welche Apfelsorte wurde gemostet?",
-        bonusAnswer: "Elstar",
-        solutionText: "Guiseppe wollte das Fass für seine private Herbstfete abzweigen."
+        title: "KW 42: Der Kastanien-Turm auf dem Schreibtisch",
+        description: "150 gesammelte Rosskastanien wurden zu einer kunstvollen Pyramide aufgebaut.",
+        suspects: [getSuspect("Tatjana"), getSuspect("Mary"), getSuspect("Sandy")],
+        clue1: "Hinweis 1: Zahnstocher wurden als Stützen verwendet.",
+        clue2: "Hinweis 2: Eine Kastanienschale lag im Treppenhaus.",
+        correctSuspect: "Tatjana",
+        question: "Wie viele Stockwerke hatte der Turm?",
+        bonusAnswer: "7"
       },
       43: {
-        tag: "🍂 Herbst",
-        title: "Der Regenschirm-Vertauscher",
-        description: "An einem Regentag wurden alle Regenschirme durch kaputte Exemplare ersetzt!",
-        suspects: [
-          { name: "Andreas", role: "Prüfer", desc: "Sucht Schirme" },
-          { name: "Nikolaos", role: "Gefährder", desc: "Nimmt den falschen" },
-          { name: "Susi K.", role: "Agentin", desc: "Ärgert sich" }
-        ],
-        clue1: "Andreas verkaufte neue Schirme im Laden.",
-        clue2: "Nikolaos hatte versehentlich seinen kaputten Schirm-Sack eingepackt.",
-        correctSuspect: "Nikolaos",
-        question: "Welche Farbe hatte der Hauptschirm?",
-        bonusAnswer: "Schwarz",
-        solutionText: "Nikolaos verwechselte seinen Schirmsack mit dem Ständer am Eingang."
+        title: "KW 43: Die Kürbis-Schnitz-Invasion",
+        description: "Drei grinsende Halloween-Kürbisse standen plötzlich auf den Hubwagen in der Halle!",
+        suspects: [getSuspect("Sandy"), getSuspect("Hendrik"), getSuspect("Guiseppe")],
+        clue1: "Hinweis 1: Kürbiskerne lagen auf der Werkbank.",
+        clue2: "Hinweis 2: Ein Schnitzmesser steckte in der Pappe.",
+        correctSuspect: "Sandy",
+        question: "Wie viele Kürbisse standen dort?",
+        bonusAnswer: "3"
       },
       44: {
-        tag: "🎃 Halloween",
-        title: "Das Gespenst von KW 44",
-        description: "In der Halloween-Nacht stahl ein 'Gespenst' das Süßigkeiten-Lager!",
-        suspects: [
-          { name: "Mary", role: "Zeugin", desc: "Trägt Betttuch" },
-          { name: "Sandy", role: "Verdächtige", desc: "Liebt Halloween-Schoki" },
-          { name: "Thorsten", role: "Verdächtiger", desc: "Trägt Fledermäuse" }
-        ],
-        clue1: "Thorsten war beim Auftritt im Theater.",
-        clue2: "Sandy hatte weiße Laken-Fasern und Schokoflecken am Ärmel.",
-        correctSuspect: "Sandy",
-        question: "Woraus bestand das Gespenster-Kostüm?",
-        bonusAnswer: "Bettlaken",
-        solutionText: "Sandy verkleidete sich als Gespenst, um ungesehen das Naschlager zu leeren."
+        title: "KW 44: Das Gespenst im Süßigkeitenlager",
+        description: "Zu Halloween schwebte ein weißes Bettlaken-Gespenst per Seilzug durch Halle 1!",
+        suspects: [getSuspect("Nikolaos"), getSuspect("Matthias"), getSuspect("Thorsten")],
+        clue1: "Hinweis 1: Ein dünnes Nylonseil war an der Decke befestigt.",
+        clue2: "Hinweis 2: Zwei schwarze Filzaugen waren aufgemalt.",
+        correctSuspect: "Nikolaos",
+        question: "Wie lang war das Spannseil in Metern?",
+        bonusAnswer: "12"
       },
       45: {
-        tag: "🍂 Herbst",
-        title: "Der St. Martin Laternen-Klau",
-        description: "Die 2-Meter-Riesen-Laterne für den St. Martins-Umzug verschwand!",
-        suspects: [
-          { name: "Matthias", role: "IT-Guru", desc: "Stolz auf die Laterne" },
-          { name: "Alexander", role: "Analyst", desc: "Reiter" },
-          { name: "Uwe", role: "Drucker", desc: "Will die beste Laterne" }
-        ],
-        clue1: "Matthias suchte verzweifelt im Schuppen.",
-        clue2: "In Uwes Werkstatt klebten Papierreste und Draht der Riesen-Laterne.",
-        correctSuspect: "Uwe",
-        question: "Welches Motiv hatte die Riesen-Laterne?",
-        bonusAnswer: "Sonne",
-        solutionText: "Uwe wollte die Laterne als seine eigene beim Umzug präsentieren."
+        title: "KW 45: Der St. Martins-Laternen-Raub",
+        description: "Die selbstgebastelte Riesen-Sonne-Mond-und-Sterne-Laterne wurde entführt!",
+        suspects: [getSuspect("Mary"), getSuspect("Susi H."), getSuspect("Andreas")],
+        clue1: "Hinweis 1: Gelbes Transparentpapier lag am Tatort.",
+        clue2: "Hinweis 2: Ein kleiner LED-Leuchtstab fehlte.",
+        correctSuspect: "Mary",
+        question: "Wie viele Sterne waren aufgeklebt?",
+        bonusAnswer: "14"
       },
       46: {
-        tag: "🍂 Spätherbst",
-        title: "Der Weckmann-Rosinen-Räuber",
-        description: "Aus 100 frischen Weckmännern wurden alle Rosinen herausgepickt!",
-        suspects: [
-          { name: "Hendrik", role: "Kaffeegenießer", desc: "Liebt Rosinen" },
-          { name: "Guiseppe", role: "Spion", desc: "Backte Weckmänner" },
-          { name: "Susi H.", role: "Ordnungsfan", desc: "Verteilt Gebäck" }
-        ],
-        clue1: "Guiseppe lieferte die Weckmänner komplett ab.",
-        clue2: "Hendriks Finger waren braun klebrig von Rosinen-Saft.",
-        correctSuspect: "Hendrik",
-        question: "Wie viele Rosinen wurden herausgepickt?",
-        bonusAnswer: "200",
-        solutionText: "Hendrik liebt Rosinen abgöttisch, verabscheut aber den Hefe-Teig."
+        title: "KW 46: Das vertauschte Weckmann-Gebäck",
+        description: "Die Tonpfeife des Martins-Gebäcks wurde heimlich durch eine echte Trillerpfeife ersetzt!",
+        suspects: [getSuspect("Andreas"), getSuspect("Albert"), getSuspect("Marcel")],
+        clue1: "Hinweis 1: Rosinen lagen verstreut auf dem Tisch.",
+        clue2: "Hinweis 2: Der Täter pfiff laut im Treppenhaus.",
+        correctSuspect: "Andreas",
+        question: "Aus welchem Material war die Pfeife?",
+        bonusAnswer: "Plastik"
       },
       47: {
-        tag: "🍂 Spätherbst",
-        title: "Der Thermostat-Schock",
-        description: "Jemand stellte die Heizung nachts auf 30 Grad – Tropenhitze im Raum!",
-        suspects: [
-          { name: "Tatjana", role: "Spionin", desc: "Friert immer" },
-          { name: "Gerd", role: "Meister", desc: "Sparfuchs" },
-          { name: "Nikolaos", role: "Gefährder", desc: "Techniker" }
-        ],
-        clue1: "Gerd kontrolliert die Zähler morgens.",
-        clue2: "Tatjana gab zu, dass ihr abends im Büro extrem kalt war.",
-        correctSuspect: "Tatjana",
-        question: "Auf wie viel Grad stand der Regler?",
-        bonusAnswer: "30 Grad",
-        solutionText: "Tatjana wollte am nächsten Morgen einen schön warmen Raum vorfinden."
+        title: "KW 47: Der Lebkuchen-Dosen-Schwindel",
+        description: "In der Schoko-Lebkuchen-Dose befanden sich nur noch zähe Zwiebäcke!",
+        suspects: [getSuspect("Marcel"), getSuspect("Uwe"), getSuspect("Hendrik")],
+        clue1: "Hinweis 1: Schokoglasur klebte an einer Kaffeetasse.",
+        clue2: "Hinweis 2: Die Metalldose war mit Klebeband versiegelt.",
+        correctSuspect: "Marcel",
+        question: "Wie viele Lebkuchen fehlten?",
+        bonusAnswer: "8"
       },
       48: {
-        tag: "🍂 Spätherbst",
-        title: "Der Spekulatius-Raub",
-        description: "50 Packungen Gewürz-Spekulatius wurden aus dem Vorratslager entwendet!",
-        suspects: [
-          { name: "Albert", role: "Leiter", desc: "Isst Spekulatius ab September" },
-          { name: "Evangelos", role: "Techniker", desc: "Zählt Pakete" },
-          { name: "Susi K.", role: "Agentin", desc: "Bäckt selber" }
-        ],
-        clue1: "Susi K. bäckt nur Zimtsterne.",
-        clue2: "Im Büro von Albert lagen 50 leere Spekulatius-Hüllen im Papierkorb.",
-        correctSuspect: "Albert",
-        question: "Welches Gewürz roch man im Flur?",
-        bonusAnswer: "Zimt",
-        solutionText: "Albert konnte der Spekulatius-Sucht im Spätherbst nicht widerstehen."
+        title: "KW 48: Die vertauschten Adventskalender-Türchen",
+        description: "Türchen 1 bis 24 wurden vorab geöffnet und mit neuen Witzen gefüllt!",
+        suspects: [getSuspect("Susi H."), getSuspect("Alexander"), getSuspect("Tatjana")],
+        clue1: "Hinweis 1: Ein kleiner Klebestift lag auf dem Kalender.",
+        clue2: "Hinweis 2: Handgeschriebene Witze auf Zetteln.",
+        correctSuspect: "Susi H.",
+        question: "Welches Motiv hatte der Kalender?",
+        bonusAnswer: "Schneemann"
       },
       49: {
-        tag: "🎅 Nikolaus",
-        title: "Der Raub der Nikolaus-Stiefel",
-        description: "In der Nacht zum 6. Dezember wurden alle bereitgestellten Stiefel geklaut!",
-        suspects: [
-          { name: "Marcel", role: "Archivar", desc: "Mag keine Geschenke" },
-          { name: "Andreas", role: "Prüfer", desc: "Sucht Stiefel" },
-          { name: "Nikolaos", role: "Gefährder", desc: "Darsteller" }
-        ],
-        clue1: "Nikolaos füllte die Stiefel vorschriftsmäßig.",
-        clue2: "Marcel hatte den Sack voller Stiefel im Keller.",
-        correctSuspect: "Marcel",
-        question: "Was lag statt Schokolade in den Stiefeln?",
-        bonusAnswer: "Kohlen",
-        solutionText: "Marcel wollte den Kolleginnen und Kollegen einen bösen Streich spielen."
+        title: "KW 49: Der Nikolaus-Stiefel-Räuber",
+        description: "Jemand hat in alle vor die Tür gestellten Nikolaus-Stiefel statt Nüssen echte Brikett-Kohlen gesteckt!",
+        suspects: [getSuspect("Thorsten"), getSuspect("Guiseppe"), getSuspect("Nikolaos")],
+        clue1: "Hinweis 1: Schwarzer Ruß klebte am Türgriff.",
+        clue2: "Hinweis 2: Walnussschalen lagen auf der Treppe.",
+        correctSuspect: "Thorsten",
+        question: "Wie viele Stiefel waren betroffen?",
+        bonusAnswer: "9"
       },
       50: {
-        tag: "🕯️ 2. Advent",
-        title: "Anschlag auf den Adventskranz",
-        description: "Am 2. Advent wurden alle Tannenzweige des Kranzes kahlgezupft!",
-        suspects: [
-          { name: "Mary", role: "Zeugin", desc: "Brauchte Zweige" },
-          { name: "Thorsten", role: "Verdächtiger", desc: "Deko-Hasser" },
-          { name: "Sandy", role: "Verdächtige", desc: "Sucht Tannen" }
-        ],
-        clue1: "Thorsten saß gemütlich bei Plätzchen.",
-        clue2: "Mary hatte die Tannennadeln an ihrer Schürze kleben.",
-        correctSuspect: "Mary",
-        question: "Welche Kerzenfarbe brannte auf dem Kranz?",
-        bonusAnswer: "Rot",
-        solutionText: "Mary brauchte dichte Tannenzweige für ein Last-Minute-Gesteck."
+        title: "KW 50: Der Anschlag auf den Adventskranz",
+        description: "Die 4 roten Kerzen wurden durch rote Holzklötze ersetzt – unbrennbar!",
+        suspects: [getSuspect("Jörg"), getSuspect("Gerd"), getSuspect("Susi K.")],
+        clue1: "Hinweis 1: Sägemehl lag auf den Tannenzweigen.",
+        clue2: "Hinweis 2: Eine Schachtel Streichhölzer lag unbenutzt daneben.",
+        correctSuspect: "Jörg",
+        question: "Welche Farbe hatten die Schleifen?",
+        bonusAnswer: "Gold"
       },
       51: {
-        tag: "🕯️ 3. Advent",
-        title: "Der Glühwein-Punsch-Pirat",
-        description: "Der komplette 30-Liter-Glühweintopf wurde durch Früchtetee ersetzt!",
-        suspects: [
-          { name: "Guiseppe", role: "Spion", desc: "Achtet auf Qualität" },
-          { name: "Uwe", role: "Drucker", desc: "Gegen Alkohol" },
-          { name: "Tatjana", role: "Spionin", desc: "Sucht Geschmack" }
-        ],
-        clue1: "Guiseppe kochte nach Original-Rezept.",
-        clue2: "Uwe hinterließ 10 leere Früchtetee-Packungen in der Mülltonne.",
-        correctSuspect: "Uwe",
-        question: "Welche Teesorte wurde verwendet?",
-        bonusAnswer: "Hagebutte",
-        solutionText: "Uwe wollte einen vollkommen nüchternen Advent für alle erzwingen."
+        title: "KW 51: Der Glühwein-Punsch-Pirat",
+        description: "Der alkoholfreie Apfel-Zimt-Punsch im Warmhaltebehälter war pünktlich um 14 Uhr restlos leer!",
+        suspects: [getSuspect("Hendrik"), getSuspect("Albert"), getSuspect("Mary")],
+        clue1: "Hinweis 1: Eine Zimtstange lag im Abfluss.",
+        clue2: "Hinweis 2: Der Täter hatte einen Thermobecher dabei.",
+        correctSuspect: "Hendrik",
+        question: "Wie viel Liter fasste der Kessel?",
+        bonusAnswer: "5"
       },
       52: {
-        tag: "🎄 FINALE",
-        title: "Der Diebstahl der Engelspitze",
-        description: "HEILIGABEND 2026! Der goldene Engel von der Tannenbaumspitze im Festsaal ist verschwunden! Wer war es kurz vor der großen Jahressiegerehrung?",
-        suspects: [
-          { name: "Gerd", role: "Meister", desc: "Feiert mit" },
-          { name: "Susi H.", role: "Ordnungsfan", desc: "Festleitung" },
-          { name: "Jörg", role: "Strategist", desc: "Wollte den finalen Showdown!" }
-        ],
-        clue1: "Gerd feierte dieses Jahr fröhlich mit.",
-        clue2: "Susi H. schmückte friedlich den Baum.",
-        correctSuspect: "Jörg",
-        question: "Wo war die Engelspitze versteckt?",
-        bonusAnswer: "Geschenkkorb",
-        solutionText: "Jörg hat den Engel im Geschenkkorb des JAHRESSIEGERS 2026 versteckt! Frohe Weihnachten und Glückwunsch an den Champion!"
+        title: "KW 52: Das große Finale – Diebstahl der Engelspitze!",
+        description: "Heiligabend-Spezialfall! Die goldene Engelspitze des Weihnachtsbaums in der Zentrale ist verschwunden! Wer ist der Meisterdieb 2026?",
+        suspects: [getSuspect("Albert"), getSuspect("Guiseppe"), getSuspect("Susi H.")],
+        clue1: "Hinweis 1: Eine goldene Glitzerfeder lag unter dem Baum.",
+        clue2: "Hinweis 2: Die Trittleiter stand noch direkt neben der Spitze.",
+        correctSuspect: "Albert",
+        question: "Wie hoch war der Weihnachtsbaum in Metern?",
+        bonusAnswer: "3"
       }
     };
 
@@ -1417,22 +1108,22 @@
       if (target.getDay() !== 4) {
         target.setMonth(0, 1 + ((4 - target.getDay() + 7) % 7));
       }
-      return Math.min(52, Math.max(1, 1 + Math.round((firstThursday - target) / 604800000)));
+      return 1 + Math.round((firstThursday - target) / 604800000);
     }
 
     // --- GAME STATE ---
     let currentWeek = getAutoKW();
     let playersState = {};
-    let tipsState = {}; // Structure: tipsState[week][playerName] = { suspect, answer, timestamp, daySubmitted, isEarly }
+    let tipsState = {}; // Structure: tipsState[week][playerName] = { suspect, answer, timestamp, evaluated, pointsEarned }
     let isAdminUnlocked = false;
     let pendingTip = null;
 
-    // --- INITIALIZE PLAYERS ---
+    // Initialize Default Players
     DEFAULT_PLAYERS.forEach(p => {
       playersState[p] = { points: 0, tipsCount: 0 };
     });
 
-    // --- FIREBASE SYNC (FALLBACK LOCAL) ---
+    // --- FIREBASE SYNC WITH LOCAL FALLBACK ---
     const firebaseConfig = {
       apiKey: "",
       authDomain: "krimitime2026.firebaseapp.com",
@@ -1457,13 +1148,13 @@
           renderAll();
         }
       }, err => {
-        console.log("Firebase sync fallback to local storage");
+        console.log("Using local storage fallback");
       });
     } catch (e) {
       console.log("Offline mode initialized");
     }
 
-    // --- MERGE PLAYERS UTILITY ---
+    // Merge Helper
     function mergePlayers(incoming) {
       DEFAULT_PLAYERS.forEach(p => {
         if (!playersState[p]) playersState[p] = { points: 0, tipsCount: 0 };
@@ -1490,7 +1181,7 @@
       }
     }
 
-    // Load local backup immediately on start
+    // Load local storage immediately
     try {
       const locP = localStorage.getItem('krimitime_players');
       const locT = localStorage.getItem('krimitime_tips');
@@ -1498,49 +1189,7 @@
       if (locT) tipsState = JSON.parse(locT);
     } catch(e) {}
 
-    // --- GLOBAL INTERACTION HANDLERS ---
-    window.switchTab = function(tabId) {
-      ['fallakte', 'tippen', 'rangliste'].forEach(t => {
-        const tabEl = document.getElementById(`tab-${t}`);
-        const btnEl = document.getElementById(`tab-btn-${t}`);
-        if (tabEl) tabEl.classList.add('hidden');
-        if (btnEl) btnEl.className = "comic-btn bg-amber-200 text-black font-bold px-3 py-1.5 rounded-xl text-sm flex items-center space-x-1.5";
-      });
-
-      const targetTab = document.getElementById(`tab-${tabId}`);
-      const targetBtn = document.getElementById(`tab-btn-${tabId}`);
-      if (targetTab) targetTab.classList.remove('hidden');
-      if (targetBtn) targetBtn.className = "comic-btn bg-cyan-400 text-black font-bold px-3 py-1.5 rounded-xl text-sm flex items-center space-x-1.5";
-    };
-
-    window.openAdminModal = function() {
-      document.getElementById('admin-modal').classList.remove('hidden');
-    };
-
-    window.closeAdminModal = function() {
-      document.getElementById('admin-modal').classList.add('hidden');
-    };
-
-    window.unlockAdmin = function() {
-      const pin = document.getElementById('admin-pin').value;
-      if (pin === '2121') {
-        isAdminUnlocked = true;
-        document.getElementById('admin-auth-sec').classList.add('hidden');
-        document.getElementById('admin-controls').classList.remove('hidden');
-        renderAdminPanel();
-      } else {
-        alert("Falscher Admin-Code!");
-      }
-    };
-
-    window.lockAdmin = function() {
-      isAdminUnlocked = false;
-      document.getElementById('admin-pin').value = '';
-      document.getElementById('admin-auth-sec').classList.remove('hidden');
-      document.getElementById('admin-controls').classList.add('hidden');
-    };
-
-    // --- RENDER APPLICATION ---
+    // --- RENDER ALL VIEWS ---
     function renderAll() {
       renderHeaderAndHero();
       renderCaseTab();
@@ -1556,23 +1205,41 @@
       document.getElementById('header-date-badge').innerText = `KW ${currentWeek} • ${days[now.getDay()]}`;
       document.getElementById('weeks-left-count').innerText = `${Math.max(0, 52 - currentWeek)}`;
       document.getElementById('kw-badge').innerText = `Kalenderwoche #${currentWeek}`;
+      
+      // Update Seasonal Badge
+      const sBadge = document.getElementById('special-badge');
+      if (currentWeek >= 1 && currentWeek <= 8) sBadge.innerText = "❄️ Winter-Special";
+      else if (currentWeek >= 9 && currentWeek <= 20) sBadge.innerText = "🌸 Frühlings-Special";
+      else if (currentWeek >= 21 && currentWeek <= 35) sBadge.innerText = "🪙 Sommer-Special";
+      else if (currentWeek >= 36 && currentWeek <= 47) sBadge.innerText = "🍂 Herbst-Special";
+      else sBadge.innerText = "🎄 Weihnachts-Finale";
+
+      // Early bonus banner visibility
+      const day = now.getDay();
+      const earlyBanner = document.getElementById('early-bonus-banner');
+      if (earlyBanner) {
+        if (day === 1 || day === 2) {
+          earlyBanner.classList.remove('hidden');
+        } else {
+          earlyBanner.classList.add('hidden');
+        }
+      }
     }
 
     function renderCaseTab() {
-      const c = CASES_DATA[currentWeek] || CASES_DATA[1];
+      const c = CASES_DATA[currentWeek] || CASES_DATA[33];
       document.getElementById('case-title').innerText = c.title;
       document.getElementById('case-description').innerText = c.description;
       document.getElementById('bonus-question-text').innerText = c.question;
       document.getElementById('tip-bonus-q-label').innerText = c.question;
-      document.getElementById('season-tag').innerText = `${c.tag}`;
 
-      // Unlock Clues based on weekday (0=Sun, 1=Mon, 3=Wed, 4=Thu, 5=Fri)
-      const day = new Date().getDay(); 
+      // Unlock Clues based on weekday (Wed=3, Thu=4, Fri=5, Sat=6, Sun=0)
+      const day = new Date().getDay();
       const clue1Box = document.getElementById('clue1-box');
       const clue1Text = document.getElementById('clue1-text');
       const clue1Icon = document.getElementById('clue1-icon');
 
-      if (day >= 3 || day === 0 || currentWeek < getAutoKW()) { // Unlocked on Wednesday
+      if (day >= 3 || day === 0 || isAdminUnlocked) {
         clue1Box.className = "p-4 rounded-xl border-2 border-black bg-emerald-100";
         clue1Text.className = "text-sm font-semibold text-slate-800";
         clue1Text.innerText = c.clue1;
@@ -1588,7 +1255,7 @@
       const clue2Text = document.getElementById('clue2-text');
       const clue2Icon = document.getElementById('clue2-icon');
 
-      if (day >= 4 || day === 0 || currentWeek < getAutoKW()) { // Unlocked on Thursday
+      if (day >= 4 || day === 0 || isAdminUnlocked) {
         clue2Box.className = "p-4 rounded-xl border-2 border-black bg-emerald-100";
         clue2Text.className = "text-sm font-semibold text-slate-800";
         clue2Text.innerText = c.clue2;
@@ -1600,21 +1267,7 @@
         clue2Icon.className = "fa-solid fa-lock text-slate-400";
       }
 
-      // Solution Box (Freitag/Wochenende)
-      const solBox = document.getElementById('solution-box');
-      if (day >= 5 || day === 0 || currentWeek < getAutoKW()) {
-        solBox.classList.remove('hidden');
-        document.getElementById('solution-culprit').innerText = c.correctSuspect;
-        document.getElementById('solution-text').innerText = c.solutionText;
-        document.getElementById('case-status-badge').innerText = "Fall gelöst!";
-        document.getElementById('case-status-badge').className = "bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded border border-emerald-400 uppercase tracking-wider";
-      } else {
-        solBox.classList.add('hidden');
-        document.getElementById('case-status-badge').innerText = "Ermittlung läuft!";
-        document.getElementById('case-status-badge').className = "bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded border border-red-300 uppercase tracking-wider animate-pulse";
-      }
-
-      // Render Suspect Cards with Cropping
+      // Render Suspect Cards with Cropping Logic
       const container = document.getElementById('cards-container');
       const suspectSelect = document.getElementById('tip-suspect');
       container.innerHTML = '';
@@ -1627,32 +1280,18 @@
         opt.innerText = `${s.name} (${s.role})`;
         suspectSelect.appendChild(opt);
 
-        // Card HTML
+        // Card HTML with Cropping Engine
         const cardDiv = document.createElement('div');
         cardDiv.className = "comic-box bg-white p-3 card-zoom flex flex-col items-center text-center space-y-2";
         
-        const cardData = PLAYER_CARDS[s.name];
-        let cardImgHtml = '';
-
-        if (cardData) {
-          const imgSrc = cardData.src;
-          const altImgSrc = imgSrc.endsWith('.jpg') ? imgSrc.replace('.jpg', '.png') : imgSrc.replace('.png', '.jpg');
-          
-          cardImgHtml = `
-            <div class="card-crop-wrap w-full mb-1">
-              <img src="${imgSrc}" onerror="this.onerror=null; this.src='${altImgSrc}';" class="card-crop-img ${cardData.cropClass}" alt="${s.name}">
-            </div>
-          `;
-        } else {
-          cardImgHtml = `
-            <div class="w-full h-44 rounded-xl border-2 border-black overflow-hidden bg-slate-100 flex items-center justify-center font-bold text-slate-500">
-              🕵️ ${s.name}
-            </div>
-          `;
-        }
+        const imgSrc = s.image;
+        const altImgSrc = imgSrc.endsWith('.jpg') ? imgSrc.replace('.jpg', '.png') : imgSrc.replace('.png', '.jpg');
+        const cropClass = s.crop || 'crop-top-left';
 
         cardDiv.innerHTML = `
-          ${cardImgHtml}
+          <div class="card-img-container">
+            <img src="${imgSrc}" onerror="this.onerror=null; this.src='${altImgSrc}';" class="card-crop-img ${cropClass}" alt="${s.name}">
+          </div>
           <div class="w-full">
             <div class="flex items-center justify-between">
               <span class="font-black font-comic text-xl text-slate-900">${s.name}</span>
@@ -1679,8 +1318,8 @@
       });
     }
 
-    // --- CHECK TIP LOCK STATUS WITH EARLY BONUS DISPLAY ---
-    window.checkExistingTipStatus = function() {
+    // --- STRICT 1-TIP PER WEEK LOCK CHECK ---
+    function checkExistingTipStatus() {
       const name = document.getElementById('tip-investigator').value;
       const container = document.getElementById('tip-lock-container');
       
@@ -1693,8 +1332,14 @@
       const existingTip = weekTips[name];
 
       if (existingTip) {
-        const wasEarly = existingTip.isEarly || existingTip.daySubmitted === 1 || existingTip.daySubmitted === 2;
-        
+        // Locked State UI
+        let pointsInfo = '';
+        if (existingTip.evaluated) {
+          pointsInfo = `<div class="bg-amber-200 text-black text-xs font-black p-2 rounded-lg border border-black mt-2">
+            🏆 Ausgewertet: +${existingTip.pointsEarned || 0} Punkte erhalten!
+          </div>`;
+        }
+
         container.innerHTML = `
           <div class="bg-purple-100 p-5 rounded-2xl border-3 border-black text-center space-y-3">
             <div class="w-12 h-12 bg-pink-500 text-white rounded-xl border-2 border-black mx-auto flex items-center justify-center text-xl shadow-[3px_3px_0px_#000]">
@@ -1710,26 +1355,23 @@
               <div class="text-slate-600">Ermittler: <span class="text-slate-900 font-black">${name}</span></div>
               <div class="text-slate-600">Verdächtiger: <span class="text-pink-600 font-black">${existingTip.suspect}</span></div>
               <div class="text-slate-600">Zusatzantwort: <span class="text-slate-800">${existingTip.answer}</span></div>
-              ${wasEarly ? '<div class="text-emerald-700 bg-emerald-100 p-1.5 rounded-lg border border-emerald-400 mt-2 text-center font-black">⚡ Schnellabgabe-Bonus (+2 Pkt) gesichert!</div>' : ''}
-              <div class="text-[10px] text-slate-400 mt-1">Abgegeben am: ${new Date(existingTip.timestamp).toLocaleString('de-DE')}</div>
+              <div class="text-[10px] text-slate-400 mt-2">Abgegeben am: ${new Date(existingTip.timestamp).toLocaleString('de-DE')}</div>
             </div>
+            ${pointsInfo}
             <div class="bg-emerald-300 text-black text-xs font-bold p-2.5 rounded-xl border-2 border-black uppercase tracking-wider">
-              ✅ Dein Versuch ist gesichert!
+              ✅ Dein Wochenversuch ist gesichert!
             </div>
           </div>
         `;
       } else {
-        const c = CASES_DATA[currentWeek] || CASES_DATA[1];
+        // Re-render Form
+        const c = CASES_DATA[currentWeek] || CASES_DATA[33];
         let optionsHtml = '<option value="">-- Verdächtigen wählen --</option>';
         c.suspects.forEach(s => {
           optionsHtml += `<option value="${s.name}">${s.name} (${s.role})</option>`;
         });
 
-        const dayNow = new Date().getDay();
-        const isEarlyNow = (dayNow === 1 || dayNow === 2);
-
         container.innerHTML = `
-          ${isEarlyNow ? '<div class="bg-amber-300 text-black text-xs font-black p-2.5 rounded-xl border-2 border-black text-center uppercase tracking-wider shadow-[2px_2px_0px_#000]">⚡ Heute aktiver Schnellabgabe-Bonus (+2 Extra-Punkte bei richtigem Täter)!</div>' : ''}
           <div>
             <label class="block font-black text-sm uppercase text-slate-900 mb-1">
               2. Welcher Verdächtige ist der Täter?
@@ -1753,10 +1395,10 @@
           </button>
         `;
       }
-    };
+    }
 
-    // --- TIP SUBMISSION HANDLERS ---
-    window.handleTipSubmit = function(e) {
+    // --- SUBMISSION CONFIRMATION HANDLERS ---
+    function handleTipSubmit(e) {
       e.preventDefault();
       const investigator = document.getElementById('tip-investigator').value;
       const suspect = document.getElementById('tip-suspect').value;
@@ -1772,33 +1414,38 @@
       document.getElementById('confirm-investigator').innerText = investigator;
       document.getElementById('confirm-suspect').innerText = suspect;
       document.getElementById('confirm-answer').innerText = answer;
-      document.getElementById('confirm-tip-modal').classList.remove('hidden');
-    };
+      
+      const day = new Date().getDay();
+      const bonusNotice = document.getElementById('confirm-bonus-notice');
+      if (day === 1 || day === 2) {
+        bonusNotice.innerText = "⚡ Schnellabgabe aktiv: +2 Bonuspunkte winken!";
+      } else {
+        bonusNotice.innerText = "";
+      }
 
-    window.closeConfirmModal = function() {
+      document.getElementById('confirm-tip-modal').classList.remove('hidden');
+    }
+
+    function closeConfirmModal() {
       document.getElementById('confirm-tip-modal').classList.add('hidden');
       pendingTip = null;
-    };
+    }
 
-    window.finalizeTipSubmission = function() {
+    function finalizeTipSubmission() {
       if (!pendingTip) return;
 
       const { investigator, suspect, answer } = pendingTip;
-      const now = new Date();
-      const dayOfWeek = now.getDay(); // 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat
-      const isEarly = (dayOfWeek === 1 || dayOfWeek === 2); // Monday or Tuesday
 
       if (!tipsState[currentWeek]) tipsState[currentWeek] = {};
 
       tipsState[currentWeek][investigator] = {
         suspect: suspect,
         answer: answer,
-        timestamp: now.toISOString(),
-        daySubmitted: dayOfWeek,
-        isEarly: isEarly
+        timestamp: new Date().toISOString(),
+        evaluated: false,
+        pointsEarned: 0
       };
 
-      // Increment tip counter
       if (playersState[investigator]) {
         playersState[investigator].tipsCount = (playersState[investigator].tipsCount || 0) + 1;
       }
@@ -1807,46 +1454,16 @@
       closeConfirmModal();
       checkExistingTipStatus();
       renderLeaderboard();
-    };
-
-    // --- LEADERBOARD & AUTOMATIC SCORE CALCULATION ---
-    function calculateTotalScore(playerName) {
-      let total = playersState[playerName]?.points || 0; // Manual admin points
-      
-      // Calculate points from all submitted weekly tips
-      Object.keys(tipsState).forEach(week => {
-        const weekNum = parseInt(week, 10);
-        const tip = tipsState[weekNum]?.[playerName];
-        const c = CASES_DATA[weekNum];
-
-        if (tip && c) {
-          // 1. Correct Suspect (+3 Pkt)
-          if (tip.suspect && c.correctSuspect && tip.suspect.toLowerCase() === c.correctSuspect.toLowerCase()) {
-            total += 3;
-            
-            // 2. Early Submission Bonus on Monday or Tuesday (+2 Pkt)
-            if (tip.isEarly || tip.daySubmitted === 1 || tip.daySubmitted === 2) {
-              total += 2;
-            }
-          }
-
-          // 3. Correct Bonus Answer (+1 Pkt)
-          if (tip.answer && c.bonusAnswer && tip.answer.toLowerCase().includes(c.bonusAnswer.toLowerCase())) {
-            total += 1;
-          }
-        }
-      });
-
-      return total;
     }
 
+    // --- LEADERBOARD RENDER ---
     function renderLeaderboard() {
       const tbody = document.getElementById('leaderboard-body');
       tbody.innerHTML = '';
 
       const sorted = Object.keys(playersState).map(k => ({
         name: k,
-        points: calculateTotalScore(k),
+        points: playersState[k].points || 0,
         tipsCount: playersState[k].tipsCount || 0
       })).sort((a, b) => b.points - a.points || b.tipsCount - a.tipsCount);
 
@@ -1869,20 +1486,68 @@
       });
     }
 
-    // --- ADMIN PANEL METHODS ---
+    // --- TAB SWITCHING ---
+    function switchTab(tabId) {
+      ['fallakte', 'tippen', 'rangliste'].forEach(t => {
+        document.getElementById(`tab-${t}`).classList.add('hidden');
+        document.getElementById(`tab-btn-${t}`).className = "comic-btn bg-amber-200 text-black font-bold px-3 py-1.5 rounded-xl text-sm flex items-center space-x-1.5";
+      });
+
+      document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+      document.getElementById(`tab-btn-${tabId}`).className = "comic-btn bg-cyan-400 text-black font-bold px-3 py-1.5 rounded-xl text-sm flex items-center space-x-1.5";
+    }
+
+    // --- ADMIN CONTROLS (PIN: 2121) ---
+    function openAdminModal() {
+      document.getElementById('admin-modal').classList.remove('hidden');
+    }
+
+    function closeAdminModal() {
+      document.getElementById('admin-modal').classList.add('hidden');
+    }
+
+    function unlockAdmin() {
+      const pin = document.getElementById('admin-pin').value;
+      if (pin === '2121') {
+        isAdminUnlocked = true;
+        document.getElementById('admin-auth-sec').classList.add('hidden');
+        document.getElementById('admin-controls').classList.remove('hidden');
+        document.getElementById('admin-relock-btn').classList.remove('hidden');
+        document.getElementById('admin-pin').value = '';
+        renderAdminPanel();
+        renderCaseTab(); // Instantly show clues for admin inspection
+      } else {
+        alert("Falscher Admin-Code!");
+      }
+    }
+
+    function lockAdmin() {
+      isAdminUnlocked = false;
+      document.getElementById('admin-auth-sec').classList.remove('hidden');
+      document.getElementById('admin-controls').classList.add('hidden');
+      document.getElementById('admin-relock-btn').classList.add('hidden');
+      renderCaseTab();
+    }
+
     function renderAdminPanel() {
-      // 1. Render Week Select
+      const c = CASES_DATA[currentWeek] || CASES_DATA[33];
+
+      // 1. Week Select
       const weekSel = document.getElementById('admin-week-select');
       weekSel.innerHTML = '';
       for (let w = 1; w <= 52; w++) {
         const opt = document.createElement('option');
         opt.value = w;
-        opt.innerText = `KW ${w}: ${CASES_DATA[w]?.title || 'Fall'} ${w === currentWeek ? '(Aktiv)' : ''}`;
+        opt.innerText = `KW ${w} ${w === currentWeek ? '(Aktiv)' : ''}`;
         if (w === currentWeek) opt.selected = true;
         weekSel.appendChild(opt);
       }
 
-      // 2. Render Players for direct point score edits & management
+      document.getElementById('admin-curr-kw-label').innerText = currentWeek;
+      document.getElementById('admin-correct-suspect-label').innerText = c.correctSuspect;
+      document.getElementById('admin-correct-bonus-label').innerText = c.bonusAnswer;
+
+      // 2. Direct Points & Player Management
       const playerList = document.getElementById('admin-player-list');
       playerList.innerHTML = '';
       Object.keys(playersState).sort().forEach(p => {
@@ -1892,17 +1557,17 @@
         div.innerHTML = `
           <span class="truncate font-black text-slate-800 max-w-[110px]">${p}</span>
           <div class="flex items-center space-x-1">
-            <button onclick="updatePoints('${p}', -1)" class="w-7 h-7 bg-red-200 hover:bg-red-300 rounded-lg border border-black font-black text-slate-900" title="-1 Punkt">-1</button>
+            <button onclick="updatePoints('${p}', -1)" class="w-7 h-7 bg-red-200 hover:bg-red-300 rounded-lg border border-black font-black text-slate-900" title="-1">-1</button>
             <input type="number" id="pts-input-${p}" value="${currentPts}" min="0" class="w-14 p-1 text-center font-black border-2 border-black rounded-lg text-pink-600 bg-amber-50 focus:bg-white" onkeydown="if(event.key==='Enter') setDirectPoints('${p}')">
-            <button onclick="setDirectPoints('${p}')" class="comic-btn bg-pink-500 hover:bg-pink-600 text-white font-bold px-2 py-1 rounded-lg text-[11px] uppercase" title="Punkte direkt zuweisen">Setzen</button>
-            <button onclick="updatePoints('${p}', 1)" class="w-7 h-7 bg-emerald-200 hover:bg-emerald-300 rounded-lg border border-black font-black text-slate-900" title="+1 Punkt">+1</button>
-            <button onclick="deletePlayer('${p}')" class="w-7 h-7 bg-slate-100 hover:bg-red-500 hover:text-white rounded-lg border border-black text-xs font-bold ml-1" title="Spieler löschen">🗑️</button>
+            <button onclick="setDirectPoints('${p}')" class="comic-btn bg-pink-500 hover:bg-pink-600 text-white font-bold px-2 py-1 rounded-lg text-[11px] uppercase" title="Punkte setzen">Setzen</button>
+            <button onclick="updatePoints('${p}', 1)" class="w-7 h-7 bg-emerald-200 hover:bg-emerald-300 rounded-lg border border-black font-black text-slate-900" title="+1">+1</button>
+            <button onclick="deletePlayer('${p}')" class="w-7 h-7 bg-slate-100 hover:bg-red-500 hover:text-white rounded-lg border border-black text-xs font-bold ml-1" title="Löschen">🗑️</button>
           </div>
         `;
         playerList.appendChild(div);
       });
 
-      // 3. Render submitted tips overview for current week
+      // 3. Submitted Tips Overview & Reset
       const tipsOverview = document.getElementById('admin-tips-overview');
       tipsOverview.innerHTML = '';
       const currentWeekTips = tipsState[currentWeek] || {};
@@ -1917,7 +1582,8 @@
           div.className = "flex items-center justify-between bg-white p-2 rounded-lg border border-black";
           div.innerHTML = `
             <div>
-              <strong class="text-slate-900">${p}:</strong> ${t.suspect} (${t.answer})
+              <strong class="text-slate-900">${p}:</strong> ${t.suspect} (${t.answer}) 
+              ${t.evaluated ? `<span class="text-emerald-600 font-bold ml-1">[+${t.pointsEarned} Pkt.]</span>` : ''}
             </div>
             <button onclick="unlockUserTip('${p}')" class="bg-red-500 text-white text-[10px] px-2 py-1 rounded border border-black font-bold">
               Freigeben / Löschen
@@ -1928,49 +1594,105 @@
       }
     }
 
-    window.changeAdminWeek = function() {
-      currentWeek = parseInt(document.getElementById('admin-week-select').value, 10);
+    // --- AUTOMATIC CASE EVALUATION ---
+    function evaluateCurrentWeek() {
+      const c = CASES_DATA[currentWeek];
+      if (!c) return;
+
+      const weekTips = tipsState[currentWeek] || {};
+      const tipKeys = Object.keys(weekTips);
+
+      if (tipKeys.length === 0) {
+        alert(`Für KW ${currentWeek} liegen noch keine Tipps zur Auswertung vor!`);
+        return;
+      }
+
+      let awardedCount = 0;
+      tipKeys.forEach(player => {
+        const tip = weekTips[player];
+        if (!tip || tip.evaluated) return;
+
+        let earnedPoints = 0;
+
+        // 1. Correct Suspect (+3 points)
+        if (tip.suspect === c.correctSuspect) {
+          earnedPoints += 3;
+
+          // 2. Early Bird Bonus (+2 points on Mon/Tue)
+          const tipDay = tip.timestamp ? new Date(tip.timestamp).getDay() : 0;
+          if (tipDay === 1 || tipDay === 2) {
+            earnedPoints += 2;
+          }
+        }
+
+        // 3. Bonus Question (+1 point)
+        if (tip.answer && tip.answer.trim().toLowerCase() === c.bonusAnswer.trim().toLowerCase()) {
+          earnedPoints += 1;
+        }
+
+        if (!playersState[player]) {
+          playersState[player] = { points: 0, tipsCount: 0 };
+        }
+
+        playersState[player].points = (playersState[player].points || 0) + earnedPoints;
+        tip.evaluated = true;
+        tip.pointsEarned = earnedPoints;
+        awardedCount++;
+      });
+
+      saveState();
+      renderLeaderboard();
+      renderAdminPanel();
+      alert(`Auswertung für KW ${currentWeek} abgeschlossen!
+
+${awardedCount} Tipps wurden ausgewertet und die Rangliste aktualisiert.`);
+    }
+
+    function changeAdminWeek() {
+      currentWeek = parseInt(document.getElementById('admin-week-select').value);
       saveState();
       renderAll();
-    };
+    }
 
-    window.resetToAutoWeek = function() {
+    function resetToAutoWeek() {
       currentWeek = getAutoKW();
       saveState();
       renderAll();
-    };
+    }
 
-    window.updatePoints = function(player, delta) {
+    function updatePoints(player, delta) {
       if (playersState[player]) {
         playersState[player].points = Math.max(0, (playersState[player].points || 0) + delta);
         saveState();
-        renderAll();
+        renderLeaderboard();
+        renderAdminPanel();
       }
-    };
+    }
 
-    window.setDirectPoints = function(player) {
+    function setDirectPoints(player) {
       const input = document.getElementById(`pts-input-${player}`);
       if (input && playersState[player]) {
         const val = parseInt(input.value, 10);
         if (!isNaN(val) && val >= 0) {
           playersState[player].points = val;
           saveState();
-          renderAll();
+          renderLeaderboard();
+          renderAdminPanel();
         } else {
           alert("Bitte gib eine gültige Punktezahl (≥ 0) ein!");
         }
       }
-    };
+    }
 
-    window.deletePlayer = function(player) {
+    function deletePlayer(player) {
       if (confirm(`Möchtest du den Ermittler "${player}" wirklich löschen?`)) {
         delete playersState[player];
         saveState();
         renderAll();
       }
-    };
+    }
 
-    window.addNewPlayer = function() {
+    function addNewPlayer() {
       const name = document.getElementById('new-player-name').value.trim();
       if (name && !playersState[name]) {
         playersState[name] = { points: 0, tipsCount: 0 };
@@ -1978,25 +1700,25 @@
         saveState();
         renderAll();
       }
-    };
+    }
 
-    window.resetDefaultPlayers = function() {
+    function resetDefaultPlayers() {
       DEFAULT_PLAYERS.forEach(p => {
         if (!playersState[p]) playersState[p] = { points: 0, tipsCount: 0 };
       });
       saveState();
       renderAll();
-    };
+    }
 
-    window.unlockUserTip = function(player) {
+    function unlockUserTip(player) {
       if (tipsState[currentWeek] && tipsState[currentWeek][player]) {
         delete tipsState[currentWeek][player];
         saveState();
         renderAll();
       }
-    };
+    }
 
-    // --- INITIAL START ---
+    // --- INITIAL BOOTSTRAP ---
     window.onload = function() {
       renderAll();
     };
