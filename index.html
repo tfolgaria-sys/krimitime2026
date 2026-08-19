@@ -507,7 +507,7 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT & LOGIC -->
+  <!-- JAVASCRIPT & FIREBASE LOGIC -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
@@ -673,7 +673,7 @@
       13: {
         title: "KW 13: Der Aprilscherz-Testlauf",
         description: "Alle Computer-Mäuse wurden mit kleinen Klebezetteln an der Unterseite lahmgelegt!",
-        suspects: [getSuspect("Matthias"), getSuspect("Sandy"), getAndreas = getSuspect("Andreas")],
+        suspects: [getSuspect("Matthias"), getSuspect("Sandy"), getSuspect("Andreas")],
         clue1: "Hinweis 1: Die Klebezettel waren alle mit einem lachenden Smiley versehen.",
         clue2: "Hinweis 2: Der Täter war schon vor Dienstbeginn im Gebäude.",
         correctSuspect: "Matthias",
@@ -893,7 +893,7 @@
       35: {
         title: "KW 35: Der Aktenvernichter-Stau",
         description: "Der Hochleistungs-Schredder wurde mit 50 Blatt Glanzpapier auf einmal gefüttert und blockiert.",
-        suspects: [getSuspect("Susi H."), getMarcel = getSuspect("Marcel"), getThorsten = getSuspect("Thorsten")],
+        suspects: [getSuspect("Susi H."), getSuspect("Marcel"), getSuspect("Thorsten")],
         clue1: "Hinweis 1: Reste von laminiertem Papier ragten heraus.",
         clue2: "Hinweis 2: Eine Schere lag neben dem Gerät.",
         correctSuspect: "Susi H.",
@@ -1095,13 +1095,15 @@
       playersState[p] = { points: 0, tipsCount: 0 };
     });
 
+    // --- DEINE ECHTEN FIREBASE-SCHLÜSSEL ---
     const firebaseConfig = {
-      apiKey: "",
-      authDomain: "krimitime2026.firebaseapp.com",
-      projectId: "krimitime2026",
-      storageBucket: "krimitime2026.appspot.com",
-      messagingSenderId: "123456789",
-      appId: "1:123456789:web:abcdef"
+      apiKey: "AIzaSyD2-iLP73NYcLKVHZcb3n6QPfyW8MbUkgk",
+      authDomain: "krimitime.firebaseapp.com",
+      databaseURL: "https://krimitime-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "krimitime",
+      storageBucket: "krimitime.firebasestorage.app",
+      messagingSenderId: "637991563478",
+      appId: "1:637991563478:web:d032be22b574bfd5ef9977"
     };
 
     let db = null;
@@ -1109,8 +1111,8 @@
       firebase.initializeApp(firebaseConfig);
       db = firebase.firestore();
       
-      const appIdStr = typeof __app_id !== 'undefined' ? __app_id : 'krimitime-2026-prod';
-      db.collection('artifacts').doc(appIdStr).collection('public').doc('data').onSnapshot((doc) => {
+      // Live-Synchronisation für alle Spieler
+      db.collection('game_data').doc('current_state').onSnapshot((doc) => {
         if (doc && doc.exists) {
           const data = doc.data();
           if (data.players) mergePlayers(data.players);
@@ -1119,10 +1121,10 @@
           renderAll();
         }
       }, err => {
-        console.log("Using local storage fallback");
+        console.log("Firebase sync fallback to local storage", err);
       });
     } catch (e) {
-      console.log("Offline mode initialized");
+      console.log("Offline mode initialized", e);
     }
 
     function mergePlayers(incoming) {
@@ -1135,12 +1137,13 @@
     }
 
     function saveState() {
+      // 1. Lokales Backup
       localStorage.setItem('krimitime_players', JSON.stringify(playersState));
       localStorage.setItem('krimitime_tips', JSON.stringify(tipsState));
 
+      // 2. Zentrale Cloud-Speicherung für alle Mitspieler
       if (db) {
-        const appIdStr = typeof __app_id !== 'undefined' ? __app_id : 'krimitime-2026-prod';
-        db.collection('artifacts').doc(appIdStr).collection('public').doc('data').set({
+        db.collection('game_data').doc('current_state').set({
           players: playersState,
           tips: tipsState,
           currentWeek: currentWeek,
